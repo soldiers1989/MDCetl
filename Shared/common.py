@@ -5,7 +5,8 @@ from configparser import ConfigParser
 from dateutil import parser
 from dateutil.parser import parse
 
-
+#TODO: review all patterns
+#TODO: re-implement get_config method.
 class Common:
     def __init__(self):
         pass

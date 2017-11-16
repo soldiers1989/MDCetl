@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4f830f79-9e01-4766-8ab3-ee6aa41518a8" name="Default" comment="Readme file for the reporting module.">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Config/config.ini" afterPath="$PROJECT_DIR$/Shared/Config/config.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Config/sql_statement.ini" afterPath="$PROJECT_DIR$/Shared/Config/sql_statement.ini" />
+    <list default="true" id="4f830f79-9e01-4766-8ab3-ee6aa41518a8" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shared/Config/config.ini" afterPath="$PROJECT_DIR$/Shared/Config/config.ini" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shared/Config/sql_statement.ini" afterPath="$PROJECT_DIR$/Shared/Config/sql_statement.ini" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shared/common.py" afterPath="$PROJECT_DIR$/Shared/common.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shared/db.py" afterPath="$PROJECT_DIR$/Shared/db.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,27 +17,34 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="common.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Shared/common.py">
+      <file leaf-file-name="db.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Shared/db.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="111">
-              <caret line="88" column="24" lean-forward="true" selection-start-line="88" selection-start-column="24" selection-end-line="88" selection-end-column="24" />
+            <state relative-caret-position="360">
+              <caret line="24" column="33" lean-forward="true" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
               <folding>
-                <element signature="e#0#15#0" expanded="true" />
-                <element signature="e#1015#1071#0" expanded="false" />
-                <element signature="e#1154#1524#0" expanded="false" />
-                <element signature="e#1583#2112#0" expanded="false" />
-                <element signature="e#2167#2332#0" expanded="false" />
-                <element signature="e#2381#2548#0" expanded="false" />
-                <element signature="e#2682#2853#0" expanded="false" />
-                <element signature="e#3067#3389#0" expanded="false" />
-                <element signature="e#3969#4417#0" expanded="false" />
-                <element signature="e#4505#5011#0" expanded="false" />
-                <element signature="e#5073#5363#0" expanded="false" />
-                <element signature="e#5429#5460#0" expanded="false" />
-                <element signature="e#5513#5535#0" expanded="false" />
-                <element signature="e#5599#5625#0" expanded="false" />
+                <element signature="e#0#13#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sql_statement.ini" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Shared/Config/sql_statement.ini">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="5" column="35" lean-forward="true" selection-start-line="5" selection-start-column="35" selection-end-line="5" selection-end-column="35" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config.ini" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Shared/Config/config.ini">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="11" column="22" lean-forward="true" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -80,8 +88,10 @@
         <option value="$PROJECT_DIR$/DataCheck/README.md" />
         <option value="$PROJECT_DIR$/BAP/company.py" />
         <option value="$PROJECT_DIR$/QA/test_qa.py" />
-        <option value="$PROJECT_DIR$/Shared/db.py" />
         <option value="$PROJECT_DIR$/Shared/common.py" />
+        <option value="$PROJECT_DIR$/Shared/db.py" />
+        <option value="$PROJECT_DIR$/Shared/Config/sql_statement.ini" />
+        <option value="$PROJECT_DIR$/Shared/Config/config.ini" />
       </list>
     </option>
   </component>
@@ -121,6 +131,12 @@
               <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
               <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
               <item name="Shared" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
+              <item name="Shared" type="462c0819:PsiDirectoryNode" />
+              <item name="Config" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -209,14 +225,21 @@
       <option name="project" value="LOCAL" />
       <updated>1510848174631</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Common class linted and re-implemented.">
+      <created>1510858366469</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1510858366469</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1080" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16400427" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14164004" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -246,7 +269,8 @@
     <MESSAGE value="ReadMe file added to all modules." />
     <MESSAGE value="Pycharm related config updates." />
     <MESSAGE value="Readme file for the reporting module." />
-    <option name="LAST_COMMIT_MESSAGE" value="Readme file for the reporting module." />
+    <MESSAGE value="Common class linted and re-implemented." />
+    <option name="LAST_COMMIT_MESSAGE" value="Common class linted and re-implemented." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -495,14 +519,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/db.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/BAP/company.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -541,41 +557,52 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/Config/sql_statement.ini">
+    <entry file="file://$PROJECT_DIR$/Shared/common.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="120">
+          <caret line="8" column="38" lean-forward="false" selection-start-line="8" selection-start-column="38" selection-end-line="8" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#1080#1136#0" expanded="false" />
+            <element signature="e#1219#1589#0" expanded="false" />
+            <element signature="e#1648#2177#0" expanded="false" />
+            <element signature="e#2232#2397#0" expanded="false" />
+            <element signature="e#2446#2613#0" expanded="false" />
+            <element signature="e#2747#2918#0" expanded="false" />
+            <element signature="e#3132#3454#0" expanded="false" />
+            <element signature="e#4034#4482#0" expanded="false" />
+            <element signature="e#4570#5076#0" expanded="false" />
+            <element signature="e#5138#5428#0" expanded="false" />
+            <element signature="e#5494#5525#0" expanded="false" />
+            <element signature="e#5578#5600#0" expanded="false" />
+            <element signature="e#5664#5690#0" expanded="false" />
+            <element signature="e#5749#5798#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Shared/Config/config.ini">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="165">
+          <caret line="11" column="22" lean-forward="true" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/common.py">
+    <entry file="file://$PROJECT_DIR$/Shared/Config/sql_statement.ini">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="111">
-          <caret line="88" column="24" lean-forward="true" selection-start-line="88" selection-start-column="24" selection-end-line="88" selection-end-column="24" />
+        <state relative-caret-position="75">
+          <caret line="5" column="35" lean-forward="true" selection-start-line="5" selection-start-column="35" selection-end-line="5" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/db.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="24" column="33" lean-forward="true" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
           <folding>
-            <element signature="e#0#15#0" expanded="true" />
-            <element signature="e#1015#1071#0" expanded="false" />
-            <element signature="e#1154#1524#0" expanded="false" />
-            <element signature="e#1583#2112#0" expanded="false" />
-            <element signature="e#2167#2332#0" expanded="false" />
-            <element signature="e#2381#2548#0" expanded="false" />
-            <element signature="e#2682#2853#0" expanded="false" />
-            <element signature="e#3067#3389#0" expanded="false" />
-            <element signature="e#3969#4417#0" expanded="false" />
-            <element signature="e#4505#5011#0" expanded="false" />
-            <element signature="e#5073#5363#0" expanded="false" />
-            <element signature="e#5429#5460#0" expanded="false" />
-            <element signature="e#5513#5535#0" expanded="false" />
-            <element signature="e#5599#5625#0" expanded="false" />
+            <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>

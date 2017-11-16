@@ -14,10 +14,11 @@ class Common:
     user_response_yesno = ['y', 'yes', 'n', 'no']
     Provinces = ['ON', 'QC', 'NS', 'NB', 'MB', 'BC', 'PE', 'SK', 'AB', 'NL']
     pc_pattern = '[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z]\s*[0-9][ABCEGHJ-NPRSTV-Z][0-9]'
-    url_pattern = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+    url_pattern = '^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$'
     email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
     address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
-    suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'Corp', 'Inc', 'Incorporated', 'Corp.', 'Corporation']
+    suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'inc', 'Inc', 'Incorporated',
+              'Corp',  'Corp.', 'Corporation', 'Communications', 'Technologies']
     stage = []
     basic_name = ''
     temp_name = ''
@@ -28,9 +29,9 @@ class Common:
         return percent
 
     @staticmethod
-    def fiscal_year_quarter():
-        month = datetime.date.today().month
-        year = datetime.date.today().year
+    def fiscal_year_quarter(dt=datetime.date.today()):
+        month = dt.today().month
+        year = dt.today().year
         if month <= 3:
             fy = year
         elif month > 3:
@@ -61,7 +62,7 @@ class Common:
             return f'{datevalue.year}{month}{dayvalue}'
 
     @staticmethod
-    def ispostalcode(pc):
+    def is_postalcode(pc):
         pattern = re.compile(Common.pc_pattern, re.IGNORECASE)
         res = pattern.match(pc)
         if res:
@@ -70,7 +71,7 @@ class Common:
             return False
 
     @staticmethod
-    def isurl(url):
+    def is_url(url):
         pattern = re.compile(Common.url_pattern, re.IGNORECASE)
         res = pattern.match(url)
         if res:
@@ -78,8 +79,8 @@ class Common:
         else:
             return False
 
-    @staticmethod
-    def iscanadianaddress(url):
+    @staticmethod # Not important. May be deprecate it after this iteration (Nov 16,2017)
+    def is_canadian_address(url):
         pattern = re.compile(Common.address_pattern, re.IGNORECASE)
         res = pattern.match(url)
         if res:
@@ -103,27 +104,41 @@ class Common:
                 Common.temp_name = re.sub(sf, '', Common.temp_name)
             Common.basic_name = re.sub('[^A-Za-z0-9]+', '', Common.temp_name).lower()
             return Common.basic_name
-        return ''
+        return {'error': 'No name found'}
 
     @staticmethod
-    def get_config(header, item):
+    def get_config(config_file, header, item):
         config = ConfigParser()
-        config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'Config.ini'))
+        path = str(os.path.join(os.path.abspath(os.path.dirname(__file__)))) + '/Config'
+        config.read(path, config_file)
         con_str = config.get(header, item)
         return con_str
 
     @staticmethod
-    def get_guid():
-        config = ConfigParser()
-        config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'Config.ini'))
-        guid = config.get('batch_guid', 'guid')
-        return guid
+    def get_sql(header, item):
+        print(os.getcwd())
+        path = Common.get_config(header, item)
+        box_path = os.path.join(os.path.expanduser("~"), path)
+        os.chdir(box_path)
 
     @staticmethod
     def get_company_age(dateofincorporation):
         if dateofincorporation is not None or dateofincorporation is not '':
-            if len(dateofincorporation) >= 10:
-                quarter_two_end = datetime.datetime.strptime('2017-09-30', '%Y-%m-%d')
+            if Common.is_date(dateofincorporation):
+                today = datetime.date.today()
+                d_inc = datetime.datetime.strptime(dateofincorporation[:10], '%Y-%m-%d')
+                return (today.year - d_inc.year) * 12 + \
+                       (today.month - d_inc.month)
+            else:
+                return None
+        else:
+            return None
+
+    @staticmethod
+    def get_company_age(dateofincorporation, quarter_date):
+        if dateofincorporation is not None or dateofincorporation is not '':
+            if Common.is_date(dateofincorporation):
+                quarter_two_end = datetime.datetime.strptime(quarter_date, '%Y-%m-%d')
                 dinc = datetime.datetime.strptime(dateofincorporation[:10], '%Y-%m-%d')
                 return (quarter_two_end.year - dinc.year) * 12 + \
                        (quarter_two_end.month - dinc.month)
@@ -133,23 +148,17 @@ class Common:
             return None
 
     @staticmethod
-    def change_date_format(idate):
-        if idate is not None or idate is not '':
-            if len(idate) >= 8:
-                if idate[:4] != '0000':
-                    d = parser.parse(idate)
-                    day = d.day if d.day >= 10 else '0{}'.format(d.day)
-                    month = d.month if d.month >= 10 else '0{}'.format(d.month)
-                    return '{}-{}-{}'.format(d.year, month, day)
-                else:
-                    return None
-            else:
-                return None
+    def change_date_format(date):
+        if Common.is_date(date):
+            d = parser.parse(date)
+            day = d.day if d.day >= 10 else '0{}'.format(d.day)
+            month = d.month if d.month >= 10 else '0{}'.format(d.month)
+            return '{}-{}-{}'.format(d.year, month, day)
         else:
             return None
 
     @staticmethod
-    def replace(here, this, that):
+    def replace_it(this, that, here):
         return re.sub(this, that, here)
 
     @staticmethod
@@ -164,4 +173,6 @@ class Common:
     def apostrophe_name(name):
         nm = name.replace("\'", "\'\'")
         return nm
+
+
 

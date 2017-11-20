@@ -120,7 +120,7 @@ class BatchService:
         sql_stm = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_count')
         for tbl in table_list:
             sql_stm = sql_stm.format(tbl, batches)
-            print('{} : {}'.format(tbl, self.db.pandas_read(sql_stm)['Total'].values))
+            print('{} : {}'.format(tbl, db.pandas_read(sql_stm)['Total'].values))
 
     def get_batch_stat(self, year, quarter, source_system, data_source):
         pass

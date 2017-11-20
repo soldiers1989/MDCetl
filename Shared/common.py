@@ -8,22 +8,22 @@ from dateutil.parser import parse
 #TODO: review all patterns
 #TODO: re-implement get_config method.
 
+
 class Common:
     def __init__(self):
-        pass
-
-    user_response_yes = ['y', 'yes']
-    user_response_yesno = ['y', 'yes', 'n', 'no']
-    Provinces = ['ON', 'QC', 'NS', 'NB', 'MB', 'BC', 'PE', 'SK', 'AB', 'NL']
-    pc_pattern = '[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z]\s*[0-9][ABCEGHJ-NPRSTV-Z][0-9]'
-    url_pattern = '^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$'
-    email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
-    address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
-    suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'inc', 'Inc', 'Incorporated',
-              'Corp',  'Corp.', 'Corporation', 'Communications', 'Technologies', 'Tech.']
-    stage = []
-    basic_name = ''
-    temp_name = ''
+        sql_get_max = Common.get_config('sql_statement.ini', 'db_sql_common', 'sql_get_max')
+        user_response_yes = ['y', 'yes']
+        user_response_yesno = ['y', 'yes', 'n', 'no']
+        Provinces = ['ON', 'QC', 'NS', 'NB', 'MB', 'BC', 'PE', 'SK', 'AB', 'NL']
+        pc_pattern = '[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z]\s*[0-9][ABCEGHJ-NPRSTV-Z][0-9]'
+        url_pattern = '^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$'
+        email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
+        address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
+        suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'inc', 'Inc', 'Incorporated',
+                  'Corp',  'Corp.', 'Corporation', 'Communications', 'Technologies', 'Tech.']
+        stage = []
+        basic_name = ''
+        temp_name = ''
 
     @staticmethod
     def progress(total, current):
@@ -64,7 +64,7 @@ class Common:
             return f'{datevalue.year}{month}{dayvalue}'
 
     @staticmethod
-    def is_postalcode(pc):
+    def is_postal_code(pc):
         pattern = re.compile(Common.pc_pattern, re.IGNORECASE)
         res = pattern.match(pc)
         if res:
@@ -175,6 +175,28 @@ class Common:
     def apostrophe_name(name):
         nm = name.replace("\'", "\'\'")
         return nm
+
+    @staticmethod
+    def get_table_seed(table, id_column):
+        seed = 0
+        sql_dc = Common.sql_get_max.format(id_column, table)
+        df = Common.dal.pandas_read(sql_dc)
+        if len(df) > 0:
+            seed = df[0].values
+        return seed
+
+    @staticmethod
+    def sql_friendly(strs):
+        lst = []
+        for i, c in enumerate(strs):
+            if c == '\'':
+                lst.append(i)
+        for i in range(len(lst)):
+            p = lst[i]
+            value = strs[:p] + '\'' + strs[p:]
+            strs = value
+            lst = [x + 1 for x in lst]
+        return strs
 
 
 

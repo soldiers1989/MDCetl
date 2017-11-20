@@ -2,14 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f830f79-9e01-4766-8ab3-ee6aa41518a8" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Shared/batch.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Shared/file_service.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Shared/match.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/mnadew.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/mnadew.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shared/Config/sql_statement.ini" afterPath="$PROJECT_DIR$/Shared/Config/sql_statement.ini" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shared/batch.py" afterPath="$PROJECT_DIR$/Shared/batch.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shared/common.py" afterPath="$PROJECT_DIR$/Shared/common.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shared/enums.py" afterPath="$PROJECT_DIR$/Shared/enums.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shared/match.py" afterPath="$PROJECT_DIR$/Shared/match.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -64,12 +61,13 @@
         <option value="$PROJECT_DIR$/Shared/db.py" />
         <option value="$PROJECT_DIR$/Shared/Config/config.ini" />
         <option value="$PROJECT_DIR$/BAP/Readme.MD" />
-        <option value="$PROJECT_DIR$/Shared/match.py" />
-        <option value="$PROJECT_DIR$/Shared/common.py" />
         <option value="$PROJECT_DIR$/Shared/file_service.py" />
         <option value="$PROJECT_DIR$/Shared/enums.py" />
-        <option value="$PROJECT_DIR$/Shared/Config/sql_statement.ini" />
         <option value="$PROJECT_DIR$/Shared/batch.py" />
+        <option value="$PROJECT_DIR$/Shared/common.py" />
+        <option value="$PROJECT_DIR$/Shared/Config/sql_statement.ini" />
+        <option value="$PROJECT_DIR$/Shared/match.py" />
+        <option value="$PROJECT_DIR$/BAP/bap.py" />
       </list>
     </option>
   </component>
@@ -111,12 +109,6 @@
               <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
               <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
               <item name="Shared" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
-              <item name="Shared" type="462c0819:PsiDirectoryNode" />
-              <item name="Config" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
@@ -239,7 +231,21 @@
       <option name="project" value="LOCAL" />
       <updated>1510860979523</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="File Service object implementation.">
+      <created>1511204823858</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1511204823858</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Batch Service object implementation.">
+      <created>1511204860772</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1511204860772</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -279,7 +285,9 @@
     <MESSAGE value="Data access class implemented. Ready for testing." />
     <MESSAGE value="Items added to the configuration files." />
     <MESSAGE value="Partial implementation of enums." />
-    <option name="LAST_COMMIT_MESSAGE" value="Partial implementation of enums." />
+    <MESSAGE value="File Service object implementation." />
+    <MESSAGE value="Batch Service object implementation." />
+    <option name="LAST_COMMIT_MESSAGE" value="Batch Service object implementation." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -585,25 +593,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/BAP/Readme.MD">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="30">
-            <caret line="2" column="13" lean-forward="true" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/match.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Shared/file_service.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
@@ -627,6 +616,25 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/BAP/bap.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="12" lean-forward="false" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BAP/Readme.MD">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="30">
+            <caret line="2" column="13" lean-forward="true" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Shared/db.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="435">
@@ -635,10 +643,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/Config/sql_statement.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="31" lean-forward="true" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Shared/batch.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="645">
-          <caret line="112" column="36" lean-forward="true" selection-start-line="112" selection-start-column="36" selection-end-line="112" selection-end-column="36" />
+        <state relative-caret-position="150">
+          <caret line="10" column="100" lean-forward="true" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="100" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
             <element signature="e#973#2766#0" expanded="false" />
@@ -647,33 +663,45 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/Config/sql_statement.ini">
+    <entry file="file://$PROJECT_DIR$/Shared/common.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="53" lean-forward="false" selection-start-line="19" selection-start-column="53" selection-end-line="19" selection-end-column="53" />
-          <folding />
+        <state relative-caret-position="783">
+          <caret line="188" column="20" lean-forward="false" selection-start-line="188" selection-start-column="20" selection-end-line="188" selection-end-column="20" />
+          <folding>
+            <element signature="e#1218#1274#0" expanded="false" />
+            <element signature="e#1357#1727#0" expanded="false" />
+            <element signature="e#1786#2315#0" expanded="false" />
+            <element signature="e#2585#2752#0" expanded="false" />
+            <element signature="e#2886#3057#0" expanded="false" />
+            <element signature="e#3106#3213#0" expanded="false" />
+            <element signature="e#3668#3885#0" expanded="false" />
+            <element signature="e#3944#4099#0" expanded="false" />
+            <element signature="e#4173#4621#0" expanded="false" />
+            <element signature="e#4709#5215#0" expanded="false" />
+            <element signature="e#5277#5567#0" expanded="false" />
+            <element signature="e#5633#5664#0" expanded="false" />
+            <element signature="e#5717#5739#0" expanded="false" />
+            <element signature="e#5803#5829#0" expanded="false" />
+            <element signature="e#5888#5937#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/common.py">
+    <entry file="file://$PROJECT_DIR$/Shared/match.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="146">
-          <caret line="23" column="14" lean-forward="true" selection-start-line="23" selection-start-column="14" selection-end-line="23" selection-end-column="14" />
+        <state relative-caret-position="300">
+          <caret line="125" column="21" lean-forward="true" selection-start-line="125" selection-start-column="21" selection-end-line="125" selection-end-column="21" />
           <folding>
-            <element signature="e#1090#1146#0" expanded="false" />
-            <element signature="e#1229#1599#0" expanded="false" />
-            <element signature="e#1658#2187#0" expanded="false" />
-            <element signature="e#2242#2407#0" expanded="false" />
-            <element signature="e#2456#2623#0" expanded="false" />
-            <element signature="e#2757#2928#0" expanded="false" />
-            <element signature="e#3142#3464#0" expanded="false" />
-            <element signature="e#4044#4492#0" expanded="false" />
-            <element signature="e#4580#5086#0" expanded="false" />
-            <element signature="e#5148#5438#0" expanded="false" />
-            <element signature="e#5504#5535#0" expanded="false" />
-            <element signature="e#5588#5610#0" expanded="false" />
-            <element signature="e#5674#5700#0" expanded="false" />
-            <element signature="e#5759#5808#0" expanded="false" />
+            <element signature="e#0#38#0" expanded="true" />
+            <element signature="e#197#1312#0" expanded="false" />
+            <element signature="e#1358#1524#0" expanded="false" />
+            <element signature="e#1590#1702#0" expanded="false" />
+            <element signature="e#1751#1869#0" expanded="false" />
+            <element signature="e#1954#2820#0" expanded="false" />
+            <element signature="e#2904#6177#0" expanded="false" />
+            <element signature="e#6234#6893#0" expanded="false" />
+            <element signature="e#6957#7421#0" expanded="false" />
+            <element signature="e#7485#7681#0" expanded="false" />
           </folding>
         </state>
       </provider>

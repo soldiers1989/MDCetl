@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f830f79-9e01-4766-8ab3-ee6aa41518a8" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/BAP/bap.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BAP/Readme.MD" afterPath="$PROJECT_DIR$/BAP/Readme.MD" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -56,7 +58,6 @@
         <option value="$PROJECT_DIR$/QA/test_qa.py" />
         <option value="$PROJECT_DIR$/Shared/db.py" />
         <option value="$PROJECT_DIR$/Shared/Config/config.ini" />
-        <option value="$PROJECT_DIR$/BAP/Readme.MD" />
         <option value="$PROJECT_DIR$/Shared/file_service.py" />
         <option value="$PROJECT_DIR$/Shared/enums.py" />
         <option value="$PROJECT_DIR$/Shared/batch.py" />
@@ -64,6 +65,7 @@
         <option value="$PROJECT_DIR$/Shared/Config/sql_statement.ini" />
         <option value="$PROJECT_DIR$/Shared/match.py" />
         <option value="$PROJECT_DIR$/BAP/bap.py" />
+        <option value="$PROJECT_DIR$/BAP/Readme.MD" />
       </list>
     </option>
   </component>
@@ -100,16 +102,6 @@
               <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
               <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
               <item name="BAP" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
-              <item name="Shared" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
-              <item name="Survey" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -255,7 +247,14 @@
       <option name="project" value="LOCAL" />
       <updated>1511211259181</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="IDE xml data update.">
+      <created>1511211292935</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1511211292935</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -299,7 +298,8 @@
     <MESSAGE value="Batch Service object implementation." />
     <MESSAGE value="Common class properties and additional methods on getting max id and sql friendly strings." />
     <MESSAGE value="Matching object implementation for company matching for all data souce as a common and shared object." />
-    <option name="LAST_COMMIT_MESSAGE" value="Matching object implementation for company matching for all data souce as a common and shared object." />
+    <MESSAGE value="IDE xml data update." />
+    <option name="LAST_COMMIT_MESSAGE" value="IDE xml data update." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -597,24 +597,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/Config/config.ini">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="22" lean-forward="false" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/file_service.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#9#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Shared/enums.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
@@ -625,25 +607,6 @@
             <element signature="e#1675#1773#0" expanded="false" />
             <element signature="e#1809#2170#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/BAP/bap.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="12" lean-forward="false" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/BAP/Readme.MD">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="30">
-            <caret line="2" column="13" lean-forward="true" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-            <folding />
-          </first_editor>
-          <second_editor />
         </state>
       </provider>
     </entry>
@@ -715,6 +678,41 @@
             <element signature="e#6957#7421#0" expanded="false" />
             <element signature="e#7485#7681#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/Config/config.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="22" lean-forward="false" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/file_service.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BAP/Readme.MD">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="270">
+            <caret line="18" column="23" lean-forward="true" selection-start-line="18" selection-start-column="23" selection-end-line="18" selection-end-column="23" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BAP/bap.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -118,3 +118,27 @@ class CompanyIndustry(Enum):
     OTHER = 17
     TOURISM_AND_CULTURE = 18
 
+
+class ImportStatus(Enum):
+    STARTED = 1
+    IN_PROGRESS = 2
+    STAGED = 3
+    READY_TO_LOAD = 4
+    COMPLETED = 5
+    FAILED = 6
+    DELETED = 7
+    STAGING_IN_PROGRESS = 8
+    DW_LOAD_IN_PROGRESS = 9
+    LOADED = 10
+    IMPORTING = 11
+    IMPORTED = 12
+    DELETED_FROM_STAGING = 13
+    DELETED_FROM_REPORTING = 14
+
+
+class FileType(Enum):
+    SPREAD_SHEET = ['xls', 'xlsx']
+    CSV = ['csv']
+    PDF = ['pdf']
+    WORD = ['doc', 'docx']
+

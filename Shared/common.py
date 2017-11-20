@@ -7,6 +7,7 @@ from dateutil.parser import parse
 
 #TODO: review all patterns
 #TODO: re-implement get_config method.
+
 class Common:
     def __init__(self):
         pass
@@ -19,7 +20,7 @@ class Common:
     email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
     address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
     suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'inc', 'Inc', 'Incorporated',
-              'Corp',  'Corp.', 'Corporation', 'Communications', 'Technologies']
+              'Corp',  'Corp.', 'Corporation', 'Communications', 'Technologies', 'Tech.']
     stage = []
     basic_name = ''
     temp_name = ''

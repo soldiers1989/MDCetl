@@ -5,6 +5,8 @@ from configparser import ConfigParser
 from dateutil import parser
 from dateutil.parser import parse
 
+from Shared.enums import DataSourceType
+
 #TODO: review all patterns
 #TODO: re-implement get_config method.
 
@@ -110,11 +112,14 @@ class Common:
 
     @staticmethod
     def get_config(config_file, header, item):
-        config = ConfigParser()
-        path = str(os.path.join(os.path.abspath(os.path.dirname(__file__)))) + '/Config'
-        config.read(path, config_file)
-        con_str = config.get(header, item)
-        return con_str
+        try:
+            config = ConfigParser()
+            config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), config_file))
+            config_value = config.get(header, item)
+            return config_value
+        except Exception as ex:
+            print(ex)
+            return None
 
     @staticmethod
     def get_sql(header, item):
@@ -198,5 +203,55 @@ class Common:
             lst = [x + 1 for x in lst]
         return strs
 
+    @staticmethod
+    def set_datasource(file):
+        file = re.sub('[^A-Za-z0-9]+', '', file).lower()
+        d_source = None
+        if 'spark' in file:
+            d_source = DataSourceType.SPARK_CENTER.value
+        elif 'communitech' in file:
+            d_source = DataSourceType.COMMUNI_TECH.value
+        elif 'venturelab' in file:
+            d_source = DataSourceType.VENTURE_LAB.value
+        elif 'haltech' in file:
+            d_source = DataSourceType.HAL_TECH.value
+        elif 'iion' in file:
+            d_source = DataSourceType.IION.value
+        elif 'niagara' in file:
+            d_source = DataSourceType.INNOVATE_NIAGARA.value
+        elif 'guelph' in file:
+            d_source = DataSourceType.INNOVATION_GUELPH.value
+        elif 'innovationfactory' in file:
+            d_source = DataSourceType.INNOVATION_FACTORY.value
+        elif 'ottawa' in file:
+            d_source = DataSourceType.INVEST_OTTAWA.value
+        elif 'launchlab' in file:
+            d_source = DataSourceType.LAUNCH_LAB.value
+        elif 'mars' in file:
+            d_source = DataSourceType.MaRS.value
+        elif 'norcat' in file:
+            d_source = DataSourceType.NORCAT.value
+        elif 'riccentre' in file:
+            d_source = DataSourceType.RIC_CENTER.value
+        elif 'ssmic' in file:
+            d_source = DataSourceType.SSMIC.value
+        elif 'noic' in file:
+            d_source = DataSourceType.NWOIC.value
+        elif 'tech' in file and 'wetech' not in file:
+            d_source = DataSourceType.TECH_ALLIANCE.value
+        elif 'wetec' in file:
+            d_source = DataSourceType.WE_TECH.value
 
+        return d_source
+
+    @staticmethod
+    def df_list(dataframe):
+        values = []
+        try:
+            for i in range(len(dataframe)):
+                v = dataframe.iloc[i].values.tolist()
+                values.append(v)
+            return values
+        except Exception:
+            return None
 

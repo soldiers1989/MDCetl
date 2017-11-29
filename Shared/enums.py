@@ -69,9 +69,9 @@ class SourceSystemType(Enum):
     RICAGG_CP16Y = 28
     RICAGG_TC16 = 29
     RICAGG_TC16Y = 30
-    RICPD16 = 31
-    RICPD16Y = 32
-    RICCD16Y = 33
+    RICPD_bap = 31
+    RICPDY_bap = 32
+    RICCD_bap = 33
     MARKET_INTELLIGENCE = 34
     JLABS = 35
     BAP = 36
@@ -142,3 +142,174 @@ class FileType(Enum):
     PDF = ['pdf']
     WORD = ['doc', 'docx']
 
+
+class DataSource(Enum):
+    BAP = 1
+    CBINSIGHT = 2
+    CRUNCHBASE = 3
+    CVCA = 4
+    IAF = 5
+    OSVP = 6
+    SURVEY = 7
+    TDW = 8
+    TR = 9
+    WS = 10
+
+
+class WorkSheet(Enum):
+    bap_program = 'csv_program16'
+    bap_program_youth = 'csv_program16_youth'
+    bap_company = 'Company Data'
+    bap_program_final = 'Program'
+    bap_program_youth_final = 'Program Youth'
+
+
+class FileName(Enum):
+    bap_combined = 'ALL_RICS_BAP_FY{}Q{}.xlsx'
+
+
+class Table(Enum):
+    company_program = 'Config.CompanyProgram'
+    company_program_youth = 'Config.CompanyProgramAgg'
+    company_data = 'Config.CompanyDataRaw'
+
+    batch = 'Config.ImportBatch'
+    batch_log = 'Config.ImportBatchLog'
+
+    fact_ric_aggregation = 'Reporting.FactRICAggregation'
+
+
+class SQL(Enum):
+    sql_program_insert = 'INSERT INTO[Config].[CompanyAggProgram] ' \
+                         'Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+    sql_program_youth_insert = 'INSERT INTO[Config].[CompanyAggProgramYouth] Values (?,?,?,?,?,?,?,?,?,?,?,?,?)'
+    sql_bap_company_insert = 'INSERT INTO [Config].[CompanyDataRaw] ' \
+                             'Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+    sql_bap_distict_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource,WorkSheetName ' \
+                            'FROM {} Year = {} AND Quarter = \'{}\''
+    sql_bap_fact_ric_company_data_source = '''SELECT CompanyID, DataSource, BatchID,'20170930' AS DateID,DateOfIntake,IntakeDate, 
+                NULL AS [StageLevelID],NULL AS [SizeID], 'NULL' AS Age,HighPotential, NULL AS [DevelopmentID], 
+                NumberOfAdvisoryServiceHoursProvided,VolunteerMentorHours, GETDATE() AS [Modified Date], 
+                GETDATE() AS [CreatedDate], Youth,StreetAddress, City, Province, PostalCode, Website,Stage,
+                AnualRevenueCAN,NumberOfEmployees,FundingRaisedToDateCAN,FundingRaisedInCurrentQuarterCAN,
+                DateOfIncorporation,IndustrySector, SocialEnterprise, [Quarter], [Year] 
+                FROM [Config].[CompanyDataRaw] WHERE CompanyID IS NOT NULL  AND BatchID IN {}'''
+    sql_bap_fact_ric_company_insert = 'INSERT INTO [Reporting].[FactRICCompanyData] ' \
+                                      'VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+
+    sql_bap_fact_ric_aggregation_insert = 'INSERT INTO [Reporting].[FactRICAggregation] VALUES (?,?,?,?,?,?,?,?)'
+
+    sql_company_aggregate_program = 'SELECT  * FROM [Config].[CompanyAggProgram] WHERE BatchID IN {}'
+    sql_company_aggregate_program_youth = 'SELECT  * FROM [Config].[CompanyAggProgramYouth] WHERE BatchID IN {}'
+
+    sql_bap_fact_ric_company = ''' SELECT * FROM [Reporting].[FactRICCompanyData] WHERE FiscalYear = {}'''
+
+    sql_bap_report_company_ds_quarter = '''SELECT CompanyID,DataSourceID,  MIN(RIGHT(FiscalQuarter,1)) AS MinFQ 
+	                                        FROM Reporting.FactRICCompanyData 
+	                                        WHERE FISCALYEAR = {}
+	                                        GROUP BY CompanyID, DataSourceID
+	                                        ORDER BY CompanyID, min(RIGHT(FiscalQuarter, 1)) '''
+
+    sql_bap_report_all_quarter = '''
+                SELECT DISTINCT 
+	            RIGHT(FiscalQuarter, 1) AS FiscalQuarter,
+	            FiscalYear
+	            FROM Reporting.FactRICCompanyData
+	            WHERE FiscalYear = {} AND RIGHT(FiscalQuarter, 1) <= {}
+	            ORDER BY RIGHT(FiscalQuarter, 1) ASC
+                '''
+    sql_bap_distict_company = '''SELECT DISTINCT CompanyID FROM Reporting.FactRICCompanyData WHERE BatchID IN {}'''
+    sql_industry_list_table = 'SELECT [Industry_Sector],[Lvl2IndustryName] FROM [RICSurveyFlat].[RICSurvey2016Industry]'
+
+
+class Columns(Enum):
+    ric_aggregation_id = 'RICAggregationID'
+    clmn_fact_ric_rolled_up = ['DataSourceID',
+                               'CompanyID',
+                               'MinDate',
+                               'CurrentDate',
+                               'VolunteerYTD',
+                               'AdvisoryHoursYTD',
+                               'VolunteerThisQuarter',
+                               'AdvisoryThisQuarter',
+                               'FiscalQuartecr',
+                               'BatchID',
+                               'ModifiedDate',
+                               'SocialEnterprise',
+                               'Stage',
+                               'HighPotential',
+                               'Lvl2IndustryName',
+                               'FiscalYear',
+                               'Youth',
+                               'DateOfIncorporation',
+                               'AnnualRevenue',
+                               'NumberEmployees',
+                               'FundingToDate',
+                               'IndustrySector',
+                               'IntakeDate',
+                               'FundingCurrentQuarter']
+
+
+'''
+FACTRICCOMPANY
+
+RICCompanyDataID
+CompanyID
+DataSourceID
+BatchID
+DateID
+IntakeDate
+StageLevelID
+SizeID
+Age
+HighPotential
+DevelopmentID
+AdvisoryServicesHours
+VolunteerMentorHours
+ModifiedDate
+CreateDate
+Youth
+StreetAddress
+City
+Province
+PostalCode
+Website
+Stage
+AnnualRevenue
+NumberEmployees
+FundingToDate
+FundingCurrentQuarter
+DateOfIncorporation
+IndustrySector
+SocialEnterprise
+FiscalQuarter
+FiscalYear
+'''
+
+'''
+CompanyHoursRolledUpId
+DataSourceID
+CompanyID
+MinDate
+CurrentDate
+VolunteerYTD
+AdvisoryHoursYTD
+VolunteerThisQuarter
+AdvisoryThisQuarter
+FiscalQuarter
+BatchID
+ModifiedDate
+SocialEnterprise
+Stage
+HighPotential
+Lvl2IndustryName
+FiscalYear
+Youth
+DateOfIncorporation
+AnnualRevenue
+NumberEmployees
+FundingToDate
+IndustrySector
+IntakeDate
+FundingCurrentQuarter
+'''

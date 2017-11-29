@@ -1,13 +1,13 @@
 from Shared.common import Common as CM
 from Shared.db import DB as db
 from Shared.batch import BatchService
-import datetime.datetime as dt
+import datetime as dt
 
 
-class MatchingService:
+class CompanyService:
 
     def __init__(self):
-        self.bs = BatchService('')
+        self.bs = BatchService()
         self.sql_dim_company = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_dim_company')
         self.sql_dim_company_source = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_dim_company_source')
         self.sql_data_by_batch = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_data_by_batch')
@@ -105,7 +105,7 @@ class MatchingService:
 
     def insert_dim_company(self, new_company):
         self.dim_company_id = CM.get_table_seed('CompanyID', 'Reporting.DimCompany') + 1
-        date_time = str(dt.utcnow())[:-3]
+        date_time = str(dt.datetime.utcnow())[:-3]
         sql = self.sql_dim_company_insert.format(
             self.dim_company_id,
             new_company['CompanyName'],
@@ -126,7 +126,7 @@ class MatchingService:
             print(es)
 
     def insert_dim_company_source(self, new_company):
-        date_time = str(dt.utcnow())[:-3]
+        date_time = str(dt.datetime.utcnow())[:-3]
         self.dim_company_source_id = CM.get_table_seed('ID', 'Reporting.DimCompanySource') + 1
         sql = self.sql_dim_company_insert.format(
             self.dim_company_source_id,
@@ -143,5 +143,10 @@ class MatchingService:
         sql = self.sql_dim_company_source_update.format(self.dim_company_id,
                                                         self.modify_string(new_company['CompanyName']))
         db.execute(sql)
+
+    def generate_company_matching_result(self, dfcompany):
+        pass
+
+
 
 

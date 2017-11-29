@@ -11,7 +11,7 @@ class DB:
     @staticmethod
     def connect():
         try:
-            con_str = Common.get_config('db_bap_connect', 'conn')
+            con_str = Common.get_config('config.ini', 'db_connect', 'conn')
             conn = pyodbc.connect(con_str)
             return conn
         except Exception as ex:
@@ -19,9 +19,9 @@ class DB:
             return None
 
     @staticmethod
-    def execute(self, sql):
+    def execute(sql):
         try:
-            con = self.connect()
+            con = DB.connect()
             cursor = con.cursor()
             cursor.execute(sql)
             cursor.commit()
@@ -29,9 +29,9 @@ class DB:
             print('Executing to DB Exception: {}'.format(ex))
 
     @staticmethod
-    def pandas_read(self, sql):
+    def pandas_read(sql):
         try:
-            conn = self.connect()
+            conn = DB.connect()
             data = pd.read_sql(sql, conn)
             return data
         except Exception as ex:
@@ -39,8 +39,8 @@ class DB:
             return None
 
     @staticmethod
-    def bulk_insert(self, sql, values):
-        con = self.connect()
+    def bulk_insert(sql, values):
+        con = DB.connect()
         cursor = con.cursor()
         try:
             cursor.executemany(sql, values)

@@ -6,8 +6,7 @@ import datetime as dt
 
 class BatchService:
 
-    def __init__(self, path):
-        self.path = path
+    def __init__(self):
         self.sql_batch_count = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_count')
         self.sql_batch_select = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_select')
         self.sql_batch_table = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_table')
@@ -19,7 +18,7 @@ class BatchService:
         batches = self.dal.pandas_read(sql)
         return batches
 
-    def create_batch(self, data_dict, year, quarter, table):
+    def create_batch(self, dataframe, year, quarter, table):
 
         '''
         <UserId, int,>
@@ -44,9 +43,8 @@ class BatchService:
 
         print('creating batches...')
         values = []
-        for sheet, df in data_dict:
+        for sheet, df in dataframe:
             for _, row in df.iterrows():
-
                 val.append(0)
                 val.append(ImportStatus.Started.value)
                 val.append(row['FileName'])
@@ -72,7 +70,7 @@ class BatchService:
             sql = insert_stmt.format(self.import_batch)
             print(sql)
             self.dal.bulk_insert(sql, values)
-            table = table + '_batch_created'
+            self.update_source_batch(table, year, quarter, )
 
     def update_source_batch(self, table, year, quarter, source_system):
         df = self.get_batch(source_system, year, quarter)

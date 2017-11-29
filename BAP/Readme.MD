@@ -59,14 +59,36 @@ VI. Create batch and update the raw data table with the new batch id
         about the source file submitted by each RIC. This helps us trace back the source of each data in our datawarehouse.
 VII. Run company matching
         
-        
-VIII. Insert company to the DimCompany (DimEntity) table
+        The company matching algorithm takes a single company form the new data source, checks if it exists in 
+        MDC database (DimCompany and DimCompanySource) and performs insertion or update of the company.
+        Here are the three cases happening at this stage:
+            1. The new company doesn't exists in our database
+                - Insert in to DimCompany table and get the new COMPANYID and insert the new record to DimCompanySOurce
+            2. The new company exists only in DimCompany
+                - Get the COMPANYID and insert to DimCompanySource
+            3. THe new company exists only in DimCompanySource
+                - Insert the new company to DimCompany and update the COMPANYID of DimCompanySource
+            4. The new company exists in our database(both in DimCompany and DimCompanySource)
+                - Do nothing
+VIII. Insert company to the DimCompany (DimEntity) table and DimCompanySource
+
+        Insert the new company to the aforementioned tables
 
 IX. Push data to FactRICCompanyData table
 
+        The data from the 'Company Data' sheet of the BAP Quarterly template will be later populated to FactRICCompanyData 
+        once it is moved to the 'Raw' table and all the compaies 'CompanyID' and 'BatchID' has been updated. There are some 
+        minor changes to the data structure when it pushed to this fact table.
+ 
 X. Push data to FactRICAggregation table
 
+        The program data and program youth data of the BQ template holds a bunch of aggregate values about the RICs activities 
+        in regards to the companies they are working with. These aggregate values for the specific quarters will be 
+        transposed and pushed to this table.
+
 XI. Roll up date and insert it to FactRICAggregationRolledUp table
+        
+        
 
 XII. Generate Report
 

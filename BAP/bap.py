@@ -167,6 +167,7 @@ class BapQuarterly:
 
     @staticmethod
     def generate_bap_rolled_up():
+        company = []
         i = 0
         df_frcd = DB.pandas_read(sql.sql_bap_fact_ric_company.value.format(BapQuarterly.year))
         print('Number of record to process {} '.format(len(df_frcd)))
@@ -174,7 +175,7 @@ class BapQuarterly:
         df_FactRICRolledUp = pd.DataFrame(columns=clm.clmn_fact_ric_rolled_up.value)
         df_industry = DB.pandas_read(sql.sql_industry_list_table.value)
         cq = BapQuarterly.quarter - 1
-
+        total = 0
         if not df_frcd.empty:
             for _, row in df_fact_ds_quarter.iterrows():
                 company_id = row['CompanyID']
@@ -182,43 +183,69 @@ class BapQuarterly:
 
                 i = i + 1
                 print('{}. {}'.format(i, company_id))
+                #['Q1', 'Q2']
+                ls_q = []
+                ls_quarters = df_fact_ds_quarter.query('CompanyID == {} & DataSourceID == {}'.format(company_id, data_source_id))['MinFQ'].tolist()
+                ls = df_frcd.query('CompanyID == {}'.format(company_id))['FiscalQuarter'].tolist()
 
-                ls_quarters = df_fact_ds_quarter.query('CompanyID == {}'.format(company_id))['MinFQ'].tolist()
-                if str(cq) not in ls_quarters:
-                    ls_quarters.append(cq)
+                for itm in ls_quarters:
+                    ls_q.append(itm[-1:])
+                if str(cq) not in ls_q:
+                    ls_q.append(cq)
                 df_agg = df_frcd.query('CompanyID == {} & DataSourceID == {}'.format(company_id, data_source_id))
 
-                for quarter in ls_quarters:
-                    if quarter == cq:
+                for quarter in ls_q:
+                    if int(quarter) == cq and len(df_agg) > 1:
                         current_quarter = 'FiscalQuarter == \'Q{}\''.format(quarter)
-                        previous_quarter = 'FiscalQuarter == \'Q{}\''.format(quarter - 1)
-                    elif quarter < cq:
+                        previous_quarter = 'FiscalQuarter == \'Q{}\''.format(int(quarter) - 1)
+                    elif int(quarter) == cq and len(df_agg) == 1:
+                        current_quarter = 'FiscalQuarter == \'Q{}\''.format(quarter)
+                    elif int(quarter) < cq:
                         current_quarter = 'FiscalQuarter == \'Q{}\''.format(quarter)
 
                     try:
-                        batch_id = df_agg.query(current_quarter)['BatchID'].values[0] if df_agg.query(current_quarter) else None
+                        batch_id = df_agg.query(current_quarter)['BatchID'].values[0] if not df_agg.query(current_quarter).empty else None
                         min_date = -1
                         current_date = -1
-                        vhs = df_agg.query(current_quarter)['VolunteerMentorHours'].values[0] if df_agg.query(current_quarter) else None
-                        adv = df_agg.query(current_quarter)['AdvisoryServicesHours'].values[0] if df_agg.query(current_quarter) else None
+                        vhs = df_agg.query(current_quarter)['VolunteerMentorHours'].values[0] if not df_agg.query(current_quarter).empty else None
+                        adv = df_agg.query(current_quarter)['AdvisoryServicesHours'].values[0] if not df_agg.query(current_quarter).empty else None
 
-                        vhs_agg = df_agg['VolunteerMentorHours'].sum() if quarter == cq else None
-                        adv_agg = df_agg['AdvisoryServicesHours'].sum() if quarter == cq else None
+                        if int(quarter) == cq:
+                            vhs_agg = df_agg['VolunteerMentorHours'].sum()
+                            adv_agg = df_agg['AdvisoryServicesHours'].sum()
+                            funding_agg = df_agg['FundingCurrentQuarter'].sum()
+                        else:
+                            vhs_agg = float(df_agg['VolunteerMentorHours'].sum()) - float(
+                                df_agg.query('FiscalQuarter == \'Q{}\''.format(cq))['VolunteerMentorHours'].values[
+                                    0]) if not df_agg.query('FiscalQuarter == \'Q{}\''.format(cq)).empty else float(
+                                df_agg.query('FiscalQuarter == \'Q{}\''.format(cq - 1))['VolunteerMentorHours'].values[
+                                    0])
+                            adv_agg = float(df_agg['AdvisoryServicesHours'].sum()) - float(
+                                df_agg.query('FiscalQuarter == \'Q{}\''.format(cq))['AdvisoryServicesHours'].values[
+                                    0]) if not df_agg.query('FiscalQuarter == \'Q{}\''.format(cq)).empty else float(
+                                df_agg.query('FiscalQuarter == \'Q{}\''.format(cq - 1))['AdvisoryServicesHours'].values[
+                                    0])
+                            funding_agg = float(df_agg['FundingCurrentQuarter'].sum()) - float(
+                                df_agg.query('FiscalQuarter == \'Q{}\''.format(cq))['FundingCurrentQuarter'].values[
+                                    0]) if not df_agg.query('FiscalQuarter == \'Q{}\''.format(cq)).empty else float(
+                                df_agg.query('FiscalQuarter == \'Q{}\''.format(cq - 1))['FundingCurrentQuarter'].values[
+                                    0])
 
                         modified_date = datetime.datetime.utcnow().__str__()[:23]
 
-                        stage = df_agg.query(current_quarter)['Stage'].values[0] if df_agg.query(current_quarter) else df_agg.query(previous_quarter)['Stage'].values[0]
-                        industry_sector = df_agg.query(current_quarter)['IndustrySector'].values[0] if df_agg.query(current_quarter) else df_agg.query(previous_quarter)['IndustrySector'].values[0]
-                        socialEnterprise = df_agg.query(current_quarter)['SocialEnterprise'].values[0] if df_agg.query(current_quarter) else df_agg.query(previous_quarter)['SocialEnterprise'].values[0]
-                        highPotential = df_agg.query(current_quarter)['HighPotential'].values[0] if df_agg.query(current_quarter) else df_agg.query(previous_quarter)['HighPotential'].values[0]
-                        youth = df_agg.query(current_quarter)['Youth'].values[0] if df_agg.query(current_quarter) else df_agg.query(previous_quarter)['Youth'].values[0]
-                        dateOfIncorporation = df_agg.query(current_quarter)['DateOfIncorporation'].values[0] if df_agg.query(current_quarter) else df_agg.query(previous_quarter)['DateOfIncorporation'].values[0]
-                        lvl2_industry_name = df_industry.query('Industry_Sector == {}'.format(industry_sector))
-                        annual_revenue = df_agg.query(current_quarter)['AnnualRevenue'].values[0] if df_agg.query(current_quarter) else None
-                        funding_current_quarter = df_agg.query(current_quarter)['FundingCurrentQuarter'].values[0] if df_agg.query(current_quarter) else None
-                        funding_to_date = df_agg['FundingToDate'].sum() if quarter == cq else None
-                        number_of_employees = df_agg.query(current_quarter)['NumberEmployees'].values[0] if df_agg.query(current_quarter) else None
-                        intake_date = df_agg.query(current_quarter)['IntakeDate'].values[0]  if df_agg.query(current_quarter) else None
+                        stage = df_agg.query(current_quarter)['Stage'].values[0] if not df_agg.query(current_quarter).empty else df_agg.query(previous_quarter)['Stage'].values[0]
+                        industry_sector = df_agg.query(current_quarter)['IndustrySector'].values[0] if not df_agg.query(current_quarter).empty else df_agg.query(previous_quarter)['IndustrySector'].values[0]
+                        socialEnterprise = df_agg.query(current_quarter)['SocialEnterprise'].values[0] if not df_agg.query(current_quarter).empty else df_agg.query(previous_quarter)['SocialEnterprise'].values[0]
+                        highPotential = df_agg.query(current_quarter)['HighPotential'].values[0] if not df_agg.query(current_quarter).empty else df_agg.query(previous_quarter)['HighPotential'].values[0]
+                        youth = df_agg.query(current_quarter)['Youth'].values[0] if not df_agg.query(current_quarter).empty else df_agg.query(previous_quarter)['Youth'].values[0]
+                        dateOfIncorporation = df_agg.query(current_quarter)['DateOfIncorporation'].values[0] if not df_agg.query(current_quarter).empty else df_agg.query(previous_quarter)['DateOfIncorporation'].values[0]
+
+                        annual_revenue = df_agg.query(current_quarter)['AnnualRevenue'].values[0] if not df_agg.query(current_quarter).empty else None
+                        funding_current_quarter = df_agg.query(current_quarter)['FundingCurrentQuarter'].values[0] if not df_agg.query(current_quarter).empty else None
+
+                        number_of_employees = df_agg.query(current_quarter)['NumberEmployees'].values[0] if not df_agg.query(current_quarter).empty else None
+                        intake_date = df_agg.query(current_quarter)['IntakeDate'].values[0] if not df_agg.query(current_quarter).empty else None
+                        lvl2_industry_name = df_industry.query('Industry_Sector == \'{}\''.format(industry_sector))['Lvl2IndustryName'].values[0] if not df_industry.query('Industry_Sector == \'{}\''.format(industry_sector)).empty else None
                         dd = {'DataSourceID': data_source_id,
                               'CompanyID': company_id,
                               'MinDate': min_date,
@@ -242,15 +269,20 @@ class BapQuarterly:
                               'FundingToDate': funding_current_quarter,
                               'IndustrySector': industry_sector,
                               'IntakeDate': intake_date,
-                              'FundingCurrentQuarter': funding_to_date
+                              'FundingCurrentQuarter': funding_agg
                               }
                         print(dd.values())
                         df = pd.DataFrame([dd], columns=clm.clmn_fact_ric_rolled_up.value)
                         df_FactRICRolledUp = pd.concat([df_FactRICRolledUp, df])
                     except Exception as ex:
+                        total = total + 1
+                        company.append(company_id)
+
                         print(ex)
             df_FactRICRolledUp = df_FactRICRolledUp[clm.clmn_fact_ric_rolled_up.value]
-            BapQuarterly.file.save_as_csv(df_FactRICRolledUp, 'BAP_Rolled_UP_{}.xlsx'.format(str(datetime.date.today())), '/Users/mnadew/Box Sync/mnadew/IE/Data/ETL/BAP')
+            BapQuarterly.file.save_as_csv(df_FactRICRolledUp, 'BAP_Rolled_UP_{}.xlsx'.format(str(datetime.datetime.today())), '/Users/mnadew/Box Sync/mnadew/IE/Data/ETL/BAP')
+            print(company)
+            print('{} + {} = {}/ 6236 '.format(len(df_FactRICRolledUp), total, len(df_FactRICRolledUp) + total))
 
     @staticmethod
     def generate_bap_report():

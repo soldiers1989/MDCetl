@@ -202,7 +202,40 @@ class SQL(Enum):
     sql_company_aggregate_program = 'SELECT  * FROM [Config].[CompanyAggProgram] WHERE BatchID IN {}'
     sql_company_aggregate_program_youth = 'SELECT  * FROM [Config].[CompanyAggProgramYouth] WHERE BatchID IN {}'
 
-    sql_bap_fact_ric_company = ''' SELECT * FROM [Reporting].[FactRICCompanyData] WHERE FiscalYear = {}'''
+    sql_bap_fact_ric_company = ''' 
+    SELECT [RICCompanyDataID]
+      ,[CompanyID]
+      ,[DataSourceID]
+      ,[BatchID]
+      ,[DateID]
+      ,[IntakeDate]
+      ,[StageLevelID]
+      ,[SizeID]
+      ,[Age]
+      ,[HighPotential]
+      ,[DevelopmentID]
+      ,ISNULL([AdvisoryServicesHours],0) AS AdvisoryServicesHours
+      ,ISNULL([VolunteerMentorHours],0) AS VolunteerMentorHours
+      ,[ModifiedDate]
+      ,[CreateDate]
+      ,[Youth]
+      ,[StreetAddress]
+      ,[City]
+      ,[Province]
+      ,[PostalCode]
+      ,[Website]
+      ,[Stage]
+      ,[AnnualRevenue]
+      ,[NumberEmployees]
+      ,[FundingToDate]
+      ,ISNULL([FundingCurrentQuarter],0) AS FundingCurrentQuarter
+      ,[DateOfIncorporation]
+      ,[IndustrySector]
+      ,[SocialEnterprise]
+      ,[FiscalQuarter]
+      ,[FiscalYear]
+    FROM [Reporting].[FactRICCompanyData]
+    WHERE FiscalYear = {}'''
 
     sql_bap_report_company_ds_quarter = '''SELECT CompanyID,DataSourceID,  MIN(RIGHT(FiscalQuarter,1)) AS MinFQ 
 	                                        FROM Reporting.FactRICCompanyData 

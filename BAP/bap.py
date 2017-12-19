@@ -1,7 +1,6 @@
 import datetime
 import os
 import pandas as pd
-import dask.dataframe as dd
 
 from Shared.file_service import FileService
 from Shared.match import CompanyService

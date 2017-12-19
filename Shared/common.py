@@ -1,6 +1,9 @@
 import datetime
 import os
 import re
+import requests
+from urllib3.exceptions import HTTPError
+
 from configparser import ConfigParser
 from dateutil import parser
 from dateutil.parser import parse
@@ -30,7 +33,7 @@ class Common:
     @staticmethod
     def progress(char, index, total):
         pass
-
+    
     @staticmethod
     def fiscal_year_quarter(dt=datetime.date.today()):
         month = dt.today().month
@@ -82,7 +85,7 @@ class Common:
         else:
             return False
 
-    @staticmethod # Not important. May be deprecate it after this iteration (Nov 16,2017)
+    @staticmethod  # Not important. May be deprecate it after this iteration (Nov 16,2017)
     def is_canadian_address(url):
         pattern = re.compile(Common.address_pattern, re.IGNORECASE)
         res = pattern.match(url)
@@ -256,4 +259,28 @@ class Common:
             return values
         except ValueError:
             return None
+        
+    @staticmethod
+    def get_api_data(url, user_key, attempts=5):
+        count = 0
+        if user_key != '':
+            url = url + '?user_key=' + user_key
+        for i in range(0, attempts):
+            try:
+                count = count + 1
+                data = requests.get('GET', url)
+                if data.ok:
+                    data = data.json()
+                    return data
+            except requests.RequestException:
+                pass
+    
+    @staticmethod
+    def get_crunch_data(url):
+        try:
+            response = requests.request('GET', url)
+            return response
+        except requests.RequestException as e:
+            pass
+                
 

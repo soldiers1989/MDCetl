@@ -7,10 +7,10 @@ import datetime as dt
 class BatchService:
 
     def __init__(self):
-        self.sql_batch_count = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_count')
-        self.sql_batch_select = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_select')
-        self.sql_batch_table = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_table')
-        self.sql_batch_delete = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_delete')
+        self.sql_batch_count = CM.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_count')
+        self.sql_batch_select = CM.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_select')
+        self.sql_batch_table = CM.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_table')
+        self.sql_batch_delete = CM.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_delete')
 
     def get_batch(self, year, quarter, source_system):
         select_stmt = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_select')

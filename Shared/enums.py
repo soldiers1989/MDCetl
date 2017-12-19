@@ -154,6 +154,7 @@ class DataSource(Enum):
     TDW = 8
     TR = 9
     WS = 10
+    OTHER = 11
 
 
 class WorkSheet(Enum):
@@ -201,6 +202,8 @@ class SQL(Enum):
 
     sql_company_aggregate_program = 'SELECT  * FROM [Config].[CompanyAggProgram] WHERE BatchID IN {}'
     sql_company_aggregate_program_youth = 'SELECT  * FROM [Config].[CompanyAggProgramYouth] WHERE BatchID IN {}'
+    
+    sql_postal_code_insert = 'INSERT INTO [dbo].[DimPostalCode] VALUES (?,?,?,?,?,?,?,?)'
 
     sql_bap_fact_ric_company = ''' 
     SELECT [RICCompanyDataID]

@@ -28,9 +28,8 @@ class Common:
         temp_name = ''
 
     @staticmethod
-    def progress(total, current):
-        percent = (current / total) * 100
-        return percent
+    def progress(char, index, total):
+        pass
 
     @staticmethod
     def fiscal_year_quarter(dt=datetime.date.today()):
@@ -247,11 +246,14 @@ class Common:
     @staticmethod
     def df_list(dataframe):
         values = []
+        ls = len(dataframe)
+        print(ls)
         try:
             for i in range(len(dataframe)):
-                v = dataframe.iloc[i].values.tolist()
+                v = dataframe.iloc[i].values
+                v = [str(x) for x in v]
                 values.append(v)
             return values
-        except Exception:
+        except ValueError:
             return None
 

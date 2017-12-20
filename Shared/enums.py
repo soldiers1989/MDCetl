@@ -286,7 +286,7 @@ class Columns(Enum):
 							   'FundingCurrentQuarter']
 
 
-class API(Enum):
+class VAR(Enum):
 	data = 'data'
 	properties = 'properties'
 	items = 'items'
@@ -296,10 +296,11 @@ class API(Enum):
 	number_of_pages = 'number_of_pages'
 
 
-class FILES(Enum):
+class CONSTANTS(Enum):
 	organization_summary = 'ORGANIZATION_SUMMARY'
 	people_summary = 'PEOPLE_SUMMARY'
 	categories = 'CATEGORIES'
 	locations = 'LOCATIONS'
+	get = 'GET'
 
 

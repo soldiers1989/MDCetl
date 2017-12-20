@@ -3,7 +3,7 @@ import pandas as pd
 import time
 from Shared.common import Common as CM
 from Shared.file_service import FileService
-from Shared.enums import API, FILES
+from Shared.enums import VAR, CONSTANTS
 
 
 class Crunchbase:
@@ -24,36 +24,36 @@ class Crunchbase:
 		self.file = FileService(self.path)
 
 	def get_organizations(self):
-		self.get_data(self.url_org, FILES.organization_summary.value)
+		self.get_data(self.url_org, CONSTANTS.organization_summary.value)
 
 	def get_people(self):
-		self.get_data(self.url_people, FILES.people_summary.value)
+		self.get_data(self.url_people, CONSTANTS.people_summary.value)
 
 	def get_categories(self):
-		self.get_data(self.url_cat, FILES.categories.value)
+		self.get_data(self.url_cat, CONSTANTS.categories.value)
 
 	def get_locations(self):
-		self.get_data(self.url_loc, FILES.locations.value)
+		self.get_data(self.url_loc, CONSTANTS.locations.value)
 
 	def get_data(self, url, object_name):
 		self.data = CM.get_crunch_data(url.format('1'))
 		if self.data.ok:
-			total_items = self.data.json()[API.data.value][API.paging.value][API.total_items.value]
-			number_of_pages = self.data.json()[API.data.value][API.paging.value][API.number_of_pages.value]
-			cols = self.data.json()[API.data.value][API.items.value][0][API.properties.value].keys()
+			total_items = self.data.json()[VAR.data.value][VAR.paging.value][VAR.total_items.value]
+			number_of_pages = self.data.json()[VAR.data.value][VAR.paging.value][VAR.number_of_pages.value]
+			cols = self.data.json()[VAR.data.value][VAR.items.value][0][VAR.properties.value].keys()
 			print('Total items: {}\nTotal Pages: {}'.format(total_items, number_of_pages))
 			data_list = []
 			for j in range(0, number_of_pages):
 				self.data = CM.get_crunch_data(url.format(j + 1))
-				data = self.data.json()[API.data.value][API.items.value]
+				data = self.data.json()[VAR.data.value][VAR.items.value]
 				print(j, '*' * j, len(data))
 				for i in range(0, len(data)):
-					dt = data[i][API.properties.value]
-					dt[API.uuid.value] = data[i][API.uuid.value]
+					dt = data[i][VAR.properties.value]
+					dt[VAR.uuid.value] = data[i][VAR.uuid.value]
 					data_list.append(dt)
 			df = pd.DataFrame(data_list, columns=cols)
 			df.to_csv(self.file_name.format(object_name, str(time.time())), sep=',', columns=cols, index=False)
-			print('Data saved successfully!')
+			print('File saved successfully!')
 		else:
 			print('SNAP! Something goes wrong.\nSTATUS: {}\nMESSAGE: {}'.format(self.data.json()[0]['status'], self.data.json()[0]['message']))
 

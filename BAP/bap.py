@@ -334,7 +334,6 @@ class BapQuarterly:
 		print(os.getcwd())
 		columns = ['FSALDU', 'LATITUDE', 'LONGITUDE', 'COMMNAME', 'CSDNAMEE', 'CSDNAMEF', 'CSDTYPENE', 'PRABB']
 		df = pd.read_csv('postal_code_utf8.csv')
-		#df = dd.read_csv('postal_code_utf8.csv', sample=847000000, header=0)
 		df = df[columns]
 		print(len(df))
 		i = 846000

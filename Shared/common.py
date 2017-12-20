@@ -281,6 +281,8 @@ class Common:
             response = requests.request('GET', url)
             return response
         except requests.RequestException as e:
-            pass
+            print(e)
+
+
                 
 

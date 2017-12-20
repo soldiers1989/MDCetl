@@ -78,10 +78,10 @@ class FileService:
         except Exception as ex:
             print(ex)
 
-    def save_as_csv(self, df, file_name, path):
+    def save_as_csv(self, df, file_name, path, sheet_name='SheetI'):
         os.chdir(path)
         writer = pd.ExcelWriter(file_name)
-        df.to_excel(writer, 'Sheet1', index=False)
+        df.to_excel(writer, sheet_name, index=False)
         writer.save()
 
     @staticmethod

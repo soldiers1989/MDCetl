@@ -1,31 +1,63 @@
+
+import pandas as pd
+import time
 from Shared.common import Common as CM
+from Shared.file_service import FileService
+from Shared.enums import API, FILES
 
 
 class Crunchbase:
-    def __init__(self):
-        self.user_key = CM.get_config('config.ini', 'crunch_base', 'user_key')
-        
-        self.url_org = CM.get_config('config.ini', 'crunch_base', 'url_org') + '&user_key=' + self.user_key
-        self.url_person = CM.get_config('config.ini', 'crunch_base', 'url_person')+ '?user_key=' + self.user_key
-        self.url_prd = CM.get_config('config.ini', 'crunch_base', 'url_prd')
-        self.url_cat = CM.get_config('config.ini', 'crunch_base', 'url_cat')
-        self.url_loc = CM.get_config('config.ini', 'crunch_base', 'url_loc')
-        
-        self.organizations = None
-        self.people = None
-        self.products = None
-        self.categories = None
-        self.locations = None
-        
-    def get_organizations(self):
-        self.organizations = CM.get_crunch_data(self.url_org)
-    
-    def get_people(self):
-        self.people = CM.get_crunch_data(self.url_person)
-        
-        
+	def __init__(self):
+		self.user_key = CM.get_config('config.ini', 'crunch_base', 'user_key')
+		self.api_token = '&user_key=hkhjhkj' + self.user_key + '&page={}'
+		self.api_tokens = '?user_key=' + self.user_key + '&page={}'
+
+		self.url_org = CM.get_config('config.ini', 'crunch_base', 'url_org') + self.api_token
+		self.url_people = CM.get_config('config.ini', 'crunch_base', 'url_person') + self.api_token
+		self.url_cat = CM.get_config('config.ini', 'crunch_base', 'url_cat') + self.api_tokens
+		self.url_loc = CM.get_config('config.ini', 'crunch_base', 'url_loc') + self.api_token
+
+		self.path = CM.get_config('config.ini', 'box_file_path', 'path_data')
+
+		self.data = None
+		self.file_name = 'CB_{}_{}.csv'
+		self.file = FileService(self.path)
+
+	def get_organizations(self):
+		self.get_data(self.url_org, FILES.organization_summary.value)
+
+	def get_people(self):
+		self.get_data(self.url_people, FILES.people_summary.value)
+
+	def get_categories(self):
+		self.get_data(self.url_cat, FILES.categories.value)
+
+	def get_locations(self):
+		self.get_data(self.url_loc, FILES.locations.value)
+
+	def get_data(self, url, object_name):
+		self.data = CM.get_crunch_data(url.format('1'))
+		if self.data.ok:
+			total_items = self.data.json()[API.data.value][API.paging.value][API.total_items.value]
+			number_of_pages = self.data.json()[API.data.value][API.paging.value][API.number_of_pages.value]
+			cols = self.data.json()[API.data.value][API.items.value][0][API.properties.value].keys()
+			print('Total items: {}\nTotal Pages: {}'.format(total_items, number_of_pages))
+			data_list = []
+			for j in range(0, number_of_pages):
+				self.data = CM.get_crunch_data(url.format(j + 1))
+				data = self.data.json()[API.data.value][API.items.value]
+				print(j, '*' * j, len(data))
+				for i in range(0, len(data)):
+					dt = data[i][API.properties.value]
+					dt[API.uuid.value] = data[i][API.uuid.value]
+					data_list.append(dt)
+			df = pd.DataFrame(data_list, columns=cols)
+			df.to_csv(self.file_name.format(object_name, str(time.time())), sep=',', columns=cols, index=False)
+			print('Data saved successfully!')
+		else:
+			print('SNAP! Something goes wrong.\nSTATUS: {}\nMESSAGE: {}'.format(self.data.json()[0]['status'], self.data.json()[0]['message']))
+
+
 if __name__ == '__main__':
-    crb = Crunchbase()
-    #crb.get_organizations()
-    crb.get_people()
-    print(crb.people.text)
+	crb = Crunchbase()
+	crb.get_locations()

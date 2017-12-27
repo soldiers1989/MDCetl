@@ -160,7 +160,8 @@ class DataSource(Enum):
 class WorkSheet(Enum):
 	bap_program = 'csv_program16'
 	bap_program_youth = 'csv_program16_youth'
-	bap_company = 'Company Data'
+	bap_company = 'Quarterly Company Data'
+	bap_company_annual = 'Annual Company Data'
 	bap_program_final = 'Program'
 	bap_program_youth_final = 'Program Youth'
 

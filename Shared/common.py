@@ -8,27 +8,27 @@ from dateutil import parser
 from dateutil.parser import parse
 
 from Shared.enums import DataSourceType, CONSTANTS
-from Shared.db import DB
+#from Shared.db import DB
 
 #TODO: review all patterns
 #TODO: re-implement get_config method.
 
 
 class Common:
-	def __init__(self):
-		sql_get_max = Common.get_config('sql_statement.ini', 'db_sql_common', 'sql_get_max')
-		user_response_yes = ['y', 'yes']
-		user_response_yesno = ['y', 'yes', 'n', 'no']
-		Provinces = ['ON', 'QC', 'NS', 'NB', 'MB', 'BC', 'PE', 'SK', 'AB', 'NL']
-		pc_pattern = '[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z]\s*[0-9][ABCEGHJ-NPRSTV-Z][0-9]'
-		url_pattern = '^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$'
-		email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
-		address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
-		suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'inc', 'Inc', 'Incorporated',
-				  'Corp',  'Corp.', 'Corporation', 'Communications', 'Technologies', 'Tech.']
-		stage = []
-		basic_name = ''
-		temp_name = ''
+	# def __init__(self):
+	# 	sql_get_max = Common.get_config('sql_statement.ini', 'db_sql_common', 'sql_get_max')
+	# 	user_response_yes = ['y', 'yes']
+	# 	user_response_yesno = ['y', 'yes', 'n', 'no']
+	# 	Provinces = ['ON', 'QC', 'NS', 'NB', 'MB', 'BC', 'PE', 'SK', 'AB', 'NL']
+	# 	pc_pattern = '[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z]\s*[0-9][ABCEGHJ-NPRSTV-Z][0-9]'
+	# 	url_pattern = '^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$'
+	# 	email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
+	# 	address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
+	# 	suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'inc', 'Inc', 'Incorporated',
+	# 			  'Corp',  'Corp.', 'Corporation', 'Communications', 'Technologies', 'Tech.']
+	# 	stage = []
+	# 	basic_name = ''
+	# 	temp_name = ''
 
 	@staticmethod
 	def progress(char, index, total):

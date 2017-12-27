@@ -2,6 +2,7 @@ import datetime
 import os
 import pandas as pd
 
+from Shared.qa import BapQA
 from Shared.file_service import FileService
 from Shared.match import CompanyService
 from Shared.common import Common as COM
@@ -21,14 +22,15 @@ Box Sync/MDC Shared/Innovation Economy/Data/BAP/Quarterly Data/000-BAPQ-ETL/RIC 
 class BapQuarterly:
 	year, quarter = COM.fiscal_year_quarter(datetime.datetime.utcnow())
 	batch = BatchService()
-	file = FileService('Box Sync/mnadew/IE/Data/ETL/BAP')
+	bap_path = COM.get_config('config.ini', 'box_file_path', 'path_bap')
+	file = FileService(bap_path)
+	qa = BapQA()
 	
 	@staticmethod
-	def show_bap_quarterly():
-		response = input('\nPLEASE ENTER THE FOLDER: ')
-		files = FileService(response)
-		files.show_source_file(FileType.SPREAD_SHEET.value)
-	
+	def show_bap_quarterly_template():
+		BapQuarterly.file.show_source_file(FileType.SPREAD_SHEET.value)
+		_, _, _ = BapQuarterly.file.read_source_file(FileType.SPREAD_SHEET.value, DS.BAP)
+
 	@staticmethod
 	def combine_rics_bap_quarterly():
 		response = input('\nPLEASE ENTER THE FOLDER: ')
@@ -355,4 +357,4 @@ class BapQuarterly:
 if __name__ == '__main__':
 	desired_width = 420
 	pd.set_option('display.width', desired_width)
-	BapQuarterly.read_postal_code()
+	BapQuarterly.qa.check_rics_file()

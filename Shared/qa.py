@@ -89,4 +89,21 @@ class BapQA:
 						if c.value.lower() != self.youth.lower():
 							c.fill = self.amber
 
-
+	def program_sheet(self, sheet):
+		for cl in sheet.columns:
+			for c in cl:
+				if c.row > 1:
+					if c.column in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'J', 'K', 'L', 'M', 'N']:
+						if isinstance(c.value, int):
+							c.fill = self.okay
+						else:
+							c.fill = self.missing
+					if c.column == 'O':
+						if c.value.lower() != self.quarter.lower():
+							c.fill = self.amber
+					if c.column == 'P':
+						if c.value != self.year:
+							c.fill = self.amber
+					if c.column == 'Q':
+						if c.value.lower() != self.all_youth.lower():
+							c.fill = self.amber

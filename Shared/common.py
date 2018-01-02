@@ -168,7 +168,7 @@ class Common:
 
 	@staticmethod
 	def print_list(lst):
-		print(' | '.join(lst))
+		print('\n'.join(lst))
 
 	@staticmethod
 	def print_list(lst, delimiter):

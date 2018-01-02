@@ -15,7 +15,7 @@ class BapQA:
 		self.missing = PatternFill(fgColor='F44242', bgColor='C00000', fill_type='solid')
 		self.amber = PatternFill(fgColor='F4b042', bgColor='C00000', fill_type='solid')
 		self.okay = PatternFill(fgColor='FFFFCC', bgColor='C00000', fill_type='solid')
-		self.wrong = PatternFill(fgColor='c5c5c5', bgColor='F4b042', fill_type='solid')
+		self.wrong = PatternFill(fgColor='c5c5c5', bgColor='f5f5f5', fill_type='solid')
 
 		warnings.filterwarnings("ignore")
 

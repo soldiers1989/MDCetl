@@ -20,14 +20,7 @@ class FileService:
 		self.source_file = os.listdir(self.path)
 
 	def show_source_file(self):
-		COM.print_list([f for f in self.source_file if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)], '\n')
-		#files_list = []
-		#for l in self.source_file:
-		#	if l[0:2] != '~$':
-		#		if l[-3:] in files_list or l[-4:] in file_type:
-		#			files_list.append(l)
-		#print('LIST OF AVAILABLE FILES IN {}: {}\n'.format(self.path, len(files_list)))
-		#print('\n'.join(files_list))
+		COM.print_list([f for f in self.source_file if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)])
 
 	def read_source_file(self, ftype, data_source):
 		l_program = []
@@ -56,11 +49,6 @@ class FileService:
 				bap_program_youth = pd.concat(l_program_youth)
 				bap_company = pd.concat(l_company)
 				bap_company_annual = pd.concat(l_company_annual)
-
-				print(bap_program.columns)
-				print(bap_program_youth.columns)
-				print(bap_company.columns)
-				print(bap_company_annual.columns)
 
 				return bap_program, bap_program_youth, bap_company, bap_company_annual
 

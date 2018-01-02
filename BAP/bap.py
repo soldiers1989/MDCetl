@@ -14,10 +14,6 @@ from Shared.db import DB
 from Shared.batch import BatchService
 from pypostalcode import PostalCodeDatabase
 
-'''
-Box Sync/MDC Shared/Innovation Economy/Data/BAP/Quarterly Data/000-BAPQ-ETL/RIC Files
-'''
-
 
 class BapQuarterly:
 	year, quarter = COM.fiscal_year_quarter(datetime.datetime.utcnow())
@@ -57,10 +53,27 @@ class BapQuarterly:
 		DB.bulk_insert(sql.sql_program_youth_insert, val)
 	
 	@staticmethod
-	def bulk_insert_company_data(dataframe):
+	def bulk_insert_quarterly_data(dataframe):
 		val = COM.df_list(dataframe)
 		DB.bulk_insert(sql.sql_bap_company_insert, val)
-	
+
+	@staticmethod
+	def bulk_insert_annual_data(dataframe):
+		val = COM.df_list(dataframe)
+		DB.bulk_insert(sql.sql_bap_company_annual_insert, val)
+
+	@staticmethod
+	def read_bap_data():
+		program = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_program)
+		program_youth = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_program_youth)
+		quarterly_data = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_company)
+		annual_data = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_company_annual)
+
+		BapQuarterly.transfer_csv_program(program)
+		BapQuarterly.transfer_csv_program_youth(program_youth)
+		BapQuarterly.bulk_insert_quarterly_data(quarterly_data)
+		BapQuarterly.bulk_insert_annual_data(annual_data)
+
 	@staticmethod
 	def create_bap_batch():
 		batch = BatchService()
@@ -353,5 +366,4 @@ class BapQuarterly:
 if __name__ == '__main__':
 	desired_width = 420
 	pd.set_option('display.width', desired_width)
-	BapQuarterly.show_bap_quarterly_template()
-	# BapQuarterly.combine_rics_bap_quarterly()
+	BapQuarterly.combine_rics_bap_quarterly()

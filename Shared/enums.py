@@ -187,8 +187,10 @@ class SQL(Enum):
 	sql_program_youth_insert = 'INSERT INTO[Config].[CompanyAggProgramYouth] Values (?,?,?,?,?,?,?,?,?,?,?,?,?)'
 	sql_bap_company_insert = 'INSERT INTO [Config].[CompanyDataRaw] ' \
 							 'Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_bap_company_annual_insert = 'INSERT INTO [BAP].[AnnualCompanyData] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 	sql_bap_distict_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource,WorkSheetName ' \
 							'FROM {} Year = {} AND Quarter = \'{}\''
+
 	sql_bap_fact_ric_company_data_source = '''SELECT CompanyID, DataSource, BatchID,'20170930' AS DateID,DateOfIntake,IntakeDate, 
 				NULL AS [StageLevelID],NULL AS [SizeID], 'NULL' AS Age,HighPotential, NULL AS [DevelopmentID], 
 				NumberOfAdvisoryServiceHoursProvided,VolunteerMentorHours, GETDATE() AS [Modified Date], 
@@ -257,6 +259,8 @@ class SQL(Enum):
 				'''
 	sql_bap_distict_company = '''SELECT DISTINCT CompanyID FROM Reporting.FactRICCompanyData WHERE BatchID IN {}'''
 	sql_industry_list_table = 'SELECT [Industry_Sector],[Lvl2IndustryName] FROM [RICSurveyFlat].[RICSurvey2016Industry]'
+
+
 
 
 class Columns(Enum):

@@ -12,9 +12,11 @@ class BapQA:
 		file_source = os.listdir(box_path)
 		self.ric_files = [f for f in file_source if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)]
 		Common.print_list(self.ric_files, '\n')
+
 		self.missing = PatternFill(fgColor='F44242', bgColor='C00000', fill_type='solid')
 		self.amber = PatternFill(fgColor='F4b042', bgColor='C00000', fill_type='solid')
-		self.okay = PatternFill(fgColor='FFFFCC', bgColor='000000', fill_type='solid')
+		self.okay = PatternFill(fgColor='FFFFCC', bgColor='C00000', fill_type='solid')
+		self.wrong = PatternFill(fgColor='c5c5c5', bgColor='F4b042', fill_type='solid')
 
 		warnings.filterwarnings("ignore")
 
@@ -47,6 +49,7 @@ class BapQA:
 				print('\tProgram Data')
 				program_sheet = wb.get_sheet_by_name(WS.bap_program.value)
 				self.rics_sheet(program_sheet)
+				self.program_sheet(program_sheet)
 				print('\tProgram Youth Data')
 				program_youth_sheet = wb.get_sheet_by_name(WS.bap_program_youth.value)
 				self.rics_sheet(program_youth_sheet)
@@ -54,12 +57,15 @@ class BapQA:
 				print('\tQuarterly Company Data')
 				quarterly_company_sheet = wb.get_sheet_by_name(WS.bap_company.value)
 				self.rics_sheet(quarterly_company_sheet)
+				self.quarterly_company_data_sheet(quarterly_company_sheet)
 				print('\tAnnual Company Data')
 				annual_company_sheet = wb.get_sheet_by_name(WS.bap_company_annual.value)
 				self.rics_sheet(annual_company_sheet)
+				self.annual_company_data_sheet(annual_company_sheet)
 
 				BapQA.change_location(p.QA)
 				wb.save('{}_QA.xlsx'.format(fl[:-5]))
+				print('QA''ed files has been saved.')
 			except BaseException as ex:
 				print(ex)
 
@@ -107,3 +113,62 @@ class BapQA:
 					if c.column == 'Q':
 						if c.value.lower() != self.all_youth.lower():
 							c.fill = self.amber
+
+	def quarterly_company_data_sheet(self, sheet):
+		for cl in sheet.columns:
+			for c in cl:
+				if c.value is not None:
+					if c.row > 1:
+						if c.column in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'J', 'L', 'T', 'U', 'X', 'Y']:
+							if len(c.value) > 0:
+								c.fill = self.okay
+							else:
+								c.fill = self.missing
+						if c.column == 'D':
+							pass
+						if c.column in ['K', 'V', 'W', 'Z', 'AA', 'AB', 'AC', 'AD', 'AF']:
+							if isinstance(c.value, float):
+								c.fill = self.okay
+							else:
+								c.fill = self.missing
+						if c.column == 'M':
+							if 13 < c.value > 0:
+								c.fill = self.okay
+							else:
+								c.fill = self.wrong
+						if c.column == 'N':
+							if isinstance(c.value, int):
+								c.fill = self.okay
+							else:
+								c.fill = self.wrong
+						if c.column == 'AG':
+							if c.value != self.quarter:
+								c.fill = self.wrong
+						if c.column == 'AH':
+							if c.value != self.year:
+								c.fill = self.amber
+				else:
+					c.fill = self.missing
+
+	def annual_company_data_sheet(self, sheet):
+		for cl in sheet.columns:
+			for c in cl:
+				if c.value is not None:
+					if c.row > 1:
+						if c.column in ['A', 'B', 'C', 'D']:
+							if len(c.value) > 0:
+								c.fill = self.okay
+							else:
+								c.fill = self.amber
+						if c.column in ['E', 'F', 'K']:
+							if isinstance(c.value, float):
+								c.fill = self.okay
+							else:
+								c.fill = self.amber
+						if c.column in ['G', 'H', 'I', 'J']:
+							if isinstance(c.value, int):
+								c.fill = self.okay
+							else:
+								c.fill = self.amber
+				else:
+					c.fill = self.missing

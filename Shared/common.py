@@ -8,10 +8,6 @@ from dateutil import parser
 from dateutil.parser import parse
 
 from Shared.enums import DataSourceType, CONSTANTS
-#from Shared.db import DB
-
-#TODO: review all patterns
-#TODO: re-implement get_config method.
 
 
 class Common:
@@ -282,15 +278,3 @@ class Common:
 			return response
 		except requests.RequestException as e:
 			print(e)
-
-	@staticmethod
-	def save_data_chunk(df, sql_insert, chunk_size=1000):
-		i = 0
-		j = chunk_size
-		total_size = len(df) + 1
-		while j < total_size:
-			print('From {} to {}'.format(i, j))
-			df_insert = df.iloc[i:j]
-			values = Common.df_list(df_insert)
-			DB.bulk_insert(sql_insert, values)
-			i, j = i + chunk_size, j + chunk_size

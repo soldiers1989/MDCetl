@@ -305,3 +305,8 @@ class CONSTANTS(Enum):
 	get = 'GET'
 
 
+class PATH(Enum):
+	DATA = 0,
+	QA = 1
+
+

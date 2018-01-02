@@ -11,7 +11,6 @@ class BapQA:
 		box_path = BapQA.change_location(p.DATA)
 		file_source = os.listdir(box_path)
 		self.ric_files = [f for f in file_source if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)]
-		Common.print_list(self.ric_files, '\n')
 
 		self.missing = PatternFill(fgColor='F44242', bgColor='C00000', fill_type='solid')
 		self.amber = PatternFill(fgColor='F4b042', bgColor='C00000', fill_type='solid')

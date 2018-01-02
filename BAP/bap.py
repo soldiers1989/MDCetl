@@ -28,24 +28,20 @@ class BapQuarterly:
 	
 	@staticmethod
 	def show_bap_quarterly_template():
-		BapQuarterly.file.show_source_file(FileType.SPREAD_SHEET.value)
-		_, _, _ = BapQuarterly.file.read_source_file(FileType.SPREAD_SHEET.value, DS.BAP)
+		BapQuarterly.file.show_source_file()
 
 	@staticmethod
 	def combine_rics_bap_quarterly():
-		response = input('\nPLEASE ENTER THE FOLDER: ')
-		fl = FileService(response)
-		program, program_youth, company_data = fl.read_source_file(FileType.SPREAD_SHEET.value, DS.BAP)
+		program, program_youth, company_quarterly, company_annually = BapQuarterly.file.read_source_file(FileType.SPREAD_SHEET.value, DS.BAP)
 		file_name = FN.bap_combined.value.format(str(BapQuarterly.year)[-2:], BapQuarterly.quarter - 1)
 		print('Save spreadsheet file named: {}'.format(file_name))
-		path = COM.get_config('config.ini', 'box_file_path', 'path_bap')
-		box_path = os.path.join(os.path.expanduser("~"), path)
-		os.chdir(box_path)
+
 		writer = pd.ExcelWriter(file_name)
 		
 		program.to_excel(writer, WS.bap_program_final.value, index=False)
 		program_youth.to_excel(writer, WS.bap_program_youth_final.value, index=False)
-		company_data.to_excel(writer, WS.bap_company.value, index=False)
+		company_quarterly.to_excel(writer, WS.bap_company.value, index=False)
+		company_annually.to_excel(writer, WS.bap_company_annual.value, index=False)
 		writer.save()
 		
 		print('rics_spreasheet_combined.')
@@ -357,4 +353,5 @@ class BapQuarterly:
 if __name__ == '__main__':
 	desired_width = 420
 	pd.set_option('display.width', desired_width)
-	BapQuarterly.qa.check_rics_file()
+	BapQuarterly.show_bap_quarterly_template()
+	# BapQuarterly.combine_rics_bap_quarterly()

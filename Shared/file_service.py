@@ -5,7 +5,7 @@ import pandas as pd
 from Shared.common import Common as COM
 from Shared.enums import FileType as FT
 from Shared.enums import DataSource as DS
-from Shared.enums import WorkSheet as WS, SourceSystemType as SS
+from Shared.enums import WorkSheet as WS, SourceSystemType as SS, FileType
 
 
 class FileService:
@@ -19,14 +19,15 @@ class FileService:
 		os.chdir(self.path)
 		self.source_file = os.listdir(self.path)
 
-	def show_source_file(self, file_type):
-		files_list = []
-		for l in self.source_file:
-			if l[0:2] != '~$':
-				if l[-3:] in files_list or l[-4:] in file_type:
-					files_list.append(l)
-		print('LIST OF AVAILABLE FILES IN {}: {}\n'.format(self.path, len(files_list)))
-		print('\n'.join(files_list))
+	def show_source_file(self):
+		COM.print_list([f for f in self.source_file if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)], '\n')
+		#files_list = []
+		#for l in self.source_file:
+		#	if l[0:2] != '~$':
+		#		if l[-3:] in files_list or l[-4:] in file_type:
+		#			files_list.append(l)
+		#print('LIST OF AVAILABLE FILES IN {}: {}\n'.format(self.path, len(files_list)))
+		#print('\n'.join(files_list))
 
 	def read_source_file(self, ftype, data_source):
 		l_program = []
@@ -34,25 +35,22 @@ class FileService:
 		l_company = []
 		l_company_annual = []
 
-		file_list = [f for f in self.source_file]
+		file_list = [f for f in self.source_file if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)]
 		if ftype == FT.SPREAD_SHEET.value:
 			if data_source == DS.BAP:
 				for fl in file_list:
-					if fl[0:2] != '~$':
-						if fl[-3:] in ftype or fl[-4:] in ftype:
+					prg = pd.read_excel(fl, WS.bap_program.value)
+					prg_youth = pd.read_excel(fl, WS.bap_program_youth.value)
+					com = pd.read_excel(fl, WS.bap_company.value)
+					com_annual = pd.read_excel(fl, WS.bap_company_annual.value)
 
-							prg = pd.read_excel(fl, WS.bap_program.value)
-							prgy = pd.read_excel(fl, WS.bap_program_youth.value)
-							com = pd.read_excel(fl, WS.bap_company.value)
-							com_annual = pd.read_excel(fl, WS.bap_company_annual.value)
+					ds = COM.set_datasource(str(fl))
+					FileService.data_system_source(prg, prg_youth, com, os.getcwd(), str(fl), ds)
 
-							ds = COM.set_datasource(str(fl))
-							FileService.data_system_source(prg, prgy, com, os.getcwd(), str(fl), '', ds)
-
-							l_program.append(prg)
-							l_program_youth.append(prgy)
-							l_company.append(com)
-							l_company_annual.append(com_annual)
+					l_program.append(prg)
+					l_program_youth.append(prg_youth)
+					l_company.append(com)
+					l_company_annual.append(com_annual)
 
 				bap_program = pd.concat(l_program)
 				bap_program_youth = pd.concat(l_program_youth)
@@ -64,7 +62,7 @@ class FileService:
 				print(bap_company.columns)
 				print(bap_company_annual.columns)
 
-				return bap_program, bap_program_youth, bap_company
+				return bap_program, bap_program_youth, bap_company, bap_company_annual
 
 		elif ftype == FT.CSV:
 			for fl in file_list:
@@ -95,7 +93,7 @@ class FileService:
 		writer.save()
 
 	@staticmethod
-	def data_system_source(cv, cvy, cd, path, file_name, guid, datasource):
+	def data_system_source(cv, cvy, cd, path, file_name, datasource):
 
 		print('Populating source system ....')
 
@@ -135,9 +133,3 @@ class FileService:
 
 		print('Populating CompanyID....')
 		cd.insert(0, 'CompanyID', '-')
-
-		print('Populating general GUID ...')
-
-		#cv.insert(0, 'UniqueID', guid)
-		#cvy.insert(0, 'UniqueID', guid)
-		#cd.insert(0, 'UniqueID', guid)

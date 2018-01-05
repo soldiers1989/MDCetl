@@ -63,11 +63,11 @@ class BapQuarterly:
 		DB.bulk_insert(sql.sql_bap_company_annual_insert, val)
 
 	@staticmethod
-	def read_bap_data():
-		program = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_program)
-		program_youth = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_program_youth)
-		quarterly_data = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_company)
-		annual_data = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_company_annual)
+	def transfer_bap_data():
+		program = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_program.value)
+		program_youth = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_program_youth.value)
+		quarterly_data = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_company.value)
+		annual_data = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_company_annual.value)
 
 		BapQuarterly.transfer_csv_program(program)
 		BapQuarterly.transfer_csv_program_youth(program_youth)
@@ -366,4 +366,4 @@ class BapQuarterly:
 if __name__ == '__main__':
 	desired_width = 420
 	pd.set_option('display.width', desired_width)
-	BapQuarterly.combine_rics_bap_quarterly()
+	BapQuarterly.read_bap_data()

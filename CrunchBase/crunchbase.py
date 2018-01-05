@@ -39,6 +39,25 @@ class Crunchbase:
 		self.org_uuid = None
 		self.i = 0
 
+		self.sql_acquired_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_acquired_insert')
+		self.sql_acquiree_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_acquiree_insert')
+		self.sql_acquisition_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_acquisition_insert')
+		self.sql_category_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_category_insert')
+		self.sql_founders_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_founders_insert')
+		self.sql_funding_rounds_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_funding_rounds_insert')
+		self.sql_funds_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_funds_insert')
+		self.sql_image_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_image_insert')
+		self.sql_investments_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_investments_insert')
+		self.sql_investors_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_investors_insert')
+		self.sql_ipo_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_ipo_insert')
+		self.sql_job_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_job_insert')
+		self.sql_news_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_news_insert')
+		self.sql_offices_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_offices_insert')
+		self.sql_partners_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_partners_insert')
+		self.sql_sub_organization_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_sub_organization_insert')
+		self.sql_team_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_team_insert')
+		self.sql_websites_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_websites_insert')
+
 	def get_organizations(self):
 		self.get_data(self.url_org, CONSTANTS.organization_summary.value)
 
@@ -119,63 +138,31 @@ class Crunchbase:
 		print(url)
 		orgs = CM.get_crunch_data(url)
 		if orgs.ok:
+
 			self.org_uuid = orgs.json()[VAR.data.value][VAR.uuid.value]
 			rs_json = orgs.json()[VAR.data.value][VAR.relationships.value]
-			primary_image = rs_json['primary_image']
-			self.save_relational_entity(primary_image, self.org_uuid, 'insert statement')
-			founders = rs_json['founders']
-			self.save_relational_entity(founders, self.org_uuid, 'insert statement')
-			featured_team = rs_json['featured_team']
-			self.save_relational_entity(featured_team, self.org_uuid, 'insert statement')
-			current_team = rs_json['current_team']
-			self.save_relational_entity(current_team, self.org_uuid, 'insert statement')
-			past_team = rs_json['past_team']
-			self.save_relational_entity(past_team, self.org_uuid, 'insert statement')
-			bmad = rs_json['board_members_and_advisors'] #Job
-			self.save_relational_entity(bmad, self.org_uuid, 'insert statement')
-			investors = rs_json['investors'] # Organization or Person or FundingRound
-			self.save_relational_entity(investors, self.org_uuid, 'insert statement')
-			owned_by = rs_json['owned_by'] # Person or Organizations
-			self.save_relational_entity(owned_by, self.org_uuid, 'insert statement')
-			sub_organizations = rs_json['sub_organizations']
-			self.save_relational_entity(sub_organizations, self.org_uuid, 'insert statement')
-			headquarters = rs_json['headquarters']
-			self.save_relational_entity(headquarters, self.org_uuid, 'insert statement')
-			offices = rs_json['offices']
-			self.save_relational_entity(offices, self.org_uuid, 'insert statement')
-			# products = rs_json['products']
-			# self.save_relational_entity(products, uuid, 'insert statement')
-			categories = rs_json['categories']
-			self.save_relational_entity(categories, self.org_uuid, 'insert statement')
-			# customers = rs_json['customers']
-			# self.save_relational_entity(customers, uuid, 'insert statement')
-			# competitors = rs_json['competitors']
-			# self.save_relational_entity(competitors, uuid, 'insert statement')
-			# members = rs_json['members']
-			# self.save_relational_entity(members, uuid, 'insert statement')
-			# memberships = rs_json['memberships']
-			# self.save_relational_entity(memberships, uuid, 'insert statement')
-			funding_rounds = rs_json['funding_rounds']
-			self.save_relational_entity(funding_rounds, self.org_uuid, 'insert statement')
-			investments = rs_json['investments']
-			self.save_relational_entity(investments, self.org_uuid, 'insert statement')
-			acquisitions = rs_json['acquisitions']
-			self.save_relational_entity(acquisitions, self.org_uuid, 'insert statement')
-			acquired_by = rs_json['acquired_by']
-			self.save_relational_entity(acquired_by, self.org_uuid, 'insert statement')
-			ipo = rs_json['ipo']
-			self.save_relational_entity(ipo, self.org_uuid, 'insert statement')
-			funds = rs_json['funds']
-			self.save_relational_entity(funds, self.org_uuid, 'insert statement')
-			websites = rs_json['websites']
-			self.save_relational_entity(websites, self.org_uuid, 'insert statement')
-			images = rs_json['images']
-			self.save_relational_entity(images, self.org_uuid, 'insert statement')
-			# videos = rs_json['videos']
-			# self.save_relational_entity(videos, uuid, 'insert statement')
-			news = rs_json['news']
-			self.save_relational_entity(news, self.org_uuid, 'insert statement')
-			print('-' * 200)
+
+			self.save_relational_entity(rs_json['primary_image'], self.org_uuid, self.sql_image_insert)
+			self.save_relational_entity(rs_json['founders'], self.org_uuid, self.sql_founders_insert)
+			self.save_relational_entity(rs_json['featured_team'], self.org_uuid, self.sql_team_insert)
+			self.save_relational_entity(rs_json['current_team'], self.org_uuid, self.sql_team_insert)
+			self.save_relational_entity(rs_json['past_team'], self.org_uuid, self.sql_team_insert)
+			self.save_relational_entity(rs_json['board_members_and_advisors'], self.org_uuid, self.sql_team_insert)
+			self.save_relational_entity(rs_json['investors'], self.org_uuid, self.sql_investors_insert)
+			self.save_relational_entity(rs_json['owned_by'], self.org_uuid, '##')
+			self.save_relational_entity(rs_json['sub_organizations'], self.org_uuid, self.sql_sub_organization_insert)
+			self.save_relational_entity(rs_json['headquarters'], self.org_uuid, self.sql_offices_insert)
+			self.save_relational_entity(rs_json['offices'], self.org_uuid, self.sql_offices_insert)
+			self.save_relational_entity(rs_json['categories'], self.org_uuid, self.sql_category_insert)
+			self.save_relational_entity(rs_json['funding_rounds'], self.org_uuid, self.sql_funding_rounds_insert)
+			self.save_relational_entity(rs_json['investments'], self.org_uuid, self.sql_investments_insert)
+			self.save_relational_entity(rs_json['acquisitions'], self.org_uuid, self.sql_acquisition_insert)
+			self.save_relational_entity(rs_json['acquired_by'], self.org_uuid, self.sql_acquired_insert)
+			self.save_relational_entity(rs_json['ipo'], self.org_uuid, self.sql_ipo_insert)
+			self.save_relational_entity(rs_json['funds'], self.org_uuid, self.sql_funds_insert)
+			self.save_relational_entity(rs_json['websites'], self.org_uuid, self.sql_websites_insert)
+			self.save_relational_entity(rs_json['images'], self.org_uuid, self.sql_image_insert)
+			self.save_relational_entity(rs_json['news'], self.org_uuid, self.sql_news_insert)
 
 	def save_relational_entity(self, json, org_uuid, sql_insert):
 		if json[VAR.cardinality.value] == 'OneToOne':

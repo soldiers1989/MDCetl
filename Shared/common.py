@@ -246,7 +246,6 @@ class Common:
 	def df_list(dataframe):
 		values = []
 		ls = len(dataframe)
-		print(ls)
 		try:
 			for i in range(len(dataframe)):
 				v = dataframe.iloc[i].values

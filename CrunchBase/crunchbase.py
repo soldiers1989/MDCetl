@@ -3,7 +3,7 @@ import pandas as pd
 import time
 
 from Shared.common import Common as CM
-from Shared.enums import VAR, CONSTANTS
+from Shared.enums import VAR, CONSTANTS, TeamStatus
 from Shared.file_service import FileService
 from Shared.db import DB as db
 
@@ -28,7 +28,7 @@ class Crunchbase:
 		self.location = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_location_insert')
 
 		self.orgs_api_url = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_orgs_summary')
-		self.orgs_detail_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_orgs_detail_insert')
+		self.orgs_detail_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_orgnization_insert')
 		self.orgs_summary_update = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_orgs_summary_update')
 
 		self.orgs_detail_update = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_orgs_detail_update')
@@ -39,10 +39,14 @@ class Crunchbase:
 		self.org_uuid = None
 		self.i = 0
 
+		self.entities_script()
+
+	def entities_script(self):
 		self.sql_acquired_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_acquired_insert')
 		self.sql_acquiree_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_acquiree_insert')
 		self.sql_acquisition_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_acquisition_insert')
 		self.sql_category_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_category_insert')
+		self.sql_org_category_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_org_category_insert')
 		self.sql_founders_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_founders_insert')
 		self.sql_funding_rounds_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_funding_rounds_insert')
 		self.sql_funds_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_funds_insert')
@@ -57,6 +61,8 @@ class Crunchbase:
 		self.sql_sub_organization_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_sub_organization_insert')
 		self.sql_team_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_team_insert')
 		self.sql_websites_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_websites_insert')
+		self.sql_person_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_person_insert')
+		self.sql_invested_in_insert = CM.get_config('config_sql.ini', 'db_sql_crunchbase', 'sql_invested_in_insert')
 
 	def get_organizations(self):
 		self.get_data(self.url_org, CONSTANTS.organization_summary.value)
@@ -128,7 +134,7 @@ class Crunchbase:
 			db.bulk_insert(self.orgs_detail_insert, values)
 			db.execute(self.orgs_summary_update.format(uuid))
 
-	def get_orgs_rshp_api_url(self):
+	def get_org_entities(self):
 		df = db.pandas_read(self.orgs_api_url)
 		for c in df.iterrows():
 			self.save_orgs_relationship(c[1].api_url)
@@ -142,20 +148,18 @@ class Crunchbase:
 			self.org_uuid = orgs.json()[VAR.data.value][VAR.uuid.value]
 			rs_json = orgs.json()[VAR.data.value][VAR.relationships.value]
 
-			self.save_relational_entity(rs_json['primary_image'], self.org_uuid, self.sql_image_insert)
-			self.save_relational_entity(rs_json['founders'], self.org_uuid, self.sql_founders_insert)
-			self.save_relational_entity(rs_json['featured_team'], self.org_uuid, self.sql_team_insert)
-			self.save_relational_entity(rs_json['current_team'], self.org_uuid, self.sql_team_insert)
-			self.save_relational_entity(rs_json['past_team'], self.org_uuid, self.sql_team_insert)
-			self.save_relational_entity(rs_json['board_members_and_advisors'], self.org_uuid, self.sql_team_insert)
-			self.save_relational_entity(rs_json['investors'], self.org_uuid, self.sql_investors_insert)
-			self.save_relational_entity(rs_json['owned_by'], self.org_uuid, '##')
+			self.save_teams(rs_json['featured_team'], self.org_uuid, TeamStatus.Featured.value)
+			self.save_teams(rs_json['current_team'], self.org_uuid, TeamStatus.Current.value)
+			self.save_teams(rs_json['past_team'], self.org_uuid, TeamStatus.Past.value)
+			self.save_teams(rs_json['board_members_and_advisors'], self.org_uuid, TeamStatus.Board.value)
+
+			self.save_funding_rounds(rs_json['funding_rounds'], self.org_uuid)
+			self.save_investments_invested_in(rs_json['investments'])
+
 			self.save_relational_entity(rs_json['sub_organizations'], self.org_uuid, self.sql_sub_organization_insert)
-			self.save_relational_entity(rs_json['headquarters'], self.org_uuid, self.sql_offices_insert)
 			self.save_relational_entity(rs_json['offices'], self.org_uuid, self.sql_offices_insert)
-			self.save_relational_entity(rs_json['categories'], self.org_uuid, self.sql_category_insert)
-			self.save_relational_entity(rs_json['funding_rounds'], self.org_uuid, self.sql_funding_rounds_insert)
-			self.save_relational_entity(rs_json['investments'], self.org_uuid, self.sql_investments_insert)
+			self.save_relational_entity(rs_json['categories'], self.org_uuid, self.sql_org_category_insert)
+			self.save_relational_entity(rs_json['founders'], self.org_uuid, self.sql_founders_insert)
 			self.save_relational_entity(rs_json['acquisitions'], self.org_uuid, self.sql_acquisition_insert)
 			self.save_relational_entity(rs_json['acquired_by'], self.org_uuid, self.sql_acquired_insert)
 			self.save_relational_entity(rs_json['ipo'], self.org_uuid, self.sql_ipo_insert)
@@ -164,33 +168,70 @@ class Crunchbase:
 			self.save_relational_entity(rs_json['images'], self.org_uuid, self.sql_image_insert)
 			self.save_relational_entity(rs_json['news'], self.org_uuid, self.sql_news_insert)
 
+			db.execute(self.orgs_summary_update.format(self.org_uuid))
+
+	def save_funding_rounds(self, json, org_uuid):
+		if json[VAR.paging.value][VAR.total_items.value] > 0:
+			for i in range(int(json[VAR.paging.value][VAR.total_items.value])):
+				self.save_relational_entity(json[i], org_uuid, self.sql_funding_rounds_insert)
+				funding_rounds_uuid = json[i][VAR.uuid.value]
+				investments = json[i][VAR.relationships.value][VAR.investments.value]
+				for j in len(investments):
+					self.push_entity_to_db(investments[j][VAR.properties.value], funding_rounds_uuid
+												,self.sql_investments_insert, fk_uuid='funding_rounds_uuid')
+					if investments[i][VAR.relationships.value] is not None:
+						investors = investments[i][VAR.relationships.value]['investors'][VAR.properties.value]
+						investment_uuid = investments[j][VAR.uuid.value]
+						self.push_entity_to_db(investors, investment_uuid, self.sql_investors_insert, fk_uuid='investment_uuid')
+
+						partners = investments[i][VAR.relationships.value]['partners'][VAR.properties.value]
+						self.push_entity_to_db(partners, investment_uuid, self.sql_investors_insert, fk_uuid='investment_uuid')
+
+	def save_investments_invested_in(self, json):
+		if json[VAR.paging.value][VAR.total_items.value] > 0:
+			investment_uuid = json[VAR.items.value][0][VAR.uuid.value]
+			for i in range(json[VAR.paging.value][VAR.total_items.value]):
+				self.push_entity_to_db(json[VAR.items.value][i][VAR.relationships.value][VAR.invested_in.value], investment_uuid, self.sql_invested_in_insert, fk_uuid='investment_uuid')
+
+	def save_teams(self, json, org_uuid, status):
+		for i in range(int(json[VAR.paging.value][VAR.total_items.value])):
+			json[VAR.items.value][i][VAR.properties.value]['TeamStatus'] = status
+			team_uuid = json[VAR.items.value][i][VAR.uuid.value]
+			self.push_entity_to_db(json[VAR.items.value][i], org_uuid, self.sql_team_insert, team_uuid)
+			person_uuid = json[VAR.items.value][i][VAR.relationships.value][VAR.person.value][VAR.uuid.value]
+			self.push_entity_to_db(json[VAR.items.value][i][VAR.relationships.value][VAR.person.value], team_uuid, self.sql_person_insert, person_uuid, fk_uuid='team_uuid')
+
 	def save_relational_entity(self, json, org_uuid, sql_insert):
 		if json[VAR.cardinality.value] == 'OneToOne':
 			if int(json['paging']['total_items']) > 0:
 				print(json[VAR.item.value][VAR.type.value])
 				uuid = json[VAR.item.value][VAR.uuid.value]
-				self.push_entity_to_db(json, org_uuid, sql_insert, uuid)
+				self.push_entity_to_db(json, org_uuid, sql_insert, uuid, 0)
 		elif json[VAR.cardinality.value] == 'OneToMany':
 			if int(json['paging']['total_items']) > 0:
 				print(json[VAR.items.value][0][VAR.type.value])
 				for i in range(int(json['paging']['total_items'])):
 					uuid = json[VAR.items.value][i][VAR.uuid.value]
-					self.push_entity_to_db(json, org_uuid, sql_insert, uuid)
+					self.push_entity_to_db(json, org_uuid, sql_insert, uuid, i)
 
-	def push_entity_to_db(self, json, org_uuid, sql_insert, uuid):
-		json_properties = json[VAR.item.value][VAR.properties.value]
-		cols = list(json_properties.keys())
-		cols.append('uuid')
-		cols.append('org_uuid')
-		json_properties['uuid'] = uuid
-		json_properties['org_uuid'] = org_uuid
-		print(cols)
-		df_properties = pd.DataFrame([json_properties], columns=cols)
+	def push_entity_to_db(self, json, org_uuid, sql_insert, uuid, i=0, fk_uuid='org_uuid'):
+		if json[VAR.properties.value]:
+			json_properties = json[VAR.properties.value]
+		elif json[VAR.cardinality.value] == 'OneToOne':
+			json_properties = json[VAR.item.value][VAR.properties.value]
+		elif json[VAR.cardinality.value] == 'OneToMany':
+			json_properties = json[VAR.items.value][i][VAR.properties.value]
+		if 'uuid' not in json_properties.keys():
+			json_properties['uuid'] = uuid
+		if fk_uuid not in json_properties.keys():
+			json_properties[fk_uuid] = org_uuid
+		print(list(json_properties.keys()))
+		df_properties = pd.DataFrame([json_properties], columns=json_properties.keys())
 		values = CM.df_list(df_properties)
 		db.bulk_insert(sql_insert, values)
-		db.execute(self.orgs_detail_update.format(org_uuid))
 
-	def generate_columns(self, prprty):
+	@staticmethod
+	def generate_columns(prprty):
 		if int(prprty['paging']['total_items']) == 0:
 			print('MISSING')
 		elif int(prprty['paging']['total_items']) == 1:
@@ -207,4 +248,4 @@ class Crunchbase:
 
 if __name__ == '__main__':
 	crb = Crunchbase()
-	crb.get_orgs_rshp_api_url()
+	crb.get_org_entities()

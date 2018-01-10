@@ -14,7 +14,7 @@ class DAL:
         @staticmethod
         def get_config(header, item):
             config = ConfigParser()
-            config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'Config.ini'))
+            config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'Config_SG.ini'))
             con_str = config.get(header, item)
             return con_str
 

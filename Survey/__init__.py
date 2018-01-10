@@ -1,10 +1,11 @@
 from menu_actions import menu_actions
-from sg_db import DAL
+from Shared.db import DB
 from time import sleep
 import pandas as pd
 from  sg_db_interactions import sg_get_tables
 from sg_contact_lists import sg_contact_lists
 from sg_misc import misc_funcs as misc
+
 
 API_TOKEN = "api_token=3918099598ee3da7e79c1add7f4b8ae392b5b543c5fe7f9d88&api_token_secret=A9XYpy0QvtH.o"
 
@@ -332,8 +333,8 @@ def _main_():
         # elif selection == 16:
         #
         #     # still can't handle single quotes
-        #     contacts_sql = DAL.get_config("sql_queries", "all_contacts")
-        #     contacts_df = DAL.pandas_read(contacts_sql)
+        #     contacts_sql = CM.get_config("sql_queries", "all_contacts")
+        #     contacts_df = DB.pandas_read(contacts_sql)
         #     session_variables.append(16)
         #
         #     sg_contact_lists.sg_put_contact_list("Nov21", API_TOKEN)

@@ -6,11 +6,12 @@ from sg_contact_lists import sg_contact_lists
 from sg_responses import sg_responses
 from sg_qsos import sg_qsos
 from sg_contact_status import sg_contact_status
-from sg_db import DAL
+from Shared.db import DB
 from time import sleep
 import pandas as pd
 from sg_db_interactions import sg_get_tables
 from sg_misc import misc_funcs as misc
+from Shared.common import Common as CM
 import numpy as np
 
 
@@ -82,9 +83,9 @@ class menu_actions():
         campaigns_df["id"] = campaigns_df["id"].apply(pd.to_numeric, errors='ignore')
 
         # remove campaigns from df that are already in DB
-        c_sql = DAL.get_config("sql_queries", "campaigns_for_survey")
+        c_sql = CM.get_config("sql_queries", "campaigns_for_survey")
         c_sql = c_sql.replace("WHAT_SURVEY_ID", str(survey_id))
-        db_cmpgns = DAL.pandas_read(c_sql)
+        db_cmpgns = DB.pandas_read(c_sql)
         db_cmpgns = db_cmpgns.apply(pd.to_numeric, errors='ignore')
 
         cmpgns_not_in_db = pd.merge(campaigns_df, db_cmpgns, how='left', indicator=True, on="id")
@@ -99,7 +100,7 @@ class menu_actions():
 
             # cmpgns_headers, cmpgns_qmarks, cmpgns_vals = self.get_sql_params(cmpgns_not_in_db2)
             # cmpgns_header_str = self.get_header_str(cmpgns_headers)
-            # cmpgns_sql = DAL.get_config("sql_queries", "insert_campaigns")
+            # cmpgns_sql = CM.get_config("sql_queries", "insert_campaigns")
             # cmpgns_sql = cmpgns_sql.replace("WHAT_HEADERS", cmpgns_header_str).replace("WHAT_VALUES", cmpgns_qmarks)
             # for lst in cmpgns_vals:
             #     for i in range(len(lst)):
@@ -111,7 +112,7 @@ class menu_actions():
             #             continue
             #         except TypeError:
             #             continue
-            # DAL.bulk_insert(cmpgns_sql, cmpgns_vals)
+            # DB.bulk_insert(cmpgns_sql, cmpgns_vals)
 
         return campaigns_df
 
@@ -141,9 +142,9 @@ class menu_actions():
         print(emails_df)
 
         # remove campaigns from df that are already in DB
-        e_sql = DAL.get_config("sql_queries", "emails_for_campaign")
+        e_sql = CM.get_config("sql_queries", "emails_for_campaign")
         e_sql = e_sql.replace("WHAT_CAMPAIGN", str(campaign_id))
-        db_em = DAL.pandas_read(e_sql)
+        db_em = DB.pandas_read(e_sql)
 
         em_not_in_db = pd.merge(emails_df, db_em, how='left', indicator=True, on="id")
         em_not_in_db2 = em_not_in_db[em_not_in_db['_merge'] == 'left_only'].drop("_merge", axis=1)
@@ -156,7 +157,7 @@ class menu_actions():
 
             # em_headers, em_qmarks, em_vals = self.get_sql_params(em_not_in_db2, remove_single_quotes=False)
             # em_header_str = self.get_header_str(em_headers)
-            # em_sql = DAL.get_config("sql_queries", "insert_emails")
+            # em_sql = CM.get_config("sql_queries", "insert_emails")
             # em_sql = em_sql.replace("WHAT_HEADERS", em_header_str).replace("WHAT_VALUES", em_qmarks)
             # for lst in em_vals:
             #     for i in range(len(lst)):
@@ -168,7 +169,7 @@ class menu_actions():
             #             continue
             #         except TypeError:
             #             continue
-            # DAL.bulk_insert(em_sql, em_vals)
+            # DB.bulk_insert(em_sql, em_vals)
 
         return emails_df
 
@@ -319,7 +320,7 @@ class menu_actions():
             #
             # statreps_header_str = self.get_header_str(statreps_headers)
             #
-            # statreps_sql = DAL.get_config("sql_queries", "insert_resp_reports")
+            # statreps_sql = CM.get_config("sql_queries", "insert_resp_reports")
             # statreps_sql = statreps_sql.replace("WHAT_HEADERS", statreps_header_str).replace("WHAT_VALUES", statreps_qmarks)
             # for lst in statreps_vals:
             #     for i in range(len(lst)):
@@ -331,7 +332,7 @@ class menu_actions():
             #             continue
             #         except TypeError:
             #             continue
-            # DAL.bulk_insert(statreps_sql, statreps_vals)
+            # DB.bulk_insert(statreps_sql, statreps_vals)
 
         # insert resp statuses into DB
         if len(status_df) > 0:
@@ -343,7 +344,7 @@ class menu_actions():
             #
             # respstats_header_str = self.get_header_str(respstats_headers)
             #
-            # respstats_sql = DAL.get_config("sql_queries", "insert_resp_stats")
+            # respstats_sql = CM.get_config("sql_queries", "insert_resp_stats")
             # respstats_sql = respstats_sql.replace("WHAT_HEADERS", respstats_header_str).replace("WHAT_VALUES", respstats_qmarks)
             # for lst in respstats_vals:
             #     for i in range(len(lst)):
@@ -355,7 +356,7 @@ class menu_actions():
             #             continue
             #         except TypeError:
             #             continue
-            # DAL.bulk_insert(respstats_sql, respstats_vals)
+            # DB.bulk_insert(respstats_sql, respstats_vals)
 
         return reports_df, status_df
 
@@ -441,9 +442,9 @@ class menu_actions():
         #
         # header_str = self.get_header_str(headers)
         #
-        # surveys_sql = DAL.get_config("sql_queries", "insert_survey_entry")
+        # surveys_sql = CM.get_config("sql_queries", "insert_survey_entry")
         # surveys_sql = surveys_sql.replace("WHAT_HEADERS", header_str).replace("WHAT_VALUES", question_marks)
-        # DAL.bulk_insert(surveys_sql, insert_vals)
+        # DB.bulk_insert(surveys_sql, insert_vals)
 
     @classmethod
     def load_qsos(self, survey_id, api_token):
@@ -471,15 +472,15 @@ class menu_actions():
         #
         # print("\nInserting Questions: \n")
         # # load Questions to DB
-        # qs_sql = DAL.get_config("sql_queries", "insert_qs")
+        # qs_sql = CM.get_config("sql_queries", "insert_qs")
         # qs_sql = qs_sql.replace("WHAT_HEADERS", qs_header_str).replace("WHAT_VALUES", qs_qmarks)
-        # DAL.bulk_insert(qs_sql, qs_insert_vals)
+        # DB.bulk_insert(qs_sql, qs_insert_vals)
         #
         # print("\nInserting Options: \n")
         # # load Options to DB
-        # os_sql = DAL.get_config("sql_queries", "insert_os")
+        # os_sql = CM.get_config("sql_queries", "insert_os")
         # os_sql = os_sql.replace("WHAT_HEADERS", os_header_str).replace("WHAT_VALUES", os_qmarks)
-        # DAL.bulk_insert(os_sql, os_insert_vals)
+        # DB.bulk_insert(os_sql, os_insert_vals)
 
     @classmethod
     def get_sql_params(self, df, remove_single_quotes=True):
@@ -540,9 +541,9 @@ class menu_actions():
     @classmethod
     def check_qs_exist(self, survey_id):
 
-        sql = DAL.get_config("sql_queries", "check_questions_exist")
+        sql = CM.get_config("sql_queries", "check_questions_exist")
         sql = sql.replace("WHAT_SURVEY_ID", str(survey_id))
-        check = DAL.pandas_read(sql)
+        check = DB.pandas_read(sql)
 
         if check.iloc[0][0]:
             return True
@@ -573,8 +574,8 @@ class menu_actions():
         contact_lists = contact_lists.apply(pd.to_numeric, errors='ignore')
 
         print("\nGetting contact lists from DB")
-        lists_in_db_sql = DAL.get_config("sql_queries", "contact_lists")
-        lists_in_db = DAL.pandas_read(lists_in_db_sql)
+        lists_in_db_sql = CM.get_config("sql_queries", "contact_lists")
+        lists_in_db = DB.pandas_read(lists_in_db_sql)
 
         print("\nChecking for diffs b/t API contact lists and DB contact lists")
         lists_not_in_db = pd.merge(contact_lists, lists_in_db, how='outer', indicator=True, on="id")
@@ -588,9 +589,9 @@ class menu_actions():
 
             # list_headers, list_qmarks, list_vals = self.get_sql_params(lists_not_in_db2)
             # list_header_str = self.get_header_str(list_headers)
-            # lists_sql = DAL.get_config("sql_queries", "insert_contactlists")
+            # lists_sql = CM.get_config("sql_queries", "insert_contactlists")
             # lists_sql = lists_sql.replace("WHAT_HEADERS", list_header_str).replace("WHAT_VALUES", list_qmarks)
-            # DAL.bulk_insert(lists_sql, list_vals)
+            # DB.bulk_insert(lists_sql, list_vals)
 
         print("\nGathering all contacts from all lists on acct into single dataframe")
         all_contacts = []
@@ -601,8 +602,8 @@ class menu_actions():
         all_contacts = all_contacts.apply(pd.to_numeric, errors='ignore')
 
         print("\nGathering all contacts from DB")
-        all_contacts_sql = DAL.get_config("sql_queries", "all_contacts")
-        all_db_contacts = DAL.pandas_read(all_contacts_sql)
+        all_contacts_sql = CM.get_config("sql_queries", "all_contacts")
+        all_db_contacts = DB.pandas_read(all_contacts_sql)
         all_db_contacts = all_db_contacts.apply(pd.to_numeric, errors='ignore')
 
         contact_merge = pd.merge(
@@ -623,7 +624,7 @@ class menu_actions():
             #
             # nc_header_str = self.get_header_str(nc_headers)
             #
-            # nc_sql = DAL.get_config("sql_queries", "insert_contacts")
+            # nc_sql = CM.get_config("sql_queries", "insert_contacts")
             # nc_sql = nc_sql.replace("WHAT_HEADERS", nc_header_str).replace("WHAT_VALUES", nc_qmarks)
             # for lst in nc_vals:
             #     for i in range(len(lst)):
@@ -635,9 +636,9 @@ class menu_actions():
             #             continue
             #         except TypeError:
             #             continue
-            # DAL.bulk_insert(nc_sql, nc_vals)
+            # DB.bulk_insert(nc_sql, nc_vals)
 
-        updated_db_contacts = DAL.pandas_read(all_contacts_sql)
+        updated_db_contacts = DB.pandas_read(all_contacts_sql)
         updated_db_contacts = updated_db_contacts.apply(pd.to_numeric, errors='ignore')
 
         updated_contact_merge = pd.merge(
@@ -648,8 +649,8 @@ class menu_actions():
         api_contacts_lists_df.columns = ["sg_cid", "mdc_contact_id", "contact_list_id"]
 
         print("\nGetting Contacts__Lists table from DB.")
-        db_cl_sql = DAL.get_config("sql_queries", "all_contacts__lists")
-        db_contacts_lists_df = DAL.pandas_read(db_cl_sql)
+        db_cl_sql = CM.get_config("sql_queries", "all_contacts__lists")
+        db_contacts_lists_df = DB.pandas_read(db_cl_sql)
         db_contacts_lists_df = db_contacts_lists_df.apply(pd.to_numeric, errors='ignore')
 
         cl_merge = pd.merge(api_contacts_lists_df, db_contacts_lists_df, how='left', indicator=True,
@@ -665,7 +666,7 @@ class menu_actions():
 
             # cl_headers, cl_qmarks, cl_vals = self.get_sql_params(new_cl)
             # cl_header_str = self.get_header_str(cl_headers)
-            # cl_sql = DAL.get_config("sql_queries", "insert_contacts_lists")
+            # cl_sql = CM.get_config("sql_queries", "insert_contacts_lists")
             # cl_sql = cl_sql.replace("WHAT_HEADERS", cl_header_str).replace("WHAT_VALUES", cl_qmarks)
             # for lst in cl_vals:
             #     for i in range(len(lst)):
@@ -679,7 +680,7 @@ class menu_actions():
             #             continue
             #         except TypeError:
             #             continue
-            # DAL.bulk_insert(cl_sql, cl_vals)
+            # DB.bulk_insert(cl_sql, cl_vals)
 
         # print("\nLinking API contacts to DB contacts (matching SG contact id with MDC contact id")
         # contacts_in_resps = pd.merge(all_contacts[["id", "mdc_contact_id", "contact_list_id"]], api_resps[["contact_id", "survey_id"]],
@@ -689,8 +690,8 @@ class menu_actions():
         # contacts_in_resps = contacts_in_resps.apply(pd.to_numeric, errors='ignore')
         # contacts_in_resps.columns = ["sg_cid", "mdc_contact_id", "contact_list_id", "survey_id"]
         #
-        # contacts__surveys_sql = DAL.get_config("sql_queries", "contacts__lists")
-        # db_contacts__surveys = DAL.pandas_read(contacts__surveys_sql)
+        # contacts__surveys_sql = CM.get_config("sql_queries", "contacts__lists")
+        # db_contacts__surveys = DB.pandas_read(contacts__surveys_sql)
         #
         # print("\nWriting new entries to Contacts__Surveys table. (this keeps track of what contacts in our DB have responded to which survey")
         # contacts__surveys_not_in_db = pd.merge(contacts_in_resps, db_contacts__surveys, how='outer',
@@ -703,7 +704,7 @@ class menu_actions():
         #
         #     cs_header_str = self.get_header_str(cs_headers)
         #
-        #     cs_sql = DAL.get_config("sql_queries", "insert_contacts__lists")
+        #     cs_sql = CM.get_config("sql_queries", "insert_contacts__lists")
         #     cs_sql = cs_sql.replace("WHAT_HEADERS", cs_header_str).replace("WHAT_VALUES", cs_qmarks)
         #     for lst in cs_vals:
         #         for i in range(len(lst)):
@@ -715,15 +716,15 @@ class menu_actions():
         #                 continue
         #             except TypeError:
         #                 continue
-        #     DAL.bulk_insert(cs_sql, cs_vals)
+        #     DB.bulk_insert(cs_sql, cs_vals)
 
         # get api answers where response_id = resps.id
 
         # get db resps where resps.survey_id = survey_id
         print("\nGetting all responses for this survey from DB.")
-        r_sql = DAL.get_config("sql_queries", "all_resps_for_survey")
+        r_sql = CM.get_config("sql_queries", "all_resps_for_survey")
         r_sql = r_sql.replace("WHAT_SURVEY_ID", str(survey_id))
-        db_resps = DAL.pandas_read(r_sql)
+        db_resps = DB.pandas_read(r_sql)
         db_resps["date_submitted"] = db_resps["date_submitted"].astype(str)
 
         print(
@@ -753,7 +754,7 @@ class menu_actions():
             resp_headers, resp_qmarks, resp_vals = self.get_sql_params(api_resps)
             resp_header_str = self.get_header_str(resp_headers)
 
-            update_r_sql = DAL.get_config("sql_queries", "update_rs")
+            update_r_sql = CM.get_config("sql_queries", "update_rs")
             for id in changed_resps:
                 j = changed_resps.index(id)
                 where_sql = "WHERE id = " + str(id)
@@ -764,7 +765,7 @@ class menu_actions():
                     set_str = "[" + header + "]" + " = '" + str(val) + "', "
                     set_strs = set_strs + set_str
                 final_update_sql = update_r_sql + set_strs[:-2] + " " + where_sql
-                DAL.execute(final_update_sql)
+                DB.execute(final_update_sql)
 
         # insert resps that aren't db at all
         if len(resps_not_in_db2) > 0:
@@ -775,9 +776,9 @@ class menu_actions():
 
             # resp_headers, resp_qmarks, resp_vals = self.get_sql_params(resps_not_in_db2)
             # resp_header_str = self.get_header_str(resp_headers)
-            # resp_Sql = DAL.get_config("sql_queries", "insert_rs")
+            # resp_Sql = DB.get_config("sql_queries", "insert_rs")
             # resp_Sql = resp_Sql.replace("WHAT_HEADERS", resp_header_str).replace("WHAT_VALUES", resp_qmarks)
-            # DAL.bulk_insert(resp_Sql, resp_vals)
+            # CM.bulk_insert(resp_Sql, resp_vals)
 
             for id in resps_not_in_db2["id"]:
                 inserted_resps.append(id)
@@ -792,15 +793,15 @@ class menu_actions():
         # del where id in changed_resps, then insert
         if len(changed_resps) > 0:
             print("\nDeleting answers of respondents who updated their response.")
-            update_a_sql = DAL.get_config("sql_queries", "update_a_sql")
+            update_a_sql = CM.get_config("sql_queries", "update_a_sql")
             changed_ans_df = api_ans[api_ans["survey_response_id"].isin(changed_resps)]
             ans_headers, ans_qmarks, ans_vals = self.get_sql_params(changed_ans_df)
             ans_header_str = self.get_header_str(ans_headers)
 
-            del_ans_sql = DAL.get_config("sql_queries", "del_ans")
+            del_ans_sql = DB.get_config("sql_queries", "del_ans")
             for id in changed_resps:
                 del_ans_sql_for_id = del_ans_sql.replace("WHAT_RESP_ID", str(id))
-                DAL.execute(del_ans_sql_for_id)
+                DB.execute(del_ans_sql_for_id)
                 inserted_resps.append(id)
 
         # insert ans where id in inserted_resps
@@ -815,37 +816,37 @@ class menu_actions():
 
             # ans_headers, ans_qmarks, ans_vals = self.get_sql_params(ans_insert_df, remove_single_quotes=False)
             # ans_header_str = self.get_header_str(ans_headers)
-            # ans_sql = DAL.get_config("sql_queries", "insert_as")
+            # ans_sql = CM.get_config("sql_queries", "insert_as")
             # ans_sql = ans_sql.replace("WHAT_HEADERS", ans_header_str).replace("WHAT_VALUES", ans_qmarks)
             # misc.write_to_xl(pd.DataFrame(ans_vals), "Survey Answer Load", "/Users/gcree/Box Sync/gcree/TESTING/")
-            # DAL.bulk_insert(ans_sql, ans_vals)
+            # DB.bulk_insert(ans_sql, ans_vals)
 
         elif len(inserted_resps) == 0:
             print("\nNo new answers to insert or update.")
             return
 
         print("\nChecking that all answers were inserted")
-        check_ans_sql = DAL.get_config("sql_queries", "check_ans")
+        check_ans_sql = CM.get_config("sql_queries", "check_ans")
         inserted_resp_ids_str = ''
         for id in inserted_resps:
             inserted_resp_ids_str = inserted_resp_ids_str + str(id) + ", "
         inserted_resp_ids_str = inserted_resp_ids_str[:-2]
         check_ans_sql = check_ans_sql.replace("WHAT_RESP_IDS", inserted_resp_ids_str)
-        ans_inserted_this_session = DAL.pandas_read(check_ans_sql)
+        ans_inserted_this_session = DB.pandas_read(check_ans_sql)
 
         if len(ans_inserted_this_session) != len(ans_vals):
 
             print("\nNot all answers were loaded. Rolling back insert operation "
                   "(deleting answers and responses inserted into DB)")
             # del ans inserted this session, if any
-            del_ans_sql = DAL.get_config("sql_queries", "del_ans_by_respids")
+            del_ans_sql = CM.get_config("sql_queries", "del_ans_by_respids")
             del_ans_sql = del_ans_sql.replace("WHAT_RESP_IDS", inserted_resp_ids_str)
-            DAL.execute(del_ans_sql)
+            DB.execute(del_ans_sql)
 
             # del resps inserted this session, if any
-            del_resps_sql = DAL.get_config("sql_queries", "del_resps_by_list")
+            del_resps_sql = CM.get_config("sql_queries", "del_resps_by_list")
             del_resps_sql = del_resps_sql.replace("WHAT_RESP_IDS", inserted_resp_ids_str)
-            DAL.execute(del_resps_sql)
+            DB.execute(del_resps_sql)
 
         elif len(ans_inserted_this_session) == len(ans_vals):
             print("All answers successfully inserted. This means that all the responses that were inserted during this "
@@ -857,7 +858,7 @@ class menu_actions():
 
         df_headers, df_qmarks, df_vals = self.get_sql_params(df, remove_single_quotes=remove_single_quotes)
         df_header_str = self.get_header_str(df_headers)
-        df_sql = DAL.get_config("sql_queries", sql_config_header)
+        df_sql = CM.get_config("sql_queries", sql_config_header)
         df_sql = df_sql.replace("WHAT_HEADERS", df_header_str).replace("WHAT_VALUES", df_qmarks)
 
         if clean_numeric_cols:
@@ -876,7 +877,7 @@ class menu_actions():
                     except ValueError:
                         continue
 
-        DAL.bulk_insert(df_sql, df_vals)
+        DB.bulk_insert(df_sql, df_vals)
 
         if return_vals:
             return df_vals

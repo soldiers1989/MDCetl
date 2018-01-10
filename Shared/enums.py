@@ -330,6 +330,8 @@ class VAR(Enum):
 	images = 'images'
 	videos = 'videos'
 	news = 'news'
+	person = 'person'
+	invested_in = 'invested_in'
 
 
 class CONSTANTS(Enum):
@@ -343,5 +345,12 @@ class CONSTANTS(Enum):
 class PATH(Enum):
 	DATA = 0,
 	QA = 1
+
+
+class TeamStatus(Enum):
+	Featured = 'Featured Team'
+	Past = 'Past Team'
+	Current = 'Current Team'
+	Board = 'Board Member and Adviser'
 
 

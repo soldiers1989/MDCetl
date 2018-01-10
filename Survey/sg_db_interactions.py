@@ -1,4 +1,5 @@
-from sg_db import DAL
+
+from Shared.db import DB as DAL
 
 
 class sg_get_tables:

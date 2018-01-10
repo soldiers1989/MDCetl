@@ -26,7 +26,7 @@ class DB:
 			cursor.execute(sql)
 			cursor.commit()
 		except Exception as ex:
-			print('Executing to DB Exception: {}'.format(ex))
+			print('Executing SC Exception: {}'.format(ex))
 
 	@staticmethod
 	def pandas_read(sql):

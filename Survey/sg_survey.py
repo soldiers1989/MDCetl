@@ -33,11 +33,11 @@ class sg_survey:
                     return output
             except KeyboardInterrupt:
                 pass
-            except:
+            except Exception as ex:
                 if attempt_count >= attempts:
                     print("All attempts failed")
                     return
-                print("Likely SSLError. Trying again in", wait_sec, "second(s)...")
+                print("Likely SSLError. Trying again in", wait_sec, "second(s)...", ex)
                 sleep(wait_sec)
 
     @classmethod

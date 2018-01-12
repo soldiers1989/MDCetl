@@ -173,19 +173,23 @@ class Crunchbase:
 	def save_funding_rounds(self, json, org_uuid):
 		if json[VAR.paging.value][VAR.total_items.value] > 0:
 			for i in range(int(json[VAR.paging.value][VAR.total_items.value])):
-				self.save_relational_entity(json[i], org_uuid, self.sql_funding_rounds_insert)
-				funding_rounds_uuid = json[i][VAR.uuid.value]
-				investments = json[i][VAR.relationships.value][VAR.investments.value]
-				for j in len(investments):
-					self.push_entity_to_db(investments[j][VAR.properties.value], funding_rounds_uuid
-												,self.sql_investments_insert, fk_uuid='funding_rounds_uuid')
-					if investments[i][VAR.relationships.value] is not None:
-						investors = investments[i][VAR.relationships.value]['investors'][VAR.properties.value]
+				self.save_relational_entity(json[VAR.items.value][i], org_uuid, self.sql_funding_rounds_insert)
+				funding_rounds_uuid = json[VAR.items.value][i][VAR.uuid.value]
+				if VAR.relationships.value in json[VAR.items.value][i].keys():
+					investments = json[VAR.items.value][i][VAR.relationships.value][VAR.investments.value]
+					for j in range(len(investments)):
 						investment_uuid = investments[j][VAR.uuid.value]
-						self.push_entity_to_db(investors, investment_uuid, self.sql_investors_insert, fk_uuid='investment_uuid')
+						self.push_entity_to_db(investments[j], funding_rounds_uuid, self.sql_investments_insert, investment_uuid, fk_uuid='funding_rounds_uuid')
+						if VAR.relationships.value in investments[i].keys():
+							investors = investments[j][VAR.relationships.value]['investors']
+							if VAR.investors.value in investors.keys():
+								investor_uuid = investors[VAR.uuid.value]
+								self.push_entity_to_db(investors, investment_uuid, self.sql_investors_insert, investor_uuid, fk_uuid='investment_uuid')
 
-						partners = investments[i][VAR.relationships.value]['partners'][VAR.properties.value]
-						self.push_entity_to_db(partners, investment_uuid, self.sql_investors_insert, fk_uuid='investment_uuid')
+							partners = investments[j][VAR.relationships.value]['partners']
+							if VAR.partners.value in partners.keys():
+								partner_uuid = partners[VAR.uuid.value]
+								self.push_entity_to_db(partners, investment_uuid, self.sql_investors_insert, partner_uuid, fk_uuid='investment_uuid')
 
 	def save_investments_invested_in(self, json):
 		if json[VAR.paging.value][VAR.total_items.value] > 0:
@@ -202,7 +206,10 @@ class Crunchbase:
 			self.push_entity_to_db(json[VAR.items.value][i][VAR.relationships.value][VAR.person.value], team_uuid, self.sql_person_insert, person_uuid, fk_uuid='team_uuid')
 
 	def save_relational_entity(self, json, org_uuid, sql_insert):
-		if json[VAR.cardinality.value] == 'OneToOne':
+		if VAR.properties.value in json.keys():
+			uuid = json[VAR.uuid.value]
+			self.push_entity_to_db(json, org_uuid, sql_insert, uuid, 0)
+		elif json[VAR.cardinality.value] == 'OneToOne':
 			if int(json['paging']['total_items']) > 0:
 				print(json[VAR.item.value][VAR.type.value])
 				uuid = json[VAR.item.value][VAR.uuid.value]
@@ -215,7 +222,7 @@ class Crunchbase:
 					self.push_entity_to_db(json, org_uuid, sql_insert, uuid, i)
 
 	def push_entity_to_db(self, json, org_uuid, sql_insert, uuid, i=0, fk_uuid='org_uuid'):
-		if json[VAR.properties.value]:
+		if VAR.properties.value in json.keys():
 			json_properties = json[VAR.properties.value]
 		elif json[VAR.cardinality.value] == 'OneToOne':
 			json_properties = json[VAR.item.value][VAR.properties.value]

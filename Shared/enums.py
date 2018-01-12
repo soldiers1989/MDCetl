@@ -164,6 +164,7 @@ class WorkSheet(Enum):
 	bap_company_annual = 'Annual Company Data'
 	bap_program_final = 'Program'
 	bap_program_youth_final = 'Program Youth'
+	bap_company_old = 'Company Data'
 
 
 class FileName(Enum):
@@ -310,6 +311,7 @@ class VAR(Enum):
 	past_team = 'past_team'
 	bmad = 'board_members_and_advisors'
 	investors = 'investors'
+	partners = 'partners'
 	owned_by = 'owned_by'
 	sub_orgs = 'sub_organizations'
 	headquarters = 'headquarters'

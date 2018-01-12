@@ -167,11 +167,7 @@ class Common:
 		return re.sub(this, that, here)
 
 	@staticmethod
-	def print_list(lst):
-		print('\n'.join(lst))
-
-	@staticmethod
-	def print_list(lst, delimiter):
+	def print_list(lst, delimiter='\n'):
 		print(delimiter.join(lst))
 
 	@staticmethod

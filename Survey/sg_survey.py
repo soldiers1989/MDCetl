@@ -24,9 +24,9 @@ class sg_survey:
         for i in range(0, attempts):
             try:
                 attempt_count += 1
-                ua = UserAgent()
-                headers = {"User-Agent": ua.chrome}
-                output = requests.get(URL, headers=headers)
+                # ua = UserAgent()
+                # headers = {"User-Agent": ua.chrome}
+                output = requests.get(URL) #, headers=headers)
                 if output.ok:
                     output = output.json()
                     print("Success. Stored API output in json dict.")

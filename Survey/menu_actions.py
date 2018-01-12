@@ -83,7 +83,7 @@ class menu_actions():
         campaigns_df["id"] = campaigns_df["id"].apply(pd.to_numeric, errors='ignore')
 
         # remove campaigns from df that are already in DB
-        c_sql = CM.get_config("sql_queries", "campaigns_for_survey")
+        c_sql = CM.get_config("config.ini", "sql_queries", "campaigns_for_survey")
         c_sql = c_sql.replace("WHAT_SURVEY_ID", str(survey_id))
         db_cmpgns = DB.pandas_read(c_sql)
         db_cmpgns = db_cmpgns.apply(pd.to_numeric, errors='ignore')
@@ -100,7 +100,7 @@ class menu_actions():
 
             # cmpgns_headers, cmpgns_qmarks, cmpgns_vals = self.get_sql_params(cmpgns_not_in_db2)
             # cmpgns_header_str = self.get_header_str(cmpgns_headers)
-            # cmpgns_sql = CM.get_config("sql_queries", "insert_campaigns")
+            # cmpgns_sql = CM.get_config("config.ini", "sql_queries", "insert_campaigns")
             # cmpgns_sql = cmpgns_sql.replace("WHAT_HEADERS", cmpgns_header_str).replace("WHAT_VALUES", cmpgns_qmarks)
             # for lst in cmpgns_vals:
             #     for i in range(len(lst)):
@@ -142,7 +142,7 @@ class menu_actions():
         print(emails_df)
 
         # remove campaigns from df that are already in DB
-        e_sql = CM.get_config("sql_queries", "emails_for_campaign")
+        e_sql = CM.get_config("config.ini", "sql_queries", "emails_for_campaign")
         e_sql = e_sql.replace("WHAT_CAMPAIGN", str(campaign_id))
         db_em = DB.pandas_read(e_sql)
 
@@ -157,7 +157,7 @@ class menu_actions():
 
             # em_headers, em_qmarks, em_vals = self.get_sql_params(em_not_in_db2, remove_single_quotes=False)
             # em_header_str = self.get_header_str(em_headers)
-            # em_sql = CM.get_config("sql_queries", "insert_emails")
+            # em_sql = CM.get_config("config.ini", "sql_queries", "insert_emails")
             # em_sql = em_sql.replace("WHAT_HEADERS", em_header_str).replace("WHAT_VALUES", em_qmarks)
             # for lst in em_vals:
             #     for i in range(len(lst)):
@@ -320,7 +320,7 @@ class menu_actions():
             #
             # statreps_header_str = self.get_header_str(statreps_headers)
             #
-            # statreps_sql = CM.get_config("sql_queries", "insert_resp_reports")
+            # statreps_sql = CM.get_config("config.ini", "sql_queries", "insert_resp_reports")
             # statreps_sql = statreps_sql.replace("WHAT_HEADERS", statreps_header_str).replace("WHAT_VALUES", statreps_qmarks)
             # for lst in statreps_vals:
             #     for i in range(len(lst)):
@@ -344,7 +344,7 @@ class menu_actions():
             #
             # respstats_header_str = self.get_header_str(respstats_headers)
             #
-            # respstats_sql = CM.get_config("sql_queries", "insert_resp_stats")
+            # respstats_sql = CM.get_config("config.ini", "sql_queries", "insert_resp_stats")
             # respstats_sql = respstats_sql.replace("WHAT_HEADERS", respstats_header_str).replace("WHAT_VALUES", respstats_qmarks)
             # for lst in respstats_vals:
             #     for i in range(len(lst)):
@@ -442,7 +442,7 @@ class menu_actions():
         #
         # header_str = self.get_header_str(headers)
         #
-        # surveys_sql = CM.get_config("sql_queries", "insert_survey_entry")
+        # surveys_sql = CM.get_config("config.ini", "sql_queries", "insert_survey_entry")
         # surveys_sql = surveys_sql.replace("WHAT_HEADERS", header_str).replace("WHAT_VALUES", question_marks)
         # DB.bulk_insert(surveys_sql, insert_vals)
 
@@ -472,13 +472,13 @@ class menu_actions():
         #
         # print("\nInserting Questions: \n")
         # # load Questions to DB
-        # qs_sql = CM.get_config("sql_queries", "insert_qs")
+        # qs_sql = CM.get_config("config.ini", "sql_queries", "insert_qs")
         # qs_sql = qs_sql.replace("WHAT_HEADERS", qs_header_str).replace("WHAT_VALUES", qs_qmarks)
         # DB.bulk_insert(qs_sql, qs_insert_vals)
         #
         # print("\nInserting Options: \n")
         # # load Options to DB
-        # os_sql = CM.get_config("sql_queries", "insert_os")
+        # os_sql = CM.get_config("config.ini", "sql_queries", "insert_os")
         # os_sql = os_sql.replace("WHAT_HEADERS", os_header_str).replace("WHAT_VALUES", os_qmarks)
         # DB.bulk_insert(os_sql, os_insert_vals)
 
@@ -541,7 +541,7 @@ class menu_actions():
     @classmethod
     def check_qs_exist(self, survey_id):
 
-        sql = CM.get_config("sql_queries", "check_questions_exist")
+        sql = CM.get_config("config.ini", "sql_queries", "check_questions_exist")
         sql = sql.replace("WHAT_SURVEY_ID", str(survey_id))
         check = DB.pandas_read(sql)
 
@@ -574,7 +574,7 @@ class menu_actions():
         contact_lists = contact_lists.apply(pd.to_numeric, errors='ignore')
 
         print("\nGetting contact lists from DB")
-        lists_in_db_sql = CM.get_config("sql_queries", "contact_lists")
+        lists_in_db_sql = CM.get_config("config.ini", "sql_queries", "contact_lists")
         lists_in_db = DB.pandas_read(lists_in_db_sql)
 
         print("\nChecking for diffs b/t API contact lists and DB contact lists")
@@ -589,7 +589,7 @@ class menu_actions():
 
             # list_headers, list_qmarks, list_vals = self.get_sql_params(lists_not_in_db2)
             # list_header_str = self.get_header_str(list_headers)
-            # lists_sql = CM.get_config("sql_queries", "insert_contactlists")
+            # lists_sql = CM.get_config("config.ini", "sql_queries", "insert_contactlists")
             # lists_sql = lists_sql.replace("WHAT_HEADERS", list_header_str).replace("WHAT_VALUES", list_qmarks)
             # DB.bulk_insert(lists_sql, list_vals)
 
@@ -602,7 +602,7 @@ class menu_actions():
         all_contacts = all_contacts.apply(pd.to_numeric, errors='ignore')
 
         print("\nGathering all contacts from DB")
-        all_contacts_sql = CM.get_config("sql_queries", "all_contacts")
+        all_contacts_sql = CM.get_config("config.ini", "sql_queries", "all_contacts")
         all_db_contacts = DB.pandas_read(all_contacts_sql)
         all_db_contacts = all_db_contacts.apply(pd.to_numeric, errors='ignore')
 
@@ -624,7 +624,7 @@ class menu_actions():
             #
             # nc_header_str = self.get_header_str(nc_headers)
             #
-            # nc_sql = CM.get_config("sql_queries", "insert_contacts")
+            # nc_sql = CM.get_config("config.ini", "sql_queries", "insert_contacts")
             # nc_sql = nc_sql.replace("WHAT_HEADERS", nc_header_str).replace("WHAT_VALUES", nc_qmarks)
             # for lst in nc_vals:
             #     for i in range(len(lst)):
@@ -649,7 +649,7 @@ class menu_actions():
         api_contacts_lists_df.columns = ["sg_cid", "mdc_contact_id", "contact_list_id"]
 
         print("\nGetting Contacts__Lists table from DB.")
-        db_cl_sql = CM.get_config("sql_queries", "all_contacts__lists")
+        db_cl_sql = CM.get_config("config.ini", "sql_queries", "all_contacts__lists")
         db_contacts_lists_df = DB.pandas_read(db_cl_sql)
         db_contacts_lists_df = db_contacts_lists_df.apply(pd.to_numeric, errors='ignore')
 
@@ -666,7 +666,7 @@ class menu_actions():
 
             # cl_headers, cl_qmarks, cl_vals = self.get_sql_params(new_cl)
             # cl_header_str = self.get_header_str(cl_headers)
-            # cl_sql = CM.get_config("sql_queries", "insert_contacts_lists")
+            # cl_sql = CM.get_config("config.ini", "sql_queries", "insert_contacts_lists")
             # cl_sql = cl_sql.replace("WHAT_HEADERS", cl_header_str).replace("WHAT_VALUES", cl_qmarks)
             # for lst in cl_vals:
             #     for i in range(len(lst)):
@@ -690,7 +690,7 @@ class menu_actions():
         # contacts_in_resps = contacts_in_resps.apply(pd.to_numeric, errors='ignore')
         # contacts_in_resps.columns = ["sg_cid", "mdc_contact_id", "contact_list_id", "survey_id"]
         #
-        # contacts__surveys_sql = CM.get_config("sql_queries", "contacts__lists")
+        # contacts__surveys_sql = CM.get_config("config.ini", "sql_queries", "contacts__lists")
         # db_contacts__surveys = DB.pandas_read(contacts__surveys_sql)
         #
         # print("\nWriting new entries to Contacts__Surveys table. (this keeps track of what contacts in our DB have responded to which survey")
@@ -704,7 +704,7 @@ class menu_actions():
         #
         #     cs_header_str = self.get_header_str(cs_headers)
         #
-        #     cs_sql = CM.get_config("sql_queries", "insert_contacts__lists")
+        #     cs_sql = CM.get_config("config.ini", "sql_queries", "insert_contacts__lists")
         #     cs_sql = cs_sql.replace("WHAT_HEADERS", cs_header_str).replace("WHAT_VALUES", cs_qmarks)
         #     for lst in cs_vals:
         #         for i in range(len(lst)):
@@ -722,7 +722,7 @@ class menu_actions():
 
         # get db resps where resps.survey_id = survey_id
         print("\nGetting all responses for this survey from DB.")
-        r_sql = CM.get_config("sql_queries", "all_resps_for_survey")
+        r_sql = CM.get_config("config.ini", "sql_queries", "all_resps_for_survey")
         r_sql = r_sql.replace("WHAT_SURVEY_ID", str(survey_id))
         db_resps = DB.pandas_read(r_sql)
         db_resps["date_submitted"] = db_resps["date_submitted"].astype(str)
@@ -754,7 +754,7 @@ class menu_actions():
             resp_headers, resp_qmarks, resp_vals = self.get_sql_params(api_resps)
             resp_header_str = self.get_header_str(resp_headers)
 
-            update_r_sql = CM.get_config("sql_queries", "update_rs")
+            update_r_sql = CM.get_config("config.ini", "sql_queries", "update_rs")
             for id in changed_resps:
                 j = changed_resps.index(id)
                 where_sql = "WHERE id = " + str(id)
@@ -776,7 +776,7 @@ class menu_actions():
 
             # resp_headers, resp_qmarks, resp_vals = self.get_sql_params(resps_not_in_db2)
             # resp_header_str = self.get_header_str(resp_headers)
-            # resp_Sql = DB.get_config("sql_queries", "insert_rs")
+            # resp_Sql = CM.get_config("config.ini", "sql_queries", "insert_rs")
             # resp_Sql = resp_Sql.replace("WHAT_HEADERS", resp_header_str).replace("WHAT_VALUES", resp_qmarks)
             # CM.bulk_insert(resp_Sql, resp_vals)
 
@@ -793,12 +793,12 @@ class menu_actions():
         # del where id in changed_resps, then insert
         if len(changed_resps) > 0:
             print("\nDeleting answers of respondents who updated their response.")
-            update_a_sql = CM.get_config("sql_queries", "update_a_sql")
+            update_a_sql = CM.get_config("config.ini", "sql_queries", "update_a_sql")
             changed_ans_df = api_ans[api_ans["survey_response_id"].isin(changed_resps)]
             ans_headers, ans_qmarks, ans_vals = self.get_sql_params(changed_ans_df)
             ans_header_str = self.get_header_str(ans_headers)
 
-            del_ans_sql = DB.get_config("sql_queries", "del_ans")
+            del_ans_sql = CM.get_config("config.ini", "sql_queries", "del_ans")
             for id in changed_resps:
                 del_ans_sql_for_id = del_ans_sql.replace("WHAT_RESP_ID", str(id))
                 DB.execute(del_ans_sql_for_id)
@@ -816,7 +816,7 @@ class menu_actions():
 
             # ans_headers, ans_qmarks, ans_vals = self.get_sql_params(ans_insert_df, remove_single_quotes=False)
             # ans_header_str = self.get_header_str(ans_headers)
-            # ans_sql = CM.get_config("sql_queries", "insert_as")
+            # ans_sql = CM.get_config("config.ini", "sql_queries", "insert_as")
             # ans_sql = ans_sql.replace("WHAT_HEADERS", ans_header_str).replace("WHAT_VALUES", ans_qmarks)
             # misc.write_to_xl(pd.DataFrame(ans_vals), "Survey Answer Load", "/Users/gcree/Box Sync/gcree/TESTING/")
             # DB.bulk_insert(ans_sql, ans_vals)
@@ -826,7 +826,7 @@ class menu_actions():
             return
 
         print("\nChecking that all answers were inserted")
-        check_ans_sql = CM.get_config("sql_queries", "check_ans")
+        check_ans_sql = CM.get_config("config.ini", "sql_queries", "check_ans")
         inserted_resp_ids_str = ''
         for id in inserted_resps:
             inserted_resp_ids_str = inserted_resp_ids_str + str(id) + ", "
@@ -839,12 +839,12 @@ class menu_actions():
             print("\nNot all answers were loaded. Rolling back insert operation "
                   "(deleting answers and responses inserted into DB)")
             # del ans inserted this session, if any
-            del_ans_sql = CM.get_config("sql_queries", "del_ans_by_respids")
+            del_ans_sql = CM.get_config("config.ini", "sql_queries", "del_ans_by_respids")
             del_ans_sql = del_ans_sql.replace("WHAT_RESP_IDS", inserted_resp_ids_str)
             DB.execute(del_ans_sql)
 
             # del resps inserted this session, if any
-            del_resps_sql = CM.get_config("sql_queries", "del_resps_by_list")
+            del_resps_sql = CM.get_config("config.ini", "sql_queries", "del_resps_by_list")
             del_resps_sql = del_resps_sql.replace("WHAT_RESP_IDS", inserted_resp_ids_str)
             DB.execute(del_resps_sql)
 
@@ -858,7 +858,7 @@ class menu_actions():
 
         df_headers, df_qmarks, df_vals = self.get_sql_params(df, remove_single_quotes=remove_single_quotes)
         df_header_str = self.get_header_str(df_headers)
-        df_sql = CM.get_config("sql_queries", sql_config_header)
+        df_sql = CM.get_config("config.ini", "sql_queries", sql_config_header)
         df_sql = df_sql.replace("WHAT_HEADERS", df_header_str).replace("WHAT_VALUES", df_qmarks)
 
         if clean_numeric_cols:

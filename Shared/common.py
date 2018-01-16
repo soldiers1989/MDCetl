@@ -168,7 +168,9 @@ class Common:
 
 	@staticmethod
 	def print_list(lst, delimiter='\n'):
+		print('+', '-' * 100, '+\n')
 		print(delimiter.join(lst))
+		print('\n+', '-' * 100, '+')
 
 	@staticmethod
 	def apostrophe_name(name):

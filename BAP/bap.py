@@ -16,15 +16,22 @@ from pypostalcode import PostalCodeDatabase
 
 
 class BapQuarterly:
+	desired_width = 420
+	pd.set_option('display.width', desired_width)
 	year, quarter = COM.fiscal_year_quarter(datetime.datetime.utcnow())
 	batch = BatchService()
-	bap_path = COM.get_config('config.ini', 'box_file_path', 'path_bap')
+	bap_path = COM.get_config('config.ini', 'box_file_path', 'path_bap_source')
 	file = FileService(bap_path)
 	qa = BapQA()
+	season = '18_Q3'
 	
 	@staticmethod
 	def show_bap_quarterly_template():
 		BapQuarterly.file.show_source_file()
+
+	@staticmethod
+	def qa_bap_spread_sheet_by_ric():
+		BapQuarterly.qa.check_rics_file()
 
 	@staticmethod
 	def combine_rics_bap_quarterly():
@@ -279,29 +286,29 @@ class BapQuarterly:
 							'Industry_Sector == \'{}\''.format(industry_sector)).empty else None
 						dd = {'DataSourceID': data_source_id,
 						      'CompanyID': company_id,
-						      'MinDate': min_date,
-						      'CurrentDate': current_date,
-						      'VolunteerYTD': vhs_agg,
-						      'AdvisoryHoursYTD': adv_agg,
-						      'VolunteerThisQuarter': vhs,
-						      'AdvisoryThisQuarter': adv,
-						      'FiscalQuarter': quarter,
-						      'BatchID': batch_id,
-						      'ModifiedDate': modified_date,
-						      'SocialEnterprise': socialEnterprise,
-						      'Stage': stage,
-						      'HighPotential': highPotential,
-						      'Lvl2IndustryName': lvl2_industry_name,
-						      'FiscalYear': BapQuarterly.year,
-						      'Youth': youth,
-						      'DateOfIncorporation': dateOfIncorporation,
-						      'AnnualRevenue': annual_revenue,
-						      'NumberEmployees': number_of_employees,
-						      'FundingToDate': funding_current_quarter,
-						      'IndustrySector': industry_sector,
-						      'IntakeDate': intake_date,
-						      'FundingCurrentQuarter': funding_agg
-						      }
+							  'MinDate': min_date,
+							  'CurrentDate': current_date,
+							  'VolunteerYTD': vhs_agg,
+							  'AdvisoryHoursYTD': adv_agg,
+							  'VolunteerThisQuarter': vhs,
+							  'AdvisoryThisQuarter': adv,
+							  'FiscalQuarter': quarter,
+							  'BatchID': batch_id,
+							  'ModifiedDate': modified_date,
+							  'SocialEnterprise': socialEnterprise,
+							  'Stage': stage,
+							  'HighPotential': highPotential,
+							  'Lvl2IndustryName': lvl2_industry_name,
+							  'FiscalYear': BapQuarterly.year,
+							  'Youth': youth,
+							  'DateOfIncorporation': dateOfIncorporation,
+							  'AnnualRevenue': annual_revenue,
+							  'NumberEmployees': number_of_employees,
+							  'FundingToDate': funding_current_quarter,
+							  'IndustrySector': industry_sector,
+							  'IntakeDate': intake_date,
+							  'FundingCurrentQuarter': funding_agg
+							  }
 						print(dd.values())
 						df = pd.DataFrame([dd], columns=clm.clmn_fact_ric_rolled_up.value)
 						df_FactRICRolledUp = pd.concat([df_FactRICRolledUp, df])
@@ -364,6 +371,4 @@ class BapQuarterly:
 
 
 if __name__ == '__main__':
-	desired_width = 420
-	pd.set_option('display.width', desired_width)
-	BapQuarterly.read_bap_data()
+	BapQuarterly.qa.check_rics_file()

@@ -20,7 +20,11 @@ class FileService:
 		self.source_file = os.listdir(self.path)
 
 	def show_source_file(self):
-		COM.print_list([f for f in self.source_file if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)])
+		file_list = [f for f in self.source_file if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)]
+		COM.print_list(file_list)
+
+	def get_source_file(self):
+		return [f for f in self.source_file if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)]
 
 	def read_source_file(self, ftype, data_source):
 		l_program = []

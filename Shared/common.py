@@ -7,7 +7,7 @@ from configparser import ConfigParser
 from dateutil import parser
 from dateutil.parser import parse
 
-from Shared.enums import DataSourceType, CONSTANTS
+from Shared.enums import DataSourceType, CONSTANTS, PATH
 
 
 class Common:
@@ -275,3 +275,27 @@ class Common:
 			return response
 		except requests.RequestException as e:
 			print(e)
+
+	@staticmethod
+	def change_location(loc):
+		path = Common.get_config('config.ini', 'box_file_path', 'path_bap_source')
+		path_qa = Common.get_config('config.ini', 'box_file_path', 'path_bap_qa')
+		path_combined = Common.get_config('config.ini', 'box_file_path', 'path_bap_combined')
+		path_etl = Common.get_config('config.ini', 'box_file_path', 'path_bap_etl')
+
+		if loc == PATH.DATA:
+			box_path = os.path.join(os.path.expanduser('~'), path)
+			os.chdir(box_path)
+			return box_path
+		elif loc == PATH.QA:
+			qa_path = os.path.join(os.path.expanduser('~'), path_qa)
+			os.chdir(qa_path)
+			return qa_path
+		elif loc == PATH.COMBINED:
+			com_path = os.path.join(os.path.expanduser('~'), path_combined)
+			os.chdir(com_path)
+			return com_path
+		elif loc == PATH.ETL:
+			etl_path = os.path.join(os.path.expanduser('~'), path_etl)
+			os.chdir(etl_path)
+			return etl_path

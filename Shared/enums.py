@@ -87,6 +87,7 @@ class SourceSystemType(Enum):
 	SURVEY_FLAT_FY17 = 46
 	FEDERAL_FUNDING = 47
 	OSVP = 48
+	RICACD_bap = 49
 
 
 class CompanyStage(Enum):
@@ -345,8 +346,10 @@ class CONSTANTS(Enum):
 
 
 class PATH(Enum):
-	DATA = 0,
+	DATA = 0
 	QA = 1
+	COMBINED = 2
+	ETL = 3
 
 
 class TeamStatus(Enum):

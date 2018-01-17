@@ -77,7 +77,8 @@ class BapQuarterly:
 		DB.bulk_insert(sql.sql_bap_company_annual_insert, val)
 
 	@staticmethod
-	def transfer_bap_data():
+	def push_bap_quarterly_to_database():
+		COM.change_location(pth.ETL)
 		program = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_program.value)
 		program_youth = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_program_youth.value)
 		quarterly_data = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_company.value)
@@ -433,3 +434,4 @@ if __name__ == '__main__':
 	# BapQuarterly.combine_rics_bap_quarterly()
 	BapQuarterly.qa_bap_spread_sheet_by_ric()
 	# BapQuarterly.qa_bap_ric_combined()
+	#BapQuarterly.file.read_source_file('', '')

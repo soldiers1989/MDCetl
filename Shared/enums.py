@@ -262,7 +262,7 @@ class SQL(Enum):
 	sql_bap_distict_company = '''SELECT DISTINCT CompanyID FROM Reporting.FactRICCompanyData WHERE BatchID IN {}'''
 	sql_industry_list_table = 'SELECT [Industry_Sector],[Lvl2IndustryName] FROM [RICSurveyFlat].[RICSurvey2016Industry]'
 
-
+	sql_columns = 'SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE Table_Schema = \'{}\''
 
 
 class Columns(Enum):
@@ -357,5 +357,11 @@ class TeamStatus(Enum):
 	Past = 'Past Team'
 	Current = 'Current Team'
 	Board = 'Board Member and Adviser'
+
+
+class Schema(Enum):
+	bap = 'BAP'
+	crunchbase = 'CRUNCHBASE'
+	config = 'Config'
 
 

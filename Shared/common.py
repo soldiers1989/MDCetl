@@ -6,7 +6,6 @@ import requests
 from configparser import ConfigParser
 from dateutil import parser
 from dateutil.parser import parse
-
 from Shared.enums import DataSourceType, CONSTANTS, PATH
 
 
@@ -299,3 +298,4 @@ class Common:
 			etl_path = os.path.join(os.path.expanduser('~'), path_etl)
 			os.chdir(etl_path)
 			return etl_path
+

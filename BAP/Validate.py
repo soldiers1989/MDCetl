@@ -39,7 +39,7 @@ class BAPValidate:
 
 		self.source_file = None
 		self.file_list = []
-
+		self.dict_list = []
 		self.haltech = 'Haltech'
 		self.rics = ['spark', 'communitech', 'venturelab', 'haltech', 'iion', 'niagara', 'guelph', 'innovationfactory',
 					 'ottawa', 'launchlab', 'mars', 'norcat', 'riccenter', 'ssmic', 'noic', 'wetec', 'alliance']
@@ -128,51 +128,150 @@ class BAPValidate:
 		writer.save()
 
 	def bap_summary(self):
+
 		# NEW CLIENTS
 		nc = 'Number of New Clients'
-		ncq1_sheet = len(self.Q1CompanyData_sheet[self.Q1CompanyData_sheet['Date of Intake'] > '2017-03-31'])
-		ncq1_db = len(self.Q1CompanyData[self.Q1CompanyData['Date of Intake'] > '2017-03-31'])
-		ncq1_fric = len(self.Q1CompanyData_fact_ric[self.Q1CompanyData_fact_ric['IntakeDate'] > '2017-03-31'])
-		x = pd.to_datetime(self.Q1CompanyData_rollup[(self.Q1CompanyData_rollup['IntakeDate'] > '2017-03-31') & (self.Q1CompanyData_rollup['FiscalYear'] == 2018) & (self.Q1CompanyData_rollup['FiscalQuarter'] == 1)]['IntakeDate'])
-		ncq1_roll_up = len(x[x > '2017-03-31'])
+		ncq1_sheet = self.Q1CompanyData_sheet[self.Q1CompanyData_sheet['Date of Intake'] > '2017-03-31']
+		ncq1_db = self.Q1CompanyData[self.Q1CompanyData['Date of Intake'] > '2017-03-31']
+		ncq1_fric = self.Q1CompanyData_fact_ric[self.Q1CompanyData_fact_ric['IntakeDate'] > '2017-03-31']
+		x = pd.to_datetime(self.Q1CompanyData_rollup[(self.Q1CompanyData_rollup['IntakeDate'] > '2017-03-31')]['IntakeDate'])
+		ncq1_roll_up = x[x > '2017-03-31']
 		ncq1_sg = ''
-		ncq2_sheet = len(self.Q2CompanyData_sheet[self.Q2CompanyData_sheet['Date of Intake'] > '2017-06-30'])
-		ncq2_db = len(self.Q2CompanyData[self.Q2CompanyData['Date of Intake'] > '2017-06-30'])
-		ncq2_fric = len(self.Q1CompanyData_fact_ric[self.Q2CompanyData_fact_ric['IntakeDate'] > '2017-06-30'])
-		x = pd.to_datetime(self.Q2CompanyData_rollup[(self.Q2CompanyData_rollup['IntakeDate'] > '2017-06-30') & (self.Q2CompanyData_rollup['FiscalYear'] == 2018) & (self.Q2CompanyData_rollup['FiscalQuarter'] == 2)]['IntakeDate'])
-		ncq2_roll_up = len(x[x > '2017-06-30'])
+		ncq2_sheet = self.Q2CompanyData_sheet[self.Q2CompanyData_sheet['Date of Intake'] > '2017-06-30']
+		ncq2_db = self.Q2CompanyData[self.Q2CompanyData['DateOfIntake'] > '2017-06-30']
+		ncq2_fric = self.Q2CompanyData_fact_ric[self.Q2CompanyData_fact_ric['IntakeDate'] > '2017-06-30']
+		y = pd.to_datetime(self.Q2CompanyData_rollup[(self.Q2CompanyData_rollup['IntakeDate'] > '2017-06-30')]['IntakeDate'])
+		ncq2_roll_up = y[y > '2017-06-30']
 		ncq2_sg = ''
-		
+		new_clients = self.get_bap_summary([nc, ncq1_sheet, ncq1_db, ncq1_fric, ncq1_roll_up, ncq1_sg, ncq2_sheet, ncq2_db, ncq2_fric, ncq2_roll_up, ncq2_sg])
+		self.dict_list.append(new_clients)
 		# SOCIAL ENTERPRISES
-		se = 'Number of New Clients'
-		seq1_sheet = len(self.Q1CompanyData_sheet[self.Q1CompanyData_sheet['Social Enterprise y/n'] == 'Y'])
-		seq1_db = len(self.Q1CompanyData[self.Q1CompanyData['Social Enterprise y/n'] == 'Y'])
-		seq1_fric = len(self.Q1CompanyData_fact_ric[self.Q1CompanyData_fact_ric['SocialEnterprise'] == 'Y'])
-		seq1_roll_up = len(self.Q1CompanyData_rollup[(self.Q1CompanyData_rollup['SocialEnterprise'] == 'y') & (self.Q1CompanyData_rollup['FiscalYear'] == 2018) & (self.Q1CompanyData_rollup['FiscalQuarter'] == 1)])
-		seq1_sg = ''
-		seq2_sheet = len(self.Q2CompanyData_sheet[self.Q2CompanyData_sheet['Social Enterprise y/n'] == 'Y'])
-		seq2_db = len(self.Q2CompanyData[self.Q2CompanyData['Social Enterprise y/n'] == 'Y'])
-		seq2_fric = len(self.Q2CompanyData_fact_ric[self.Q2CompanyData_fact_ric['SocialEnterprise'] == 'Y'])
-		seq2_roll_up = len(self.Q2CompanyData_rollup[(self.Q2CompanyData_rollup['SocialEnterprise'] == 'Y') & (self.Q2CompanyData_rollup['FiscalYear'] == 2018) & (self.Q2CompanyData_rollup['FiscalQuarter'] == 2)])
-		seq2_sg = ''
 
+		se = 'Number of Social Enterprises'
+		seq1_sheet = self.Q1CompanyData_sheet[self.Q1CompanyData_sheet['Social Enterprise y/n'] == 'Y']
+		seq1_db = self.Q1CompanyData[self.Q1CompanyData['Social Enterprise y/n'] == 'Y']
+		seq1_fric = self.Q1CompanyData_fact_ric[self.Q1CompanyData_fact_ric['SocialEnterprise'] == 'Y']
+		seq1_roll_up = self.Q1CompanyData_rollup[(self.Q1CompanyData_rollup['SocialEnterprise'] == 'y')]
+		seq1_sg = ''
+		seq2_sheet = self.Q2CompanyData_sheet[self.Q2CompanyData_sheet['Social Enterprise y/n'] == 'Y']
+		seq2_db = self.Q2CompanyData[self.Q2CompanyData['SocialEnterprise'] == 'Y']
+		seq2_fric = self.Q2CompanyData_fact_ric[self.Q2CompanyData_fact_ric['SocialEnterprise'] == 'Y']
+		seq2_roll_up = self.Q2CompanyData_rollup[(self.Q2CompanyData_rollup['SocialEnterprise'] == 'y')]
+		seq2_sg = ''
+		social_enterprise = self.get_bap_summary([se, seq1_sheet, seq1_db, seq1_fric, seq1_roll_up, seq2_sg, seq2_sheet, seq2_db, seq2_fric, seq2_roll_up, seq2_sg])
+		self.dict_list.append(social_enterprise)
 		# CLIENTS WHO GOT HELP
-		ch = 'Number of New Clients'
-		chq1_sheet = len(self.Q1CompanyData_sheet[self.Q1CompanyData_sheet['Social Enterprise y/n'] == 'Y'])
-		chq1_db = len(self.Q1CompanyData[self.Q1CompanyData['Social Enterprise y/n'] == 'Y'])
-		chq1_fric = len(self.Q1CompanyData_fact_ric[self.Q1CompanyData_fact_ric['SocialEnterprise'] == 'Y'])
-		chq1_roll_up = len(self.Q1CompanyData_rollup[(self.Q1CompanyData_rollup['SocialEnterprise'] == 'y') & (
-				self.Q1CompanyData_rollup['FiscalYear'] == 2018) & (self.Q1CompanyData_rollup['FiscalQuarter'] == 1)])
+		ch = 'Number Clients who got help'
+		chq1_sheet = self.Q1CompanyData_sheet[(self.Q1CompanyData_sheet['Number of advisory service hours provided'].astype(float) > 0) | (self.Q1CompanyData_sheet['Volunteer mentor hours'] > 0)]
+		chq1_db = self.Q1CompanyData[(self.Q1CompanyData['Number of advisory service hours provided'].astype(float) > 0) | (self.Q1CompanyData['Volunteer mentor hours'] > 0)]
+		chq1_fric = self.Q1CompanyData_fact_ric[(self.Q1CompanyData_fact_ric['AdvisoryServicesHours'] > 0) | (self.Q1CompanyData_fact_ric['VolunteerMentorHours'] > 0)]
+		chq1_roll_up = self.Q1CompanyData_rollup[(self.Q1CompanyData_rollup['AdvisoryHoursYTD'] > 0) | (self.Q1CompanyData_rollup['VolunteerHoursYTD'] > 0)]
 		chq1_sg = ''
-		chq2_sheet = len(self.Q2CompanyData_sheet[self.Q2CompanyData_sheet['Social Enterprise y/n'] == 'Y'])
-		chq2_db = len(self.Q2CompanyData[self.Q2CompanyData['Date of Intake'] > '2017-06-30'])
-		chq2_fric = len(self.Q2CompanyData_fact_ric[self.Q2CompanyData_fact_ric['IntakeDate'] > '2017-06-30'])
-		x = pd.to_datetime(self.Q2CompanyData_rollup[(self.Q2CompanyData_rollup['IntakeDate'] > '2017-06-30') & (
-				self.Q2CompanyData_rollup['FiscalYear'] == 2018) & (self.Q2CompanyData_rollup['FiscalQuarter'] == 2)][
-			                   'IntakeDate'])
+		chq2_sheet = self.Q2CompanyData_sheet[(self.Q2CompanyData_sheet['Number of advisory service hours provided'].astype(float) > 0) | (self.Q2CompanyData_sheet['Volunteer mentor hours'].astype(float) > 0)]
+		chq2_db = self.Q2CompanyData[(self.Q2CompanyData['NumberOfAdvisoryServiceHoursProvided'].astype(float) > 0) | (self.Q2CompanyData['VolunteerMentorHours'].astype(float) > 0)]
+		chq2_fric = self.Q2CompanyData_fact_ric[(self.Q2CompanyData_fact_ric['AdvisoryServicesHours'] > 0) | (self.Q2CompanyData_fact_ric['VolunteerMentorHours'] > 0)]
+		chq2_roll_up = self.Q2CompanyData_rollup[(self.Q2CompanyData_rollup['AdvisoryHoursYTD'] > 0) | (self.Q2CompanyData_rollup['VolunteerHoursYTD'] > 0)]
 		chq2_sg = ''
+		client_helped =self.get_bap_summary([ch, chq1_sheet, chq1_db, chq1_fric, chq1_roll_up, chq1_sg, chq2_sheet, chq2_db, chq2_fric, chq2_roll_up, chq2_sg])
+		self.dict_list.append((client_helped))
+		# STAGE 0 - Idea
+		s0 = 'Stage 0 - Idea'
+		s0q1_sheet = chq1_sheet[(chq1_sheet['Stage'] == 'Idea')]
+		s0q1_db = chq1_db[(chq1_db['Stage'] == 'Idea')]
+		s0q1_fric = chq1_fric[(chq1_fric['Stage'] == 'Idea')]
+		s0q1_roll_up = chq1_roll_up[(chq1_roll_up['StageFriendly'] == 'Stage 0 - Idea')]
+		s0q1_sg = ''
+		s0q2_sheet = chq2_sheet[(chq2_sheet['Stage'] == 'Idea')]
+		s0q2_db = chq2_db[(chq2_db['Stage'] == 'Idea')]
+		s0q2_fric = chq2_fric[(chq2_fric['Stage'] == 'Idea')]
+		s0q2_roll_up = chq2_roll_up[(chq2_roll_up['StageFriendly'] == 'Stage 0 - Idea')]
+		s0q2_sg = ''
+		stage0 = self.get_bap_summary([s0, s0q1_sheet, s0q1_db, s0q1_fric, s0q1_roll_up, s0q1_sg, s0q2_sheet, s0q2_db, s0q2_fric, s0q2_roll_up, s0q2_sg])
+		self.dict_list.append(stage0)
+		# STAGE 1 - Discovery
+		s1 = 'Stage 1 - Discovery'
+		s1q1_sheet = chq1_sheet[(chq1_sheet['Stage'] == 'Discovery')]
+		s1q1_db = chq1_db[(chq1_db['Stage'] == 'Discovery')]
+		s1q1_fric = chq1_fric[(chq1_fric['Stage'] == 'Discovery')]
+		s1q1_roll_up = chq1_roll_up[(chq1_roll_up['StageFriendly'] == 'Stage 1 - Discovery')]
+		s1q1_sg = ''
+		s1q2_sheet = chq2_sheet[(chq2_sheet['Stage'] == 'Discovery')]
+		s1q2_db = chq2_db[(chq2_db['Stage'] == 'Discovery')]
+		s1q2_fric = chq2_fric[(chq2_fric['Stage'] == 'Discovery')]
+		s1q2_roll_up = chq2_roll_up[(chq2_roll_up['StageFriendly'] == 'Stage 1 - Discovery')]
+		s1q2_sg = ''
+		stage1 = self.get_bap_summary(
+			[s1, s1q1_sheet, s1q1_db, s1q1_fric, s1q1_roll_up, s1q1_sg, s1q2_sheet, s1q2_db, s1q2_fric, s1q2_roll_up,
+			 s1q2_sg])
+		self.dict_list.append(stage1)
+		# STAGE 2 - Validation
+		s2 = 'Stage 2 - Validation'
+		s2q1_sheet = chq1_sheet[(chq1_sheet['Stage'] == 'Validation')]
+		s2q1_db = chq1_db[(chq1_db['Stage'] == 'Validation')]
+		s2q1_fric = chq1_fric[(chq1_fric['Stage'] == 'Validation')]
+		s2q1_roll_up = chq1_roll_up[(chq1_roll_up['StageFriendly'] == 'Stage 2 - Validation')]
+		s2q1_sg = ''
+		s2q2_sheet = chq2_sheet[(chq2_sheet['Stage'] == 'Validation')]
+		s2q2_db = chq2_db[(chq2_db['Stage'] == 'Validation')]
+		s2q2_fric = chq2_fric[(chq2_fric['Stage'] == 'Validation')]
+		s2q2_roll_up = chq2_roll_up[(chq2_roll_up['StageFriendly'] == 'Stage 2 - Validation')]
+		s2q2_sg = ''
+		stage2 = self.get_bap_summary(
+			[s2, s2q1_sheet, s2q1_db, s2q1_fric, s2q1_roll_up, s2q1_sg, s2q2_sheet, s2q2_db, s2q2_fric, s2q2_roll_up,
+			 s2q2_sg])
+		self.dict_list.append(stage2)
+		# STAGE 3 - Efficiency
+		s3 = 'Stage 3 - Efficiency'
+		s3q1_sheet = chq1_sheet[(chq1_sheet['Stage'] == 'Efficiency')]
+		s3q1_db = chq1_db[(chq1_db['Stage'] == 'Efficiency')]
+		s3q1_fric = chq1_fric[(chq1_fric['Stage'] == 'Efficiency')]
+		s3q1_roll_up = chq1_roll_up[(chq1_roll_up['StageFriendly'] == 'Stage 3 - Efficiency')]
+		s3q1_sg = ''
+		s3q2_sheet = chq2_sheet[(chq2_sheet['Stage'] == 'Efficiency')]
+		s3q2_db = chq2_db[(chq2_db['Stage'] == 'Efficiency')]
+		s3q2_fric = chq2_fric[(chq2_fric['Stage'] == 'Efficiency')]
+		s3q2_roll_up = chq2_roll_up[(chq2_roll_up['StageFriendly'] == 'Stage 3 - Efficiency')]
+		s3q2_sg = ''
+		stage3 = self.get_bap_summary(
+			[s3, s3q1_sheet, s3q1_db, s3q1_fric, s3q1_roll_up, s3q1_sg, s3q2_sheet, s3q2_db, s3q2_fric, s3q2_roll_up,
+			 s3q2_sg])
+		self.dict_list.append(stage3)
+		# STAGE 5 - Scale
+		s4 = 'Stage 4 - Scale'
+		s4q1_sheet = chq1_sheet[(chq1_sheet['Stage'] == 'Scale')]
+		s4q1_db = chq1_db[(chq1_db['Stage'] == 'Scale')]
+		s4q1_fric = chq1_fric[(chq1_fric['Stage'] == 'Scale')]
+		s4q1_roll_up = chq1_roll_up[(chq1_roll_up['StageFriendly'] == 'Stage 4 - Scale')]
+		s4q1_sg = ''
+		s4q2_sheet = chq2_sheet[(chq2_sheet['Stage'] == 'Scale')]
+		s4q2_db = chq2_db[(chq2_db['Stage'] == 'Scale')]
+		s4q2_fric = chq2_fric[(chq2_fric['Stage'] == 'Scale')]
+		s4q2_roll_up = chq2_roll_up[(chq2_roll_up['StageFriendly'] == 'Stage 4 - Scale')]
+		s4q2_sg = ''
+		stage4 = self.get_bap_summary(
+			[s4, s4q1_sheet, s4q1_db, s4q1_fric, s4q1_roll_up, s4q1_sg, s4q2_sheet, s4q2_db, s4q2_fric, s4q2_roll_up,
+			 s4q2_sg])
+		self.dict_list.append(stage4)
+		df = pd.DataFrame(self.dict_list, columns=list(self.dict_list[0].keys()))
+		print(df.head(10))
+
+	def get_bap_summary(self, lst):
+		summary = dict()
+		summary['Matrics'] = lst[0]
+		summary['Spreadsheet - QI'] = len(lst[1])
+		summary['DB - QI'] = len(lst[2])
+		summary['FactRIC - QI'] = len(lst[3])
+		summary['Roll up - QI'] = len(lst[4])
+		summary['Schedule G - QI'] = len(lst[5])
+		summary['Spreadsheet - QII'] = len(lst[6])
+		summary['DB - QII'] = len(lst[7])
+		summary['FactRIC - QII'] = len(lst[8])
+		summary['Roll up - QII'] = len(lst[9])
+		summary['Schedule G - QII'] = len(lst[10])
+		return summary
 
 
 if __name__ == '__main__':
 	bapv = BAPValidate()
 	bapv.bap_summary()
+	print('Done')

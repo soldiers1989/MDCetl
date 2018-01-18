@@ -299,3 +299,7 @@ class Common:
 			os.chdir(etl_path)
 			return etl_path
 
+	@staticmethod
+	def change_series_type(sr, dtype):
+		sr.astype(dtype)
+		print(sr)

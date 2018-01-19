@@ -9,39 +9,53 @@ from Shared.common import Common as COM
 from Shared.enums import DataSource as DS, WorkSheet as WS, \
 	FileName as FN, SQL as sql, FileType, \
 	SourceSystemType as ss, Table as tbl, \
-	Columns as clm
+	Columns as clm, PATH as pth
 from Shared.db import DB
 from Shared.batch import BatchService
 from pypostalcode import PostalCodeDatabase
 
 
 class BapQuarterly:
+	desired_width = 420
+	pd.set_option('display.width', desired_width)
 	year, quarter = COM.fiscal_year_quarter(datetime.datetime.utcnow())
 	batch = BatchService()
-	bap_path = COM.get_config('config.ini', 'box_file_path', 'path_bap')
+	bap_path = COM.get_config('config.ini', 'box_file_path', 'path_bap_source')
 	file = FileService(bap_path)
 	qa = BapQA()
+	season = '18_Q3'
 	
 	@staticmethod
 	def show_bap_quarterly_template():
 		BapQuarterly.file.show_source_file()
 
 	@staticmethod
+	def qa_bap_spread_sheet_by_ric():
+		BapQuarterly.qa.check_rics_file(pth.DATA)
+
+	@staticmethod
 	def combine_rics_bap_quarterly():
 		program, program_youth, company_quarterly, company_annually = BapQuarterly.file.read_source_file(FileType.SPREAD_SHEET.value, DS.BAP)
-		file_name = FN.bap_combined.value.format(str(BapQuarterly.year)[-2:], BapQuarterly.quarter - 1)
+		file_name = '_{}'.format(FN.bap_combined.value.format(str(BapQuarterly.year)[-2:], BapQuarterly.quarter - 1))
 		print('Save spreadsheet file named: {}'.format(file_name))
+
+		save_location = COM.change_location(pth.COMBINED)
+		print(str(save_location))
 
 		writer = pd.ExcelWriter(file_name)
 		
-		program.to_excel(writer, WS.bap_program_final.value, index=False)
-		program_youth.to_excel(writer, WS.bap_program_youth_final.value, index=False)
+		program.to_excel(writer, WS.bap_program.value, index=False)
+		program_youth.to_excel(writer, WS.bap_program_youth.value, index=False)
 		company_quarterly.to_excel(writer, WS.bap_company.value, index=False)
 		company_annually.to_excel(writer, WS.bap_company_annual.value, index=False)
 		writer.save()
 		
 		print('rics_spreasheet_combined.')
-	
+
+	@staticmethod
+	def qa_bap_ric_combined():
+		BapQuarterly.qa.check_rics_file(pth.COMBINED)
+
 	@staticmethod
 	def transfer_csv_program(dataframe):
 		val = COM.df_list(dataframe)
@@ -63,7 +77,8 @@ class BapQuarterly:
 		DB.bulk_insert(sql.sql_bap_company_annual_insert, val)
 
 	@staticmethod
-	def transfer_bap_data():
+	def push_bap_quarterly_to_database():
+		COM.change_location(pth.ETL)
 		program = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_program.value)
 		program_youth = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_program_youth.value)
 		quarterly_data = pd.read_excel('ALL_RICS_BAP_FY18Q3_FINAL.xlsx', WS.bap_company.value)
@@ -279,29 +294,29 @@ class BapQuarterly:
 							'Industry_Sector == \'{}\''.format(industry_sector)).empty else None
 						dd = {'DataSourceID': data_source_id,
 						      'CompanyID': company_id,
-						      'MinDate': min_date,
-						      'CurrentDate': current_date,
-						      'VolunteerYTD': vhs_agg,
-						      'AdvisoryHoursYTD': adv_agg,
-						      'VolunteerThisQuarter': vhs,
-						      'AdvisoryThisQuarter': adv,
-						      'FiscalQuarter': quarter,
-						      'BatchID': batch_id,
-						      'ModifiedDate': modified_date,
-						      'SocialEnterprise': socialEnterprise,
-						      'Stage': stage,
-						      'HighPotential': highPotential,
-						      'Lvl2IndustryName': lvl2_industry_name,
-						      'FiscalYear': BapQuarterly.year,
-						      'Youth': youth,
-						      'DateOfIncorporation': dateOfIncorporation,
-						      'AnnualRevenue': annual_revenue,
-						      'NumberEmployees': number_of_employees,
-						      'FundingToDate': funding_current_quarter,
-						      'IndustrySector': industry_sector,
-						      'IntakeDate': intake_date,
-						      'FundingCurrentQuarter': funding_agg
-						      }
+							  'MinDate': min_date,
+							  'CurrentDate': current_date,
+							  'VolunteerYTD': vhs_agg,
+							  'AdvisoryHoursYTD': adv_agg,
+							  'VolunteerThisQuarter': vhs,
+							  'AdvisoryThisQuarter': adv,
+							  'FiscalQuarter': quarter,
+							  'BatchID': batch_id,
+							  'ModifiedDate': modified_date,
+							  'SocialEnterprise': socialEnterprise,
+							  'Stage': stage,
+							  'HighPotential': highPotential,
+							  'Lvl2IndustryName': lvl2_industry_name,
+							  'FiscalYear': BapQuarterly.year,
+							  'Youth': youth,
+							  'DateOfIncorporation': dateOfIncorporation,
+							  'AnnualRevenue': annual_revenue,
+							  'NumberEmployees': number_of_employees,
+							  'FundingToDate': funding_current_quarter,
+							  'IndustrySector': industry_sector,
+							  'IntakeDate': intake_date,
+							  'FundingCurrentQuarter': funding_agg
+							  }
 						print(dd.values())
 						df = pd.DataFrame([dd], columns=clm.clmn_fact_ric_rolled_up.value)
 						df_FactRICRolledUp = pd.concat([df_FactRICRolledUp, df])
@@ -362,8 +377,61 @@ class BapQuarterly:
 		values_list = COM.df_list(df)
 		DB.bulk_insert(sql.sql_postal_code_insert.value, values_list)
 
+	@staticmethod
+	def main():
+		while True:
+			fy, fq = COM.fiscal_year_quarter()
+			print('_'*100)
+			print('| WELCOME TO BAP QUARTERLY ETL\n| FISCAL YEAR:     {}\n| FISCAL QUARTER:     {}'.format(fy, fq - 1))
+			print('_' * 100)
+			menu = '''
+			1: Show Source File for BAP quarterly FY18-Q3
+			1a: CHECK Columns Completeness
+			2: QA spreadsheet by RIC
+			3: Combine RICs BQ spreadsheet
+			4: QA RICs BQ combined spreadsheet
+			5: Push RICs data ro the database
+			6: Generate Batch for RICs FY18 -Q3
+			7: Match Company name
+			8: Push Company data to DIM COMPANY and DIM COMPANY SOURCE
+			9: Push quarterly company data to FACT RIC COMPANY DATA
+			10: Push Annual company data to FACT RIC COMPANY DATA
+			11: push Program and Program youth data to FACT RIC Aggregation
+			'''
+			print(menu)
+
+			option = input('\nChoose your option:\t')
+			if str(option) == '1':
+				BapQuarterly.show_bap_quarterly_template()
+			if str(option) == '1a':
+				BapQuarterly.qa.check_columns_completeness()
+			if str(option) == '2':
+				BapQuarterly.qa.check_rics_file()
+			if str(option) == '3':
+				BapQuarterly.combine_rics_bap_quarterly()
+			if str(option) == '4':
+				pass
+			if str(option) == '5':
+				pass
+			if str(option) == '6':
+				pass
+			if str(option) == '7':
+				pass
+			if str(option) == '8':
+				pass
+			if str(option) == '9':
+				pass
+			if str(option) == '10':
+				pass
+			if str(option) == '11':
+				pass
+			if str(option) == '12':
+				pass
+
 
 if __name__ == '__main__':
-	desired_width = 420
-	pd.set_option('display.width', desired_width)
-	BapQuarterly.read_bap_data()
+	# BapQuarterly.qa.check_columns_completeness()
+	# BapQuarterly.combine_rics_bap_quarterly()
+	BapQuarterly.qa_bap_spread_sheet_by_ric()
+	# BapQuarterly.qa_bap_ric_combined()
+	#BapQuarterly.file.read_source_file('', '')

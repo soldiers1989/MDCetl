@@ -73,7 +73,7 @@ def _main_():
             try:
                 selection = int(input("\nEnter a valid option number: "))
                 if selection == 99:
-                    print('User typed 99')
+                    print("You entered 99.\nI can't believe you've done this.")
                     print('Farewell...')
                     break
             except ValueError:

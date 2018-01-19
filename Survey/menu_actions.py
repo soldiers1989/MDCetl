@@ -86,7 +86,8 @@ class menu_actions():
         c_sql = CM.get_config("config.ini", "sql_queries", "campaigns_for_survey")
         c_sql = c_sql.replace("WHAT_SURVEY_ID", str(survey_id))
         db_cmpgns = DB.pandas_read(c_sql)
-        db_cmpgns = db_cmpgns.apply(pd.to_numeric, errors='ignore')
+        if db_cmpgns is not None:
+            db_cmpgns = db_cmpgns.apply(pd.to_numeric, errors='ignore')
 
         cmpgns_not_in_db = pd.merge(campaigns_df, db_cmpgns, how='left', indicator=True, on="id")
         cmpgns_not_in_db2 = cmpgns_not_in_db[cmpgns_not_in_db['_merge'] == 'left_only'].drop("_merge", axis=1)

@@ -226,13 +226,13 @@ class Common:
 			d_source = DataSourceType.MaRS.value
 		elif 'norcat' in file:
 			d_source = DataSourceType.NORCAT.value
-		elif 'riccentre' in file:
+		elif 'ric' in file:
 			d_source = DataSourceType.RIC_CENTER.value
 		elif 'ssmic' in file:
 			d_source = DataSourceType.SSMIC.value
 		elif 'noic' in file:
 			d_source = DataSourceType.NWOIC.value
-		elif 'tech' in file and 'wetech' not in file:
+		elif 'alliance' in file:
 			d_source = DataSourceType.TECH_ALLIANCE.value
 		elif 'wetec' in file:
 			d_source = DataSourceType.WE_TECH.value

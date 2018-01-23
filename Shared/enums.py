@@ -382,7 +382,8 @@ class SQL(Enum):
 									 ELSE 'Other'
 								END AS Lvl2IndustryName
 								,
-								FactRICCompanyHoursRolledUp.IntakeDate,
+								--FactRICCompanyHoursRolledUp.IntakeDate,
+								ISNULL(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS date), '') as IntakeDate,
 
 								---- Intake Fiscal Year ----	
 
@@ -502,7 +503,7 @@ class SQL(Enum):
 
 					WHERE
 
-					FactRICCompanyHoursRolledUp.FiscalYear = {} AND FactRICCompanyHoursRolledUp.FiscalQuarter = {} AND FactRICCompanyHoursRolledUp.DataSourceID = 8 
+					FactRICCompanyHoursRolledUp.FiscalYear = {} AND FactRICCompanyHoursRolledUp.FiscalQuarter = {} AND FactRICCompanyHoursRolledUp.DataSourceID = {} 
 
 			'''
 

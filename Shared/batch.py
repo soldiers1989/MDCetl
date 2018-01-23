@@ -12,13 +12,13 @@ class BatchService:
         self.sql_batch_table = CM.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_table')
         self.sql_batch_delete = CM.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_delete')
 
-    def get_batch(self, year, quarter, source_system):
+    def get_bap_batch(self, year, quarter, source_system):
         select_stmt = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_select')
         sql = select_stmt.format(year, quarter, tuple(source_system))
         batches = self.dal.pandas_read(sql)
         return batches
 
-    def create_batch(self, dataframe, year, quarter, table):
+    def create_bap_batch(self, dataframe, year, quarter, table):
 
         '''
         <UserId, int,>
@@ -120,6 +120,6 @@ class BatchService:
             sql_stm = sql_stm.format(tbl, batches)
             print('{} : {}'.format(tbl, db.pandas_read(sql_stm)['Total'].values))
 
-    def get_batch_stat(self, year, quarter, source_system, data_source):
-        pass
+    def create_batch_for_etl(self):
+	    pass
 

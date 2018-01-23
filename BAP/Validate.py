@@ -1,5 +1,5 @@
 from Shared.enums import FileType, WorkSheet, DataSourceType, SourceSystemType, SQL
-from Shared.file_service import FileService as file
+from Shared.file_service import FileService
 from Shared.common import Common
 from Shared.db import DB as db
 import os
@@ -47,9 +47,8 @@ class BAPValidate:
 		self.quarter_two_files = []
 		self.dict_list = []
 
-		self.rics = ['launchlab', 'alliance', 'communitech', 'haltech','guelph',  'iion', 'innovationfactory', 'launchlab', 'mars',
+		self.rics = ['alliance', 'communitech', 'haltech', 'guelph',  'iion', 'innovationfactory', 'launchlab', 'mars',
 					 'niagara', 'noic', 'norcat', 'ottawa', 'ric', 'spark', 'ssmic', 'venturelab', 'wetec']
-
 
 		self.batch = 'SELECT * FROM Config.ImportBatch WHERE Year = {} AND Quarter = {} ' \
 					 'AND DataSourceID = {} AND SourceSystemId = {} AND ImportStatusID = 5'
@@ -71,7 +70,8 @@ class BAPValidate:
 						'''
 
 	def get_all_rics_data(self):
-		valid_df_list = []
+
+		writer = pd.ExcelWriter('00 BAP FY18 Numbers.xlsx')
 		for ric in self.rics:
 			print(ric.upper())
 			self.Q1CompanyData_sheet = self.read_file_source(self.path_quarter_one, ric)
@@ -88,12 +88,13 @@ class BAPValidate:
 			self.Q1CompanyData_fact_ric = db.pandas_read(self.select.format('Reporting.FactRICCompanyData', batch1[0]))
 			self.Q2CompanyData_fact_ric = db.pandas_read(self.select.format('Reporting.FactRICCompanyData', batch2[0]))
 
-			self.Q1CompanyData_rollup = db.pandas_read(SQL.sql_rollup_select.value.format(self.year, 1))
-			self.Q2CompanyData_rollup = db.pandas_read(SQL.sql_rollup_select.value.format(self.year, 2))
+			self.Q1CompanyData_rollup = db.pandas_read(SQL.sql_rollup_select.value.format(self.year, 1, data_source))
+			self.Q2CompanyData_rollup = db.pandas_read(SQL.sql_rollup_select.value.format(self.year, 2, data_source))
 
-			valid_df_list.append(self.bap_summary())
-		# for df in valid_df_list:
-		# 	print(df.head(10))
+			df_ric = self.bap_summary()
+			df_ric.to_excel(writer, ric.upper(), index=False)
+			df_ric = None
+		writer.save()
 
 	def read_file_source(self, path, ric_name):
 		os.chdir(path)
@@ -147,20 +148,23 @@ class BAPValidate:
 
 	def bap_summary(self):
 		try:
+			# file = FileService('/Users/mnadew/Box Sync/mnadew')
 			# NEW CLIENTS
 			print('\t New Clients')
 			nc = 'Number of New Clients'
+			# df = self.Q1CompanyData_sheet[['Company Name', 'Date of Intake']]
+			# file.save_as_csv(df, file_name='Guelph_Intake_date.xlsx', path='/Users/mnadew/Box Sync/mnadew')
 			ncq1_sheet = self.Q1CompanyData_sheet[self.Q1CompanyData_sheet['Date of Intake'] > '2017-03-31']
 			ncq1_db = self.Q1CompanyData[pd.to_datetime(self.Q1CompanyData['Date of Intake']) > '2017-03-31']
 			ncq1_fric = self.Q1CompanyData_fact_ric[self.Q1CompanyData_fact_ric['IntakeDate'] > '2017-03-31']
-			x = pd.to_datetime(self.Q1CompanyData_rollup[(self.Q1CompanyData_rollup['IntakeDate'] > '2017-03-31')]['IntakeDate'])
-			ncq1_roll_up = x[x > '2017-03-31']
+			ncq1_roll_up = self.Q1CompanyData_rollup[pd.to_datetime(self.Q1CompanyData_rollup['IntakeDate']) > '2017-03-31']['IntakeDate']
+			# ncq1_roll_up = x[x > '2017-03-31']
 			ncq1_sg = ''
 			ncq2_sheet = self.Q2CompanyData_sheet[pd.to_datetime(self.Q2CompanyData_sheet['Date of Intake']) > '2017-06-30']
 			ncq2_db = self.Q2CompanyData[self.Q2CompanyData['DateOfIntake'] > '2017-06-30']
 			ncq2_fric = self.Q2CompanyData_fact_ric[self.Q2CompanyData_fact_ric['IntakeDate'] > '2017-06-30']
-			y = pd.to_datetime(self.Q2CompanyData_rollup[(self.Q2CompanyData_rollup['IntakeDate'] > '2017-06-30')]['IntakeDate'])
-			ncq2_roll_up = y[y > '2017-06-30']
+			ncq2_roll_up = self.Q2CompanyData_rollup[pd.to_datetime(self.Q2CompanyData_rollup['IntakeDate']) > '2017-06-30']['IntakeDate']
+			# ncq2_roll_up = y[y > '2017-06-30']
 			ncq2_sg = ''
 			new_clients = self.get_bap_summary([nc, ncq1_sheet, ncq1_db, ncq1_fric, ncq1_roll_up, ncq1_sg, ncq2_sheet, ncq2_db, ncq2_fric, ncq2_roll_up, ncq2_sg])
 			self.dict_list.append(new_clients)
@@ -184,7 +188,7 @@ class BAPValidate:
 			# CLIENTS WHO GOT HELP
 			print('\t Clients who got help')
 			ch = 'Number Clients who got help'
-			chq1_sheet = self.Q1CompanyData_sheet[(self.Q1CompanyData_sheet['Number of advisory service hours provided'].astype(float) > 0) | (self.Q1CompanyData_sheet['Volunteer mentor hours'] > 0)]
+			chq1_sheet = self.Q1CompanyData_sheet[(pd.to_numeric(self.Q1CompanyData_sheet['Number of advisory service hours provided']) > 0) | (pd.to_numeric(self.Q1CompanyData_sheet['Volunteer mentor hours']) > 0)]
 			chq1_db = self.Q1CompanyData[pd.to_numeric(self.Q1CompanyData['Number of advisory service hours provided'] > 0) | (pd.to_numeric(self.Q1CompanyData['Volunteer mentor hours']) > 0)]
 			chq1_fric = self.Q1CompanyData_fact_ric[(self.Q1CompanyData_fact_ric['AdvisoryServicesHours'] > 0) | (self.Q1CompanyData_fact_ric['VolunteerMentorHours'] > 0)]
 			chq1_roll_up = self.Q1CompanyData_rollup[(self.Q1CompanyData_rollup['AdvisoryHoursYTD'] > 0) | (self.Q1CompanyData_rollup['VolunteerHoursYTD'] > 0)]
@@ -280,7 +284,9 @@ class BAPValidate:
 				[s4, s4q1_sheet, s4q1_db, s4q1_fric, s4q1_roll_up, s4q1_sg, s4q2_sheet, s4q2_db, s4q2_fric, s4q2_roll_up,
 				 s4q2_sg])
 			self.dict_list.append(stage4)
-			return pd.DataFrame(self.dict_list, columns=list(self.dict_list[0].keys()))
+			df = pd.DataFrame(self.dict_list, columns=list(self.dict_list[0].keys()))
+			self.dict_list = []
+			return df
 		except Exception as ex:
 			print(ex)
 
@@ -298,6 +304,26 @@ class BAPValidate:
 		summary['Roll up - QII'] = len(lst[9])
 		summary['Schedule G - QII'] = len(lst[10])
 		return summary
+
+	def update_guelph_intake_date(self, df):
+		update = '''
+		UPDATE Config.MaRSMaster
+		SET IntakeDate = \'{}\'
+		WHERE BatchID = 3582
+		AND CompanyName = \'{}\'
+		'''
+		select = '''
+		SELECT IntakeDate,CompanyName
+		FROM Config.MaRSMaster
+		WHERE BatchID = 3582
+		AND CompanyName = \'{}\'
+		'''
+
+		for row in df.iterrows():
+			print(select.format(row[1]['Company Name']))
+			print(update.format(row[1]['Date of Intake'], row[1]['Company Name']))
+			print('-' * 150)
+		print('Finish')
 
 
 if __name__ == '__main__':

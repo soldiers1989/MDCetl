@@ -293,7 +293,7 @@ class BapQuarterly:
 							'Lvl2IndustryName'].values[0] if not df_industry.query(
 							'Industry_Sector == \'{}\''.format(industry_sector)).empty else None
 						dd = {'DataSourceID': data_source_id,
-						      'CompanyID': company_id,
+							  'CompanyID': company_id,
 							  'MinDate': min_date,
 							  'CurrentDate': current_date,
 							  'VolunteerYTD': vhs_agg,
@@ -323,12 +323,11 @@ class BapQuarterly:
 					except Exception as ex:
 						total = total + 1
 						company.append(company_id)
-						
 						print(ex)
 			df_FactRICRolledUp = df_FactRICRolledUp[clm.clmn_fact_ric_rolled_up.value]
 			BapQuarterly.file.save_as_csv(df_FactRICRolledUp,
-			                              'BAP_Rolled_UP_{}.xlsx'.format(str(datetime.datetime.today())),
-			                              '/Users/mnadew/Box Sync/mnadew/IE/Data/ETL/BAP')
+										  'BAP_Rolled_UP_{}.xlsx'.format(str(datetime.datetime.today())),
+										  '/Users/mnadew/Box Sync/mnadew/IE/Data/ETL/BAP')
 			print(company)
 			print('{} + {} = {}/ 6236 '.format(len(df_FactRICRolledUp), total, len(df_FactRICRolledUp) + total))
 	
@@ -430,8 +429,8 @@ class BapQuarterly:
 
 
 if __name__ == '__main__':
-	# BapQuarterly.qa.check_columns_completeness()
+	BapQuarterly.qa.check_columns_completeness()
 	# BapQuarterly.combine_rics_bap_quarterly()
-	BapQuarterly.qa_bap_spread_sheet_by_ric()
+	# BapQuarterly.qa_bap_spread_sheet_by_ric()
 	# BapQuarterly.qa_bap_ric_combined()
-	#BapQuarterly.file.read_source_file('', '')
+	# BapQuarterly.file.read_source_file('', '')

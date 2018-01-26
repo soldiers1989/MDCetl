@@ -15,6 +15,7 @@ class FileService:
 		self.path = os.path.join(os.path.expanduser("~"), path)
 		self.source_file = None
 		self._set_folder()
+		self.data_list = []
 
 	def _set_folder(self):
 		os.chdir(self.path)
@@ -27,22 +28,12 @@ class FileService:
 	def get_source_file(self):
 		return [f for f in self.source_file if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)]
 
-	def read_source_file(self, ftype, data_source):
-		select = sql.sql_columns.value
-		df = DB.pandas_read(select.format('BAP'))
-		l_program = []
-		l_program_youth = []
-		l_company = []
-		l_company_annual = []
-
-		self.program_columns = list(df[df['TABLE_NAME'] == 'ProgramData']['COLUMN_NAME'][7:])
-		self.program_youth_columns = list(df[df['TABLE_NAME'] == 'ProgramDataYouth']['COLUMN_NAME'][7:])
-		self.quarterly_company_columns = list(df[df['TABLE_NAME'] == 'QuarterlyCompanyData']['COLUMN_NAME'][8:])
-		self.annual_company_columns = list(df[df['TABLE_NAME'] == 'AnnualCompanyData']['COLUMN_NAME'][8:])
+	def read_source_file(self, ftype, data_source, file_name=''):
 
 		file_list = [f for f in self.source_file if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)]
-		if ftype == FT.SPREAD_SHEET.value:
-			if data_source == DS.BAP:
+		if data_source == DS.BAP:
+			if ftype == FT.SPREAD_SHEET.value:
+				l_company, l_company_annual, l_program, l_program_youth = self.bap_dataframes()
 				for fl in file_list:
 					try:
 						print(fl)
@@ -71,10 +62,26 @@ class FileService:
 
 				return bap_program, bap_program_youth, bap_company, bap_company_annual
 
-		elif ftype == FT.CSV:
-			for fl in file_list:
-				data_list = pd.read_csv(fl)
-			return data_list
+		elif data_source == DS.CBINSIGHT:
+			if ftype == FT.CSV:
+				if file_name != '':
+					return pd.read_csv(file_name)
+				else:
+					for fl in file_list:
+						self.data_list.append(pd.read_csv(fl))
+					return self.data_list
+
+	def bap_dataframes(self):
+		df = DB.pandas_read(sql.sql_columns.value.format('BAP'))
+		l_program = []
+		l_program_youth = []
+		l_company = []
+		l_company_annual = []
+		self.program_columns = list(df[df['TABLE_NAME'] == 'ProgramData']['COLUMN_NAME'][7:])
+		self.program_youth_columns = list(df[df['TABLE_NAME'] == 'ProgramDataYouth']['COLUMN_NAME'][7:])
+		self.quarterly_company_columns = list(df[df['TABLE_NAME'] == 'QuarterlyCompanyData']['COLUMN_NAME'][8:])
+		self.annual_company_columns = list(df[df['TABLE_NAME'] == 'AnnualCompanyData']['COLUMN_NAME'][8:])
+		return l_company, l_company_annual, l_program, l_program_youth
 
 	def save_as_excel(self, dfs, file_name, path_key):
 		print(os.getcwd())

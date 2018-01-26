@@ -226,13 +226,13 @@ class Common:
 			d_source = DataSourceType.MaRS.value
 		elif 'norcat' in file:
 			d_source = DataSourceType.NORCAT.value
-		elif 'riccentre' in file:
+		elif 'ric' in file:
 			d_source = DataSourceType.RIC_CENTER.value
 		elif 'ssmic' in file:
 			d_source = DataSourceType.SSMIC.value
 		elif 'noic' in file:
 			d_source = DataSourceType.NWOIC.value
-		elif 'tech' in file and 'wetech' not in file:
+		elif 'alliance' in file:
 			d_source = DataSourceType.TECH_ALLIANCE.value
 		elif 'wetec' in file:
 			d_source = DataSourceType.WE_TECH.value
@@ -241,13 +241,14 @@ class Common:
 
 	@staticmethod
 	def df_list(dataframe):
-		values = []
-		ls = len(dataframe)
 		try:
-			for i in range(len(dataframe)):
-				v = dataframe.iloc[i].values
-				v = [str(x) for x in v]
-				values.append(v)
+			values = dataframe.values.tolist()
+			# for i in range(len(dataframe)):
+			#
+			# 	v = dataframe.iloc[i].values.tolist()
+			# 	v = [str(x) for x in v]
+			# 	p = [x for x in v if x is not None]
+			# 	values.append(v)
 			return values
 		except ValueError:
 			return None

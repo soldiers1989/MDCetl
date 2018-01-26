@@ -7,6 +7,7 @@ from Shared.file_service import FileService
 from Shared.common import Common
 from Shared.enums import FileType, WorkSheet as WS, PATH as p
 import warnings
+import os
 
 
 class BapQA:
@@ -26,6 +27,16 @@ class BapQA:
 		self.year = 2018
 		self.youth = 'Youth'
 		self.all_youth = 'ALL incl. youth'
+
+	def proper_stage(self, stg):
+		stage = ['discovery', 'efficiency', 'idea', 'scale', 'validation']
+		val = [s for s in stage if s in stg.lower()]
+		return len(val) > 0
+
+	def yes_no(self, resp):
+		response = ['y', 'yes', 'n', 'no']
+		val = [r for r in response if r in resp.lower()]
+		return len(val) > 0
 
 	def check_columns_completeness(self):
 		dfps = pd.DataFrame()
@@ -52,13 +63,14 @@ class BapQA:
 			dfqc = pd.concat([dfqc, df_qc])
 			dfac = pd.concat([dfac, df_ac])
 
-		writer = pd.ExcelWriter('ALL_RIC_BAP_COLUMNS_FY18_Q3.xlsx')
+		writer = pd.ExcelWriter('00 ALL_RIC_BAP_COLUMNS_FY18_Q3.xlsx')
 		dfps.to_excel(writer, 'Program', index=False)
 		dfpys.to_excel(writer, 'Program Youth', index=False)
 		dfqc.to_excel(writer, 'Quarterly Company', index=False)
 		dfac.to_excel(writer, 'Annual Company', index=False)
 
 		Common.change_location(p.QA)
+		print(os.getcwd())
 		writer.save()
 
 	def check_rics_file(self, loc):
@@ -147,13 +159,16 @@ class BapQA:
 						if c.row == 1:
 							c.fill = self.header
 						elif c.row > 1:
-							if c.column in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'V', 'Z', 'H', 'I', 'J', 'K', 'L', 'T', 'U', 'V', 'X', 'Y', 'AA']:
+							if c.column in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'V', 'H', 'I', 'K', 'L', 'V', 'X', 'AA']:
 								if len(str(c.value)) > 0:
 									c.fill = self.okay
 								else:
 									c.fill = self.amber
-							if c.column == 'H,I':
-								pass
+							if c.column == 'J':
+								if self.proper_stage(c.value):
+									c.fill = self.okay
+								else:
+									c.fill = self.amber
 							if c.column in ['W',  'AB', 'AC', 'AD', 'AF']:
 								if isinstance(c.value, float) or isinstance(c.value, int):
 									c.fill = self.okay
@@ -166,6 +181,16 @@ class BapQA:
 									c.fill = self.amber
 							if c.column == 'N':
 								if isinstance(c.value, int):
+									c.fill = self.okay
+								else:
+									c.fill = self.amber
+							if c.column in ['T', 'Y', 'Z']:
+								if self.yes_no(c.value):
+									c.fill = self.okay
+								else:
+									c.fill = self.amber
+							if c.column == 'U':
+								if isinstance(c.value, datetime.date):
 									c.fill = self.okay
 								else:
 									c.fill = self.amber
@@ -207,6 +232,7 @@ class BapQA:
 
 	def sheet_columns(self, sheet, ric, sheet_name):
 		lst = []
+		print(ric.upper())
 		for rw in sheet.rows:
 			for i in range(len(rw)):
 				if rw[i].row == 1:
@@ -215,6 +241,11 @@ class BapQA:
 					d['Sheet'] = sheet_name
 					d['Letter'] = rw[i].column
 					d['Header'] = rw[i].value
-					print(d)
+					print('\t{} - {}'.format(d['Letter'], d['Header']))
 					lst.append(d)
 		return pd.DataFrame(lst, columns=lst[0].keys())
+
+
+if __name__ == '__main__':
+	bapqa = BapQA()
+	bapqa.proper_stage('Stage 0 - Discovery')

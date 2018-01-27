@@ -6,7 +6,7 @@ from Shared.qa import BapQA
 from Shared.file_service import FileService
 from Shared.match import CompanyService
 from Shared.common import Common as COM
-from Shared.enums import DataSource as DS, WorkSheet as WS, \
+from Shared.enums import MDCDataSource as DS, WorkSheet as WS, \
 	FileName as FN, SQL as sql, FileType, \
 	SourceSystemType as ss, Table as tbl, \
 	Columns as clm, PATH as pth
@@ -36,7 +36,7 @@ class BapQuarterly:
 	@staticmethod
 	def combine_rics_bap_quarterly():
 		program, program_youth, company_quarterly, company_annually = BapQuarterly.file.read_source_file(FileType.SPREAD_SHEET.value, DS.BAP)
-		file_name = '_{}'.format(FN.bap_combined.value.format(str(BapQuarterly.year)[-2:], BapQuarterly.quarter - 1))
+		file_name = '{}'.format(FN.bap_combined.value.format(str(BapQuarterly.year)[-2:], BapQuarterly.quarter - 1))
 		print('Save spreadsheet file named: {}'.format(file_name))
 
 		save_location = COM.change_location(pth.COMBINED)
@@ -429,8 +429,8 @@ class BapQuarterly:
 
 
 if __name__ == '__main__':
-	BapQuarterly.qa.check_columns_completeness()
+	# BapQuarterly.qa.check_columns_completeness()
 	# BapQuarterly.combine_rics_bap_quarterly()
-	# BapQuarterly.qa_bap_spread_sheet_by_ric()
+	BapQuarterly.qa_bap_spread_sheet_by_ric()
 	# BapQuarterly.qa_bap_ric_combined()
 	# BapQuarterly.file.read_source_file('', '')

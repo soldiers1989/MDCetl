@@ -1,18 +1,22 @@
-from Shared.enums import ImportStatus
-from Shared.common import Common as CM
-from Shared.db import DB as db
+from Shared.enums import ImportStatus, SQL as sql
+from Shared.common import Common as common
+from Shared.db import DB
 import datetime as dt
+
 
 
 class BatchService:
 
 	def __init__(self):
-		self.sql_batch_count = CM.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_count')
-		self.sql_batch_select = CM.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_select')
-		self.sql_batch_table = CM.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_table')
-		self.sql_batch_delete = CM.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_delete')
-		self.sql_batch_single_insert = CM.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_single_insert')
-		self.sql_batch_search = CM.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_search')
+		self.sql_batch_count = common.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_count')
+		self.sql_batch_select = common.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_select')
+		self.sql_batch_table = common.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_table')
+		self.sql_batch_delete = common.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_delete')
+		self.sql_batch_insert = common.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_insert')
+		self.sql_batch_single_insert = common.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_single_insert')
+		self.sql_batch_search = common.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_search')
+		self.update_statement = common.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_update')
+		self.db = DB()
 
 	def create_batch_for_etl(self, datasource, systemsource, year, quarter, file_name='', full_path='', work_sheet_name=''):
 		# db = DB()
@@ -54,78 +58,51 @@ class BatchService:
 		return df
 
 	def get_bap_batch(self, year, quarter, source_system):
-		select_stmt = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_select')
-		sql = select_stmt.format(year, quarter, tuple(source_system))
-		batches = self.dal.pandas_read(sql)
+		sql_select = sql.sql_batch_select.value.format(year, quarter, source_system)
+		batches = self.db.pandas_read(sql_select)
 		return batches
 
-	def create_bap_batch(self, dataframe, year, quarter, table):
-
-		'''
-		<UserId, int,>
-		,<ImportStatusId, int,>
-		,<FILENAME, varchar(300),>
-		,<FullPath, varchar(512),>
-		,<SourceSystemId, int,>
-		,<WorksheetName, varchar(50),>
-		,<FileModifiedDate, datetime,>
-		,<DataSourceID, int,>
-		,<StartDate, datetime,>
-		,<EndDate, datetime,>
-		,<Records, bigint,>
-		,<StgRecords, bigint,>
-		,<DWRecords, bigint,>
-		,<IsDeleted, bit,>
-		,<DateCreated, datetime,>
-		,<DateUpdated, datetime,>
-		,<YEAR, int,>
-		,<QUARTER, varchar(50),>
-		'''
-
+	def create_bap_batch(self, dataframe, year, quarter, table, sheet, system_source):
 		print('creating batches...')
 		values = []
-		for sheet, df in dataframe:
-			for _, row in df.iterrows():
-				val.append(0)
-				val.append(ImportStatus.Started.value)
-				val.append(row['FileName'])
-				val.append(row['Path'])
-				val.append(row['SourceSystem'])
-				val.append(sheet)
-				val.append(dt.datetime.now())
-				val.append(row['DataSource'])
-				val.append(dt.datetime.now())
-				val.append(dt.datetime.now())
-				val.append(len(df))
-				val.append(len(df))
-				val.append(len(df))
-				val.append(0)
-				val.append(dt.datetime.now())
-				val.append(dt.datetime.now())
-				val.append(year)
-				val.append('Q{}'.format(quarter))
-
-				values.append(val)
-				val = []
-			insert_stmt = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_insert')
-			sql = insert_stmt.format(self.import_batch)
-			print(sql)
-			self.dal.bulk_insert(sql, values)
-			self.update_source_batch(table, year, quarter, )
+		for _, row in dataframe.iterrows():
+			val = []
+			data_source = row['DataSource']
+			val.append(0)
+			val.append(ImportStatus.STARTED.value)
+			val.append(row['FileName'])
+			val.append(row['Path'])
+			val.append(row['SourceSystem'])
+			val.append(sheet)
+			val.append(dt.datetime.now())
+			val.append(data_source)
+			val.append(dt.datetime.now())
+			val.append(dt.datetime.now())
+			val.append(len(dataframe))
+			val.append(len(dataframe))
+			val.append(len(dataframe))
+			val.append(0)
+			val.append(dt.datetime.now())
+			val.append(dt.datetime.now())
+			val.append(year)
+			val.append('Q{}'.format(quarter))
+			values.append(val)
+		self.db.bulk_insert(self.sql_batch_insert, values)
+		self.update_source_batch(table, year, quarter, system_source)
+		# print(values[0])
 
 	def update_source_batch(self, table, year, quarter, source_system):
-		df = self.get_batch(source_system, year, quarter)
+		df = self.get_bap_batch(year, quarter, source_system)
 		if df is not None:
 			print('Updating BatchID for table {}...'.format(table))
-			update_stmt = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_update')
 			for index, row in df.iterrows():
-				sql = update_stmt.format(table, row['BatchID'], source_system)
-				self.dal.execute(sql)
+				sql_update = sql.sql_batch_update.value.format(table, row['BatchID'], source_system, row['DataSourceId'])
+				self.db.execute(sql_update)
 		print('Batch updated for table: {}'.format(table))
 
 	def can_push_data(self, table, year, quarter, source_system):
 		batch = self.get_batch(year, quarter, source_system)
-		sql = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_table')
+		sql = common.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_table')
 		if len(batch) > 0:
 			sql = sql.format(table, tuple(batch))
 			df = self.dal.pandas_read(sql)
@@ -156,7 +133,7 @@ class BatchService:
 			print('No batch was found for the year and quarter specified.')
 
 	def get_tables_stat(self, batches, table_list):
-		sql_stm = CM.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_count')
+		sql_stm = common.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_count')
 		for tbl in table_list:
 			sql_stm = sql_stm.format(tbl, batches)
 			print('{} : {}'.format(tbl, db.pandas_read(sql_stm)['Total'].values))

@@ -5,8 +5,8 @@ import pandas as pd
 from Shared.db import DB
 from Shared.common import Common as COM
 from Shared.enums import FileType as FT
-from Shared.enums import DataSource as DS
-from Shared.enums import WorkSheet as WS, SourceSystemType as SS, FileType, Schema, SQL as sql
+from Shared.enums import MDCDataSource as DS
+from Shared.enums import WorkSheet as WS, SourceSystemType as SS, FileType, Schema, SQL as sql, Combine, DataSourceType as DST
 
 
 class FileService:
@@ -22,32 +22,39 @@ class FileService:
 		self.source_file = os.listdir(self.path)
 
 	def show_source_file(self):
-		file_list = [f for f in self.source_file if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)]
+		file_list = self.get_source_file()
 		COM.print_list(file_list)
 
 	def get_source_file(self):
 		return [f for f in self.source_file if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)]
 
-	def read_source_file(self, ftype, data_source, file_name=''):
+	def read_source_file(self, ftype, data_source, combine_for:Combine, file_name='', current_path=''):
+		if current_path != '':
+			current_path = os.path.join(os.path.expanduser("~"), current_path)
+			os.chdir(current_path)
+			self.source_file = os.listdir(current_path)
+		file_list = self.get_source_file()
 
-		file_list = [f for f in self.source_file if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)]
 		if data_source == DS.BAP:
 			if ftype == FT.SPREAD_SHEET.value:
 				l_company, l_company_annual, l_program, l_program_youth = self.bap_dataframes()
+				i = 0
 				for fl in file_list:
 					try:
-						print(fl)
+						i+=1
+						ds = COM.set_datasource(str(fl))
+						print('{}. {}'.format(i, fl))
 						prg = pd.read_excel(fl, WS.bap_program.value)
 						prg.columns = self.program_columns
 						prg_youth = pd.read_excel(fl, WS.bap_program_youth.value)
 						prg_youth.columns = self.program_youth_columns
 						com = pd.read_excel(fl, WS.bap_company.value)
 						com.columns = self.quarterly_company_columns
-						com_a = pd.read_excel(fl, WS.bap_company_annual.value)
-						com_a.columns = self.annual_company_columns
-
-						ds = COM.set_datasource(str(fl))
-						FileService.data_system_source(prg, prg_youth, com, com_a, os.getcwd(), str(fl), ds)
+						if ds in [DST.COMMUNI_TECH.value, DST.HAL_TECH.value]:
+							com_a = pd.read_excel(fl, WS.bap_company_annual.value)
+							com_a.columns = self.annual_company_columns
+						if combine_for == Combine.FOR_ETL:
+							FileService.data_system_source(prg, prg_youth, com, com_a, os.getcwd(), str(fl), ds)
 
 						l_program.append(prg)
 						l_program_youth.append(prg_youth)
@@ -70,18 +77,27 @@ class FileService:
 					for fl in file_list:
 						self.data_list.append(pd.read_csv(fl))
 					return self.data_list
+		elif data_source == DS.OSVP:
+			pass
+
+	def osvp_dataframes(self):
+		# df = DB.pandas_read((sql.sql_columns.value.format('OSVP')))
+		pass
 
 	def bap_dataframes(self):
 		df = DB.pandas_read(sql.sql_columns.value.format('BAP'))
-		l_program = []
-		l_program_youth = []
-		l_company = []
-		l_company_annual = []
-		self.program_columns = list(df[df['TABLE_NAME'] == 'ProgramData']['COLUMN_NAME'][7:])
-		self.program_youth_columns = list(df[df['TABLE_NAME'] == 'ProgramDataYouth']['COLUMN_NAME'][7:])
-		self.quarterly_company_columns = list(df[df['TABLE_NAME'] == 'QuarterlyCompanyData']['COLUMN_NAME'][8:])
-		self.annual_company_columns = list(df[df['TABLE_NAME'] == 'AnnualCompanyData']['COLUMN_NAME'][8:])
-		return l_company, l_company_annual, l_program, l_program_youth
+		if df is not None:
+			l_program = []
+			l_program_youth = []
+			l_company = []
+			l_company_annual = []
+			self.program_columns = list(df[df['TABLE_NAME'] == 'ProgramData']['COLUMN_NAME'][7:])
+			self.program_youth_columns = list(df[df['TABLE_NAME'] == 'ProgramDataYouth']['COLUMN_NAME'][7:])
+			self.quarterly_company_columns = list(df[df['TABLE_NAME'] == 'QuarterlyCompanyData']['COLUMN_NAME'][8:])
+			self.annual_company_columns = list(df[df['TABLE_NAME'] == 'AnnualCompanyData']['COLUMN_NAME'][8:])
+			return l_company, l_company_annual, l_program, l_program_youth
+		else:
+			return None, None, None, None
 
 	def save_as_excel(self, dfs, file_name, path_key):
 		print(os.getcwd())
@@ -116,7 +132,7 @@ class FileService:
 		cv.insert(0, 'FileID', str(uuid.uuid4()))
 		cv.insert(0, 'BatchID', '-')
 
-		cvy.insert(0, 'SourceSystem', SS.RICPD_bap.value)
+		cvy.insert(0, 'SourceSystem', SS.RICPDY_bap.value)
 		cvy.insert(0, 'DataSource', datasource)
 		cvy.insert(0, 'Path', path)
 		cvy.insert(0, 'FileName', file_name)
@@ -131,7 +147,7 @@ class FileService:
 		cd.insert(0, 'BatchID', '-')
 		cd.insert(0, 'CompanyID', '-')
 
-		if len(cda) > 0:
+		if datasource in [DST.HAL_TECH.value, DST.COMMUNI_TECH.value]:
 			cda.insert(0, 'SourceSystem', SS.RICACD_bap.value)
 			cda.insert(0, 'DataSource', datasource)
 			cda.insert(0, 'Path', path)

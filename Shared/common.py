@@ -7,23 +7,23 @@ from configparser import ConfigParser
 from dateutil import parser
 from dateutil.parser import parse
 from Shared.enums import DataSourceType, CONSTANTS, PATH
+import pandas as pd
 
 
 class Common:
-	# def __init__(self):
-	# 	sql_get_max = Common.get_config('sql_statement.ini', 'db_sql_common', 'sql_get_max')
-	# 	user_response_yes = ['y', 'yes']
-	# 	user_response_yesno = ['y', 'yes', 'n', 'no']
-	# 	Provinces = ['ON', 'QC', 'NS', 'NB', 'MB', 'BC', 'PE', 'SK', 'AB', 'NL']
-	# 	pc_pattern = '[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z]\s*[0-9][ABCEGHJ-NPRSTV-Z][0-9]'
-	# 	url_pattern = '^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$'
-	# 	email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
-	# 	address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
-	# 	suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'inc', 'Inc', 'Incorporated',
-	# 			  'Corp',  'Corp.', 'Corporation', 'Communications', 'Technologies', 'Tech.']
-	# 	stage = []
-	# 	basic_name = ''
-	# 	temp_name = ''
+
+	# sql_get_max = Common.get_config('sql_statement.ini', 'db_sql_common', 'sql_get_max')
+	user_response_yes = ['y', 'yes']
+	user_response_yesno = ['y', 'yes', 'n', 'no']
+	Provinces = ['ON', 'QC', 'NS', 'NB', 'MB', 'BC', 'PE', 'SK', 'AB', 'NL']
+	pc_pattern = '[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z]\s*[0-9][ABCEGHJ-NPRSTV-Z][0-9]'
+	url_pattern = '^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$'
+	email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
+	address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
+	suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'inc', 'Inc', 'Incorporated', 'Corp',  'Corp.', 'Corporation', 'Communications', 'Technologies', 'Tech.']
+	stage = []
+	basic_name = ''
+	temp_name = ''
 
 	@staticmethod
 	def progress(char, index, total):
@@ -104,6 +104,7 @@ class Common:
 			for sf in Common.suffix:
 				Common.temp_name = re.sub(sf, '', Common.temp_name)
 			Common.basic_name = re.sub('[^A-Za-z0-9]+', '', Common.temp_name).lower()
+			print(Common.basic_name)
 			return Common.basic_name
 		return {'error': 'No name found'}
 
@@ -242,13 +243,8 @@ class Common:
 	@staticmethod
 	def df_list(dataframe):
 		try:
-			values = dataframe.values.tolist()
-			# for i in range(len(dataframe)):
-			#
-			# 	v = dataframe.iloc[i].values.tolist()
-			# 	v = [str(x) for x in v]
-			# 	p = [x for x in v if x is not None]
-			# 	values.append(v)
+			df = dataframe.where(pd.notnull(dataframe), None)
+			values = df.values.tolist()
 			return values
 		except ValueError:
 			return None
@@ -282,6 +278,7 @@ class Common:
 		path_qa = Common.get_config('config.ini', 'box_file_path', 'path_bap_qa')
 		path_combined = Common.get_config('config.ini', 'box_file_path', 'path_bap_combined')
 		path_etl = Common.get_config('config.ini', 'box_file_path', 'path_bap_etl')
+		path_match = Common.get_config('config.ini', 'box_file_path', 'path_bap_company_matching')
 
 		if loc == PATH.DATA:
 			box_path = os.path.join(os.path.expanduser('~'), path)
@@ -299,8 +296,17 @@ class Common:
 			etl_path = os.path.join(os.path.expanduser('~'), path_etl)
 			os.chdir(etl_path)
 			return etl_path
+		elif loc == PATH.MATCH:
+			match_path = os.path.join(os.path.expanduser('~'), path_match)
+			os.chdir(path_match)
+			return match_path
 
 	@staticmethod
 	def change_series_type(sr, dtype):
 		sr.astype(dtype)
 		print(sr)
+
+	@staticmethod
+	def make_directory(directory_name):
+		if not os.path.exists(directory_name):
+			os.makedirs(directory_name)

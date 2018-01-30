@@ -1,4 +1,5 @@
-
+# https://www.scottbrady91.com/Email-Verification/Python-Email-Verification-Script
+# https://pypi.python.org/pypi/validate_email
 import pandas as pd
 import datetime
 import openpyxl
@@ -8,6 +9,7 @@ from Shared.common import Common
 from Shared.enums import FileType, WorkSheet as WS, PATH as p
 import warnings
 import os
+from dateutil import parser
 
 
 class BapQA:
@@ -20,13 +22,17 @@ class BapQA:
 		self.okay = PatternFill(fgColor='E1F7DC', bgColor='C00000', fill_type='solid')
 		self.amber = PatternFill(fgColor='F4B042', bgColor='C00000', fill_type='solid')
 		self.header = PatternFill(fgColor='000000', bgColor='C00000', fill_type='solid')
+		self.empty = PatternFill(fgColor='F7F7F7', bgColor='C00000', fill_type='solid')
 
 		warnings.filterwarnings("ignore")
 
 		self.quarter = 'Q3'
-		self.year = 2018
+		self.year = '2018'
 		self.youth = 'Youth'
 		self.all_youth = 'ALL incl. youth'
+
+		self.month_names = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
+		self.no_value = ['na', 'n/a', '', '0', '0000-00-00']
 
 	def proper_stage(self, stg):
 		stage = ['discovery', 'efficiency', 'idea', 'scale', 'validation']
@@ -35,7 +41,7 @@ class BapQA:
 
 	def yes_no(self, resp):
 		response = ['y', 'yes', 'n', 'no']
-		val = [r for r in response if r in resp.lower()]
+		val = [r for r in response if r == resp.lower()]
 		return len(val) > 0
 
 	def check_columns_completeness(self):
@@ -44,6 +50,8 @@ class BapQA:
 		dfqc = pd.DataFrame()
 		dfac = pd.DataFrame()
 
+
+		clm_lst = []
 		for fl in self.ric_files:
 			Common.change_location(p.DATA)
 			wb = openpyxl.load_workbook(fl, data_only=True)
@@ -63,6 +71,7 @@ class BapQA:
 			dfqc = pd.concat([dfqc, df_qc])
 			dfac = pd.concat([dfac, df_ac])
 
+
 		writer = pd.ExcelWriter('00 ALL_RIC_BAP_COLUMNS_FY18_Q3.xlsx')
 		dfps.to_excel(writer, 'Program', index=False)
 		dfpys.to_excel(writer, 'Program Youth', index=False)
@@ -73,10 +82,12 @@ class BapQA:
 		print(os.getcwd())
 		writer.save()
 
-	def check_rics_file(self, loc):
+	def check_rics_file(self, loc, combined=False):
 		path = Common.change_location(loc)
 		fl = FileService(path)
 		self.ric_files = fl.get_source_file()
+		if combined:
+			self.ric_files = [f for f in self.ric_files if 'QA_' in f]
 		print('-' * 100, '\nPROCESSING RIC FILES\n')
 		for fl in self.ric_files:
 			print(fl)
@@ -86,51 +97,66 @@ class BapQA:
 
 				print('\tProgram Data')
 				program_sheet = wb.get_sheet_by_name(WS.bap_program.value)
-				self.program_sheet(program_sheet)
+				self.qa_program_sheet(program_sheet)
 				print('\tProgram Youth Data')
 				program_youth_sheet = wb.get_sheet_by_name(WS.bap_program_youth.value)
-				self.program_youth_sheet(program_youth_sheet)
+				self.qa_program_youth_sheet(program_youth_sheet)
 				print('\tQuarterly Company Data')
 				quarterly_company_sheet = wb.get_sheet_by_name(WS.bap_company.value)
-				self.quarterly_company_data_sheet(quarterly_company_sheet)
+				self.rics_sheet_header(quarterly_company_sheet)
+				self.qa_quarterly_company_data_sheet(quarterly_company_sheet)
 				print('\tAnnual Company Data')
-				annual_company_sheet = wb.get_sheet_by_name(WS.bap_company_annual.value)
-				self.annual_company_data_sheet(annual_company_sheet)
+				if 'haltec' in fl.lower() or 'communitec' in fl.lower():
+					annual_company_sheet = wb.get_sheet_by_name(WS.bap_company_annual.value)
+					self.qa_annual_company_data_sheet(annual_company_sheet)
 
 				Common.change_location(p.QA)
 				wb.save('{}_QA.xlsx'.format(fl[:-5]))
-				print('\t{}_QA IS SAVED.'.format(fl[:-5]))
+				print('\t\t[{}_QA] IS SAVED.'.format(fl[:-5]))
 			except BaseException as ex:
 				print(ex)
 
 	def rics_sheet_header(self, sheet):
 		for cl in sheet.columns:
 			for c in cl:
-				if c.row == 1:
-					c.fill = self.header
+				if c.row > 1:
+					if c.value is None:
+						c.fill = self.empty
 
-	def program_youth_sheet(self, sheet):
+	def qa_program_youth_sheet(self, sheet):
 		for cl in sheet.columns:
 			for c in cl:
 				if c.row == 1:
 					c.fill = self.header
 				elif c.row > 1:
-					if c.column in ['A', 'B', 'C']:
+					if c.column in ['A', 'B', 'C', 'H']:
 						if isinstance(c.value, int):
 							c.fill = self.okay
 						else:
 							c.fill = self.amber
 					if c.column == 'D':
-						if c.value.lower() != self.quarter.lower():
-							c.fill = self.amber
+						c.value = self.quarter
+						c.fill = self.okay
+						# if str(c.value) == self.quarter:
+						# 	c.fill = self.okay
+						# 	c.value = self.quarter
+						# else:
+						# 	c.fill = self.amber
 					if c.column == 'E':
-						if c.value != self.year:
-							c.fill = self.amber
+						c.value = self.year
+						c.fill = self.okay
+						# if str(c.value) == self.year:
+						# 	c.fill = self.okay
+						# 	c.value = self.year
+						# else:
+						# 	c.fill = self.amber
 					if c.column == 'F':
-						if c.value.lower() != self.youth.lower():
+						if str(c.value).lower() == self.youth.lower():
+							c.fill = self.okay
+						else:
 							c.fill = self.amber
 
-	def program_sheet(self, sheet):
+	def qa_program_sheet(self, sheet):
 		for cl in sheet.columns:
 			for c in cl:
 				if c.row == 1:
@@ -142,16 +168,18 @@ class BapQA:
 						else:
 							c.fill = self.amber
 					if c.column == 'O':
-						if c.value.lower() != self.quarter.lower():
-							c.fill = self.amber
+						c.value = self.quarter
+						c.fill = self.okay
 					if c.column == 'P':
-						if c.value != self.year:
-							c.fill = self.amber
+						c.value = self.year
+						c.fill = self.okay
 					if c.column == 'Q':
-						if c.value.lower() != self.all_youth.lower():
+						if c.value.lower() == self.all_youth.lower():
+							c.fill = self.okay
+						else:
 							c.fill = self.amber
 
-	def quarterly_company_data_sheet(self, sheet):
+	def qa_quarterly_company_data_sheet(self, sheet):
 		for cl in sheet.columns:
 			for c in cl:
 				try:
@@ -169,18 +197,22 @@ class BapQA:
 									c.fill = self.okay
 								else:
 									c.fill = self.amber
-							if c.column in ['W',  'AB', 'AC', 'AD', 'AF']:
+							if c.column in ['W', 'AB', 'AC', 'AD', 'AF', 'AH', 'O', 'P', 'Q', 'R', 'S']:
 								if isinstance(c.value, float) or isinstance(c.value, int):
 									c.fill = self.okay
 								else:
 									c.fill = self.amber
-							if c.column in ['M', 'N']:
-								if isinstance(c.value, int) or isinstance(c.value, datetime.date):
+							if c.column == 'M':
+								if str(c.value).lower() in self.no_value:
+									c.fill = self.amber
+								elif isinstance(parser.parse(str(c.value)), datetime.date) or isinstance(int(c.value), int) or c.value.lower() in self.month_names:
 									c.fill = self.okay
 								else:
 									c.fill = self.amber
 							if c.column == 'N':
-								if isinstance(c.value, int):
+								if str(c.value).lower() in self.no_value:
+									c.fill = self.amber
+								elif isinstance(parser.parse(str(c.value)), datetime.date) or isinstance(int(c.value), int):
 									c.fill = self.okay
 								else:
 									c.fill = self.amber
@@ -190,22 +222,33 @@ class BapQA:
 								else:
 									c.fill = self.amber
 							if c.column == 'U':
-								if isinstance(c.value, datetime.date):
+								if str(c.value).lower() in self.no_value:
+									c.fill = self.amber
+								elif isinstance(parser.parse(str(c.value)), datetime.datetime):
 									c.fill = self.okay
 								else:
 									c.fill = self.amber
-							if c.column == 'AG':
-								if c.value != self.quarter:
-									c.fill = self.amber
-							if c.column == 'AH':
-								if c.value != self.year:
-									c.fill = self.amber
-								else:
-									c.fill = self.amber
+							if c.column == 'AI':
+								c.value = self.quarter
+								c.fill = self.okay
+								# if str(c.value) == self.quarter:
+								# 	c.fill = self.okay
+								# 	c.value = self.quarter
+								# else:
+								# 	c.fill = self.amber
+							if c.column == 'AJ':
+								c.value = self.year
+								c.fill = self.okay
+								# if str(c.value) == self.year:
+								# 	c.fill = self.okay
+								# 	c.value = self.year
+								# else:
+								# 	c.fill = self.amber
 				except Exception as ex:
+					c.value = '*****'
 					print('{} | {} | {} | {}'.format(c.column, c.row, c.value, ex))
 
-	def annual_company_data_sheet(self, sheet):
+	def qa_annual_company_data_sheet(self, sheet):
 		for cl in sheet.columns:
 			for c in cl:
 				if c.value is not None:
@@ -227,6 +270,10 @@ class BapQA:
 								c.fill = self.okay
 							else:
 								c.fill = self.amber
+						if c.column == 'L':
+							c.value = '--'
+						if c.column == 'M':
+							c.value = '2018'
 				else:
 					c.fill = self.amber
 
@@ -241,7 +288,6 @@ class BapQA:
 					d['Sheet'] = sheet_name
 					d['Letter'] = rw[i].column
 					d['Header'] = rw[i].value
-					print('\t{} - {}'.format(d['Letter'], d['Header']))
 					lst.append(d)
 		return pd.DataFrame(lst, columns=lst[0].keys())
 

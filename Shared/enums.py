@@ -144,7 +144,7 @@ class FileType(Enum):
 	WORD = ['doc', 'docx']
 
 
-class DataSource(Enum):
+class MDCDataSource(Enum):
 	BAP = 1
 	CBINSIGHT = 2
 	CRUNCHBASE = 3
@@ -173,9 +173,10 @@ class FileName(Enum):
 
 
 class Table(Enum):
-	company_program = 'Config.CompanyProgram'
-	company_program_youth = 'Config.CompanyProgramAgg'
-	company_data = 'Config.CompanyDataRaw'
+	company_program =       'BAP.ProgramData'
+	company_program_youth = 'BAP.ProgramDataYouth'
+	company_data =          'BAP.QuarterlyCompanyData'
+	company_annual =        'BAP.AnnualCompanyData'
 
 	batch = 'Config.ImportBatch'
 	batch_log = 'Config.ImportBatchLog'
@@ -184,14 +185,23 @@ class Table(Enum):
 
 
 class SQL(Enum):
-	sql_program_insert = 'INSERT INTO[Config].[CompanyAggProgram] ' \
-						 'Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
-	sql_program_youth_insert = 'INSERT INTO[Config].[CompanyAggProgramYouth] Values (?,?,?,?,?,?,?,?,?,?,?,?,?)'
-	sql_bap_company_insert = 'INSERT INTO [Config].[CompanyDataRaw] ' \
-							 'Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
-	sql_bap_company_annual_insert = 'INSERT INTO [BAP].[AnnualCompanyData] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
-	sql_bap_distict_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource,WorkSheetName ' \
-							'FROM {} Year = {} AND Quarter = \'{}\''
+
+	sql_bap_quarterly_company = 'SELECT [Company Name] as Name, [Former / Alternate Names], [Street Address], City, Province, [Postal Code],Website FROM BAP.QuarterlyCompanyData'
+	sql_dim_company_insert = 'INSERT INTO[Reporting].[DimCompany] VALUES({},\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',{},\'{}\',\'{}\')'
+	sql_dim_company_source_insert = 'INSERT INTO[Reporting].[DimCompanySource] VALUES({}, {},\'{}\',\'{}\',{},{},\'{}\',\'{}\',\'{}\''
+	sql_dim_company_source_update = 'UPDATE[Reporting].[DimCompanySource] SET CompanyID = {} WHERE Name = \'{}\''
+	sql_dim_company = 'SELECT CompanyID, [CompanyName] FROM {} WHERE CompanyName IS NOT NULL'
+	sql_dim_company_source = 'SELECT CompanyID, [Name] as [CompanyName] FROM {} WHERE[Name] IS NOT NULL'
+	sql_update_company_source ='UPDATE[Config].[CompanyDataRaw] SET CompanyID = {} WHERE ID = {}'
+
+	sql_batch_update = 'Update {} SET BatchId = {} WHERE SourceSystem = {} AND DataSource = {}'
+	sql_batch_select = 'SELECT DISTINCT DataSourceId, BatchID FROM Config.ImportBatch WHERE Year = {} AND Quarter = \'Q{}\' AND SourceSystemID = {}'
+	sql_program_insert = 'INSERT INTO [BAP].[ProgramData] Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_program_youth_insert = 'INSERT INTO [BAP].[ProgramDataYouth] Values (?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_bap_company_insert = 'INSERT INTO [BAP].[QuarterlyCompanyData] Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_bap_company_annual_insert = 'INSERT INTO [BAP].[AnnualCompanyData] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\' AND Quarter = \'Q{}\''
+	sql_annual_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\''
 
 	sql_bap_fact_ric_company_data_source = '''SELECT CompanyID, DataSource, BatchID,'20170930' AS DateID,DateOfIntake,IntakeDate, 
 				NULL AS [StageLevelID],NULL AS [SizeID], 'NULL' AS Age,HighPotential, NULL AS [DevelopmentID], 
@@ -200,6 +210,15 @@ class SQL(Enum):
 				AnualRevenueCAN,NumberOfEmployees,FundingRaisedToDateCAN,FundingRaisedInCurrentQuarterCAN,
 				DateOfIncorporation,IndustrySector, SocialEnterprise, [Quarter], [Year] 
 				FROM [Config].[CompanyDataRaw] WHERE CompanyID IS NOT NULL  AND BatchID IN {}'''
+	sql_bap_ric_company_quarterly_data = '''
+				SELECT CompanyID, DataSource, BatchID,'20171231' AS DateID,[Date Of Intake],'INTAKE DATE' AS IntakeDate,
+				NULL AS [StageLevelID],NULL AS [SizeID], 'NULL' AS Age, [High Potential y/n], NULL AS [DevelopmentID], 
+				[Number of advisory service hours provided], [Volunteer mentor hours], GETDATE() AS [Modified Date],
+				GETDATE() AS [CreatedDate], Youth, [Street Address], City, Province, [Postal Code], Website,Stage,
+				NULL AS AnualRevenueCAN,NULL AS NumberOfEmployees,[Funding Raised to Date $CAN],NULL AS FundingRaisedInCurrentQuarterCAN,
+				[Incorporate year (YYYY)]+'-'+[Incorporation month (MM)]+'-'+'15' AS DateOfIncorporation,[Industry Sector], [Social Enterprise y/n], [Quarter], [Year] 
+				FROM BAP.QuarterlyCompanyData WHERE Year = {} AND Quarter = \'{}\'
+	'''
 	sql_bap_fact_ric_company_insert = 'INSERT INTO [Reporting].[FactRICCompanyData] ' \
 									  'VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 
@@ -593,6 +612,7 @@ class PATH(Enum):
 	QA = 1
 	COMBINED = 2
 	ETL = 3
+	MATCH = 4
 
 
 class TeamStatus(Enum):
@@ -617,4 +637,10 @@ class BapSummary(Enum):
 	stage_two = 'Stage 2'
 	stage_three = 'Stage 3'
 	stage_four = 'Stage 4'
+
+
+class Combine(Enum):
+	FOR_TEST = 'TEST'
+	FOR_QA = 'QA'
+	FOR_ETL = 'ETL'
 

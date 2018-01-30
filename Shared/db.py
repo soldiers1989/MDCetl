@@ -45,7 +45,7 @@ class DB:
 		try:
 			cursor.executemany(sql, values)
 			cursor.commit()
-			#print('Bulk Insert SUCCESSFUL !')
+			print('Bulk Insert SUCCESSFUL !')
 		except Exception as ex:
 			print('Bulk Insert Exception: {}'.format(ex))
 

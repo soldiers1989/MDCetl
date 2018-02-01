@@ -1,6 +1,7 @@
 import os
 import uuid
 import pandas as pd
+import datetime
 
 from Shared.db import DB
 from Shared.common import Common as COM
@@ -16,6 +17,7 @@ class FileService:
 		self.source_file = None
 		self._set_folder()
 		self.data_list = []
+		self.year, self.quarter = COM.fiscal_year_quarter(datetime.datetime.utcnow())
 
 	def _set_folder(self):
 		os.chdir(self.path)
@@ -79,6 +81,24 @@ class FileService:
 					return self.data_list
 		elif data_source == DS.OSVP:
 			pass
+		elif data_source == DS.OTHER:
+			if ftype == FT.SPREAD_SHEET:
+				target_list = []
+				self.target_list_dataframe()
+				j=0
+				for f in file_list:
+					j+=1
+					print('{}. {}'.format(j, f))
+					tl = pd.read_excel(f, WS.target_list.value)
+					tl['Year'] = self.year
+					tl.columns = self.tl_columns
+					target_list.append(tl)
+					tl.insert(0, 'Worksheet', str(WS.target_list.value))
+					tl.insert(0, 'FileName', str(f))
+					tl.insert(0, 'Path', self.path)
+					tl.insert(0, 'BatchID', None)
+				df_tl = pd.concat(target_list)
+				return df_tl
 
 	def osvp_dataframes(self):
 		# df = DB.pandas_read((sql.sql_columns.value.format('OSVP')))
@@ -98,6 +118,11 @@ class FileService:
 			return l_company, l_company_annual, l_program, l_program_youth
 		else:
 			return None, None, None, None
+
+	def target_list_dataframe(self):
+		df = DB.pandas_read(sql.sql_columns.value.format('SURVEY'))
+		if df is not None:
+			self.tl_columns = list(df[df['TABLE_NAME'] == 'Targetlist']['COLUMN_NAME'][5:])
 
 	def save_as_excel(self, dfs, file_name, path_key):
 		print(os.getcwd())

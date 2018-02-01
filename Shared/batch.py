@@ -19,7 +19,6 @@ class BatchService:
 		self.db = DB()
 
 	def create_batch_for_etl(self, datasource, systemsource, year, quarter, file_name='', full_path='', work_sheet_name=''):
-		# db = DB()
 		value = dict()
 		value['UserId'] = 0
 		value['ImportStatusId'] = 5
@@ -40,7 +39,7 @@ class BatchService:
 		value['Year'] = year
 		value['Quarter'] = 'Q{}'.format(quarter - 1)
 		sql = self.sql_batch_single_insert.format('CONFIG.Batch', tuple(value.values()))
-		db.execute(sql)
+		self.db.execute(sql)
 		new_batch = self.search_batch(year, quarter, systemsource, datasource, work_sheet_name, file_name,
 									  file_path=full_path)
 		return new_batch

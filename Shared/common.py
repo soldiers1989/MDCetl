@@ -279,6 +279,7 @@ class Common:
 		path_combined = Common.get_config('config.ini', 'box_file_path', 'path_bap_combined')
 		path_etl = Common.get_config('config.ini', 'box_file_path', 'path_bap_etl')
 		path_match = Common.get_config('config.ini', 'box_file_path', 'path_bap_company_matching')
+		path_other = Common.get_config('config.ini', 'box_file_path', 'path_other')
 
 		if loc == PATH.DATA:
 			box_path = os.path.join(os.path.expanduser('~'), path)
@@ -300,6 +301,10 @@ class Common:
 			match_path = os.path.join(os.path.expanduser('~'), path_match)
 			os.chdir(path_match)
 			return match_path
+		elif loc == PATH.OTHER:
+			other_path = os.path.join(os.path.expanduser('~'), path_other)
+			os.chdir(path_other)
+			return other_path
 
 	@staticmethod
 	def change_series_type(sr, dtype):

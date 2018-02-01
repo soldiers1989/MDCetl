@@ -166,6 +166,7 @@ class WorkSheet(Enum):
 	bap_program_final = 'Program'
 	bap_program_youth_final = 'Program Youth'
 	bap_company_old = 'Company Data'
+	target_list = 'target_list'
 
 
 class FileName(Enum):
@@ -186,7 +187,8 @@ class Table(Enum):
 
 class SQL(Enum):
 
-	sql_bap_quarterly_company = 'SELECT [Company Name] as Name, [Former / Alternate Names], [Street Address], City, Province, [Postal Code],Website FROM BAP.QuarterlyCompanyData'
+	sql_bap_quarterly_company = 'SELECT [Company Name] as Name, [FileName] FROM BAP.QuarterlyCompanyData'
+		# 'SELECT [Company Name] as Name, [Former / Alternate Names], [Street Address], City, Province, [Postal Code],Website FROM BAP.QuarterlyCompanyData'
 	sql_dim_company_insert = 'INSERT INTO[Reporting].[DimCompany] VALUES({},\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',{},\'{}\',\'{}\')'
 	sql_dim_company_source_insert = 'INSERT INTO[Reporting].[DimCompanySource] VALUES({}, {},\'{}\',\'{}\',{},{},\'{}\',\'{}\',\'{}\''
 	sql_dim_company_source_update = 'UPDATE[Reporting].[DimCompanySource] SET CompanyID = {} WHERE Name = \'{}\''
@@ -202,6 +204,8 @@ class SQL(Enum):
 	sql_bap_company_annual_insert = 'INSERT INTO [BAP].[AnnualCompanyData] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 	sql_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\' AND Quarter = \'Q{}\''
 	sql_annual_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\''
+
+	sql_other_insert = 'INSERT INTO[SURVEY].[Targetlist] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 
 	sql_bap_fact_ric_company_data_source = '''SELECT CompanyID, DataSource, BatchID,'20170930' AS DateID,DateOfIntake,IntakeDate, 
 				NULL AS [StageLevelID],NULL AS [SizeID], 'NULL' AS Age,HighPotential, NULL AS [DevelopmentID], 
@@ -613,6 +617,7 @@ class PATH(Enum):
 	COMBINED = 2
 	ETL = 3
 	MATCH = 4
+	FASTLANE = 5
 
 
 class TeamStatus(Enum):
@@ -643,4 +648,5 @@ class Combine(Enum):
 	FOR_TEST = 'TEST'
 	FOR_QA = 'QA'
 	FOR_ETL = 'ETL'
+	FOR_NONE = 'COMMON'
 

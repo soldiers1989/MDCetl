@@ -174,6 +174,7 @@ class CompanyService:
 					bname = old_company[old_company.BasicName == company_name].BasicName.values[0]
 
 					val['Basic Index'] = index
+					val['RIC'] = company.FileName
 					val['Basic Index Company Name'] = company.Name
 					val['Basic Name'] = company.BasicName
 					val['DC Basic Name '] = bname
@@ -182,6 +183,7 @@ class CompanyService:
 					values.append(val)
 				else:
 					val['Basic Index'] = index
+					val['RIC'] = company.FileName
 					val['Basic Index Company Name'] = company.Name
 					val['Basic Name'] = company.BasicName
 					val['DC Basic Name '] = '-'
@@ -193,12 +195,12 @@ class CompanyService:
 		df = pd.DataFrame.from_dict(values, orient='columns')
 		print(os.getcwd())
 		CM.change_location(PATH.MATCH)
-		self.file.save_as_csv(df, 'Company Matcing.xlsx', self.path, 'Company List')
+		self.file.save_as_csv(df, 'Company_Matching_FY18_Q3.xlsx', self.path, 'Company Matched')
 
 
 if __name__ == '__main__':
 	com = CompanyService()
-	com.generate_company_matching_result()
+	com.move_company_data()
 
 
 

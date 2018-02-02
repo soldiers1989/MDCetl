@@ -16,6 +16,7 @@ class DataSource:
 		self.data = None
 		self.db = db.DB()
 		self.batch = batch.BatchService()
+		self.enum = enums
 
 		if header is not '' and item is not '':
 			self.path = self.common.get_config('config.ini', header, item)
@@ -25,3 +26,4 @@ class DataSource:
 			self.cb_sql_insert = self.common.get_config('config_sql.ini', header, item)
 		elif datasource.value == enums.MDCDataSource.OSVP.value:
 			self.osvp_sql_insert = self.common.get_config('config_sql.ini', header, item)
+

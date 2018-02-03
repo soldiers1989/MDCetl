@@ -205,7 +205,7 @@ class SQL(Enum):
 	sql_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\' AND Quarter = \'Q{}\''
 	sql_annual_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\''
 
-	sql_other_insert = 'INSERT INTO[SURVEY].[Targetlist] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_other_insert = 'INSERT INTO[SURVEY].[Targetlist] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 
 	sql_bap_fact_ric_company_data_source = '''SELECT CompanyID, DataSource, BatchID,'20170930' AS DateID,DateOfIntake,IntakeDate, 
 				NULL AS [StageLevelID],NULL AS [SizeID], 'NULL' AS Age,HighPotential, NULL AS [DevelopmentID], 
@@ -649,4 +649,10 @@ class Combine(Enum):
 	FOR_QA = 'QA'
 	FOR_ETL = 'ETL'
 	FOR_NONE = 'COMMON'
+
+
+class FilePath(Enum):
+	path_iaf_source = 'Box Sync/IAF-MDC_Shared'
+	path_cbinsight_source = ''
+	path_bap_source = ''
 

@@ -35,7 +35,7 @@ class Crunchbase:
 
 		self.data = None
 		self.file_name = 'CB_{}_{}.csv'
-		self.file = FileService(self.path)
+		# self.file = FileService(self.path)
 		self.org_uuid = None
 		self.i = 0
 

@@ -8,6 +8,7 @@ from Shared.common import Common as COM
 from Shared.enums import FileType as FT
 from Shared.enums import MDCDataSource as DS
 from Shared.enums import WorkSheet as WS, SourceSystemType as SS, FileType, Schema, SQL as sql, Combine, DataSourceType as DST
+# import Shared.enums as enum
 
 
 class FileService:
@@ -35,6 +36,7 @@ class FileService:
 			current_path = os.path.join(os.path.expanduser("~"), current_path)
 			os.chdir(current_path)
 			self.source_file = os.listdir(current_path)
+
 		file_list = self.get_source_file()
 
 		if data_source == DS.BAP:
@@ -70,7 +72,6 @@ class FileService:
 				bap_company_annual = pd.concat(l_company_annual)
 
 				return bap_program, bap_program_youth, bap_company, bap_company_annual
-
 		elif data_source == DS.CBINSIGHT:
 			if ftype == FT.CSV:
 				if file_name != '':
@@ -80,25 +81,46 @@ class FileService:
 						self.data_list.append(pd.read_csv(fl))
 					return self.data_list
 		elif data_source == DS.OSVP:
-			pass
+			print('')
+			print('')
 		elif data_source == DS.OTHER:
 			if ftype == FT.SPREAD_SHEET:
 				target_list = []
 				self.target_list_dataframe()
 				j=0
 				for f in file_list:
-					j+=1
+					j += 1
 					print('{}. {}'.format(j, f))
 					tl = pd.read_excel(f, WS.target_list.value)
 					tl['Year'] = self.year
+					tl.insert(5, 'Venture_basic_name', None)
 					tl.columns = self.tl_columns
 					target_list.append(tl)
 					tl.insert(0, 'Worksheet', str(WS.target_list.value))
 					tl.insert(0, 'FileName', str(f))
 					tl.insert(0, 'Path', self.path)
 					tl.insert(0, 'BatchID', None)
+
 				df_tl = pd.concat(target_list)
 				return df_tl
+		elif data_source == DS.IAF:
+			if ftype == FT.SPREAD_SHEET:
+				iaf_list = []
+				k = 0
+				for ia in file_list:
+					k += 1
+					print('{}. {}'.format(k, ia))
+					iaf = pd.read_excel(ia, sheet_name=None)
+					for i in range(len(list(iaf.items()))):
+						if i == 0:
+							df_summary = list(iaf.items())[i][1]
+						elif i > 0:
+							df = list(iaf.items())[i][1][:-8].T[1:]
+							iaf_list.append(df)
+					df_iaf = pd.concat(iaf_list)
+					df_iaf = df_iaf.where(pd.notnull(df_iaf), None)
+					df_summary = df_summary.where(pd.notnull(df_summary), None)
+				return df_iaf, df_summary
 
 	def osvp_dataframes(self):
 		# df = DB.pandas_read((sql.sql_columns.value.format('OSVP')))

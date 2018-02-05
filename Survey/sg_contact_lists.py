@@ -74,6 +74,86 @@ class sg_contact_lists:
                 pass
 
     @classmethod
+    def sg_campaign_contacts_json(clsself, survey_id, campaign_id, api_token):
+        '''Takes survey and campaign ids
+        and returns contacts associated
+        with that campaign'''
+
+        survey_id = str(survey_id)
+        campaign_id = str(campaign_id)
+
+        base = "https://restapica.surveygizmo.com/v5/survey"
+        url = base + "/" + survey_id + "/surveycampaign" + "/" + campaign_id + "/surveycontact" + "/?" + "resultsperpage=500" + "&" + api_token
+        for i in range(0, 10):
+            try:
+                output = requests.get(url)
+                if output.ok:
+                    output = output.json()
+                    if output['result_ok'] is False:
+                        print("No data for that object")
+                        output = 0
+                        return output
+                    else:
+                        print('Success. Campaign ContactList json retrieved')
+                        return output
+                else:
+                    return
+            except KeyError as ex:
+                print("Probable SSLError. Trying again in 3 seconds...")
+                print("Error:", ex)
+                sleep(3)
+                pass
+
+    @classmethod
+    def sg_campaign_contacts_df(self, survey_id, campaign_id, api_token):
+
+        json = self.sg_campaign_contacts_json(survey_id, campaign_id, api_token)
+        if json == 0:
+            return None
+        clid = -1
+        headers = ["id", "mdc_contact_id", "contact_list_id", "email_address", "firstname", "lastname",
+                   "organization", "division",
+                   "dept", "group", "role", "team", "homephone", "faxphone", "businessphone", "mailingadress",
+                   "mailingadress2", "mailaddresscity", "mailaddressstate", "mailaddresspostal",
+                   "mailaddresscountry",
+                   "title", "url"]
+        contacts = []
+        for i in json["data"]:
+            cid = i["id"]
+            try:
+                mdc_cid = i["contact_id"]
+            except KeyError:
+                # print("no MDC contact id associated w this company")
+                mdc_cid = None
+            email = i["email_address"]
+            fname = i["first_name"]
+            lname = i["last_name"]
+            org = i["organization"]
+            div = i["division"]
+            dept = i["department"]
+            group = i["group"]
+            role = i["role"]
+            team = i["team"]
+            hphone = i["home_phone"]
+            fax = i["fax_phone"]
+            bphone = i["business_phone"]
+            mail1 = i["mailing_address"]
+            mail2 = i["mailing_address2"]
+            mcity = i["mailing_address_city"]
+            mstate = i["mailing_address_state"]
+            mpost = i["mailing_address_postal"]
+            mcntry = i["mailing_address_country"]
+            title = i["title"]
+            url = i["url"]
+            contacts.append(
+                [cid, mdc_cid, clid, email, fname, lname, org, div, dept, group, role, team, hphone, fax, bphone,
+                 mail1, mail2,
+                 mcity, mstate, mpost, mcntry, title, url])
+
+        df = pd.DataFrame(contacts, columns=headers)
+        return df
+
+    @classmethod
     def sg_single_contactlist_df(self, list_id, api_token):
         '''Takes json-formatted dict and returns dataframe
         with contact info for each contact on list.

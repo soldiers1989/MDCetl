@@ -78,6 +78,7 @@ class menu_actions():
                     survey_id = self.validate_survey_id(survey_id, session_variables, api_token, surveys_df)
                 except ValueError:
                     continue
+
         campaigns_df = sg_campaign.sg_campaigns_df(survey_id, api_token)
         print(campaigns_df)
         campaigns_df["id"] = campaigns_df["id"].apply(pd.to_numeric, errors='ignore')
@@ -86,7 +87,8 @@ class menu_actions():
         c_sql = CM.get_config("config.ini", "sql_queries", "campaigns_for_survey")
         c_sql = c_sql.replace("WHAT_SURVEY_ID", str(survey_id))
         db_cmpgns = DB.pandas_read(c_sql)
-        db_cmpgns = db_cmpgns.apply(pd.to_numeric, errors='ignore')
+        if db_cmpgns is not None:
+            db_cmpgns = db_cmpgns.apply(pd.to_numeric, errors='ignore')
 
         cmpgns_not_in_db = pd.merge(campaigns_df, db_cmpgns, how='left', indicator=True, on="id")
         cmpgns_not_in_db2 = cmpgns_not_in_db[cmpgns_not_in_db['_merge'] == 'left_only'].drop("_merge", axis=1)
@@ -97,22 +99,6 @@ class menu_actions():
             insert_cmpgns_sql = "insert_campaigns"
 
             self.df_to_db(cmpgns_not_in_db2, insert_cmpgns_sql, remove_single_quotes=False, clean_numeric_cols=True)
-
-            # cmpgns_headers, cmpgns_qmarks, cmpgns_vals = self.get_sql_params(cmpgns_not_in_db2)
-            # cmpgns_header_str = self.get_header_str(cmpgns_headers)
-            # cmpgns_sql = CM.get_config("config.ini", "sql_queries", "insert_campaigns")
-            # cmpgns_sql = cmpgns_sql.replace("WHAT_HEADERS", cmpgns_header_str).replace("WHAT_VALUES", cmpgns_qmarks)
-            # for lst in cmpgns_vals:
-            #     for i in range(len(lst)):
-            #         element = lst[i]
-            #         try:
-            #             if str(element).lower() == "nan":
-            #                 lst[i] = None
-            #         except AttributeError:
-            #             continue
-            #         except TypeError:
-            #             continue
-            # DB.bulk_insert(cmpgns_sql, cmpgns_vals)
 
         return campaigns_df
 
@@ -227,13 +213,18 @@ class menu_actions():
         return contact_list_df
 
     @classmethod
-    def get_contacts(self, api_token, list_id):
+    def get_contacts(self, api_token, list_id, survey_id=None, campaign_id=None):
 
         if self.return_to_main(list_id) == 1:
             return
 
-        contacts_df = sg_contact_lists.sg_single_contactlist_df(list_id, api_token)
-        print(contacts_df)
+        if survey_id is None:
+
+            contacts_df = sg_contact_lists.sg_single_contactlist_df(list_id, api_token)
+            print(contacts_df)
+
+        elif survey_id is not None:
+            contacts_df = sg_contact_lists.sg_campaign_contacts_df(survey_id, campaign_id, api_token)
 
         return contacts_df
 
@@ -598,13 +589,25 @@ class menu_actions():
         for list_id in contact_lists["id"]:
             contact_list = self.get_contacts(api_token, list_id)
             all_contacts.append(contact_list)
+
+        # gather all contacts from current survey
+        all_campaigns = self.get_campaigns(api_token, survey_id, 0, 0)
+        for campaign_id in all_campaigns['id']:
+            campaign_contacts = self.get_contacts(api_token, list_id=0, survey_id=survey_id, campaign_id=campaign_id)
+            if type(campaign_contacts) == int:
+                continue
+            else:
+                all_contacts.append(campaign_contacts)
+
         all_contacts = pd.concat(all_contacts)
         all_contacts = all_contacts.apply(pd.to_numeric, errors='ignore')
+        all_contacts['email_address'] = all_contacts['email_address'].str.lower()
 
         print("\nGathering all contacts from DB")
         all_contacts_sql = CM.get_config("config.ini", "sql_queries", "all_contacts")
         all_db_contacts = DB.pandas_read(all_contacts_sql)
         all_db_contacts = all_db_contacts.apply(pd.to_numeric, errors='ignore')
+        all_db_contacts['email_address'] = all_db_contacts['email_address'].str.lower()
 
         contact_merge = pd.merge(
             all_contacts[["id", "mdc_contact_id", "contact_list_id", "email_address", "firstname", "lastname"]],
@@ -620,26 +623,9 @@ class menu_actions():
 
             self.df_to_db(new_contacts, insert_cs_sql, clean_numeric_cols=True)
 
-            # nc_headers, nc_qmarks, nc_vals = self.get_sql_params(new_contacts)
-            #
-            # nc_header_str = self.get_header_str(nc_headers)
-            #
-            # nc_sql = CM.get_config("config.ini", "sql_queries", "insert_contacts")
-            # nc_sql = nc_sql.replace("WHAT_HEADERS", nc_header_str).replace("WHAT_VALUES", nc_qmarks)
-            # for lst in nc_vals:
-            #     for i in range(len(lst)):
-            #         element = lst[i]
-            #         try:
-            #             if str(element).lower() == "nan":
-            #                 lst[i] = None
-            #         except AttributeError:
-            #             continue
-            #         except TypeError:
-            #             continue
-            # DB.bulk_insert(nc_sql, nc_vals)
-
         updated_db_contacts = DB.pandas_read(all_contacts_sql)
         updated_db_contacts = updated_db_contacts.apply(pd.to_numeric, errors='ignore')
+        updated_db_contacts['email_address'] = updated_db_contacts['email_address'].str.lower()
 
         updated_contact_merge = pd.merge(
             all_contacts[["id", "mdc_contact_id", "contact_list_id", "email_address", "firstname", "lastname"]],
@@ -658,65 +644,12 @@ class menu_actions():
         new_cl = cl_merge[["sg_cid", "mdc_contact_id", "contact_list_id"]][cl_merge["_merge"] == 'left_only']
         new_cl = new_cl.apply(pd.to_numeric, errors='ignore')
 
-        if len(new_cl) > 0:
-            print("Writing new entries to Contacts__Lists")
-            insert_cl_sql = "insert_contacts_lists"
-
-            self.df_to_db(new_cl, insert_cl_sql, clean_numeric_cols=True)
-
-            # cl_headers, cl_qmarks, cl_vals = self.get_sql_params(new_cl)
-            # cl_header_str = self.get_header_str(cl_headers)
-            # cl_sql = CM.get_config("config.ini", "sql_queries", "insert_contacts_lists")
-            # cl_sql = cl_sql.replace("WHAT_HEADERS", cl_header_str).replace("WHAT_VALUES", cl_qmarks)
-            # for lst in cl_vals:
-            #     for i in range(len(lst)):
-            #         element = lst[i]
-            #         try:
-            #             if str(element).lower() == "nan":
-            #                 lst[i] = None
-            #             if np.dtype(element) == 'int64':
-            #                 lst[i] = int(lst[i])
-            #         except AttributeError:
-            #             continue
-            #         except TypeError:
-            #             continue
-            # DB.bulk_insert(cl_sql, cl_vals)
-
-        # print("\nLinking API contacts to DB contacts (matching SG contact id with MDC contact id")
-        # contacts_in_resps = pd.merge(all_contacts[["id", "mdc_contact_id", "contact_list_id"]], api_resps[["contact_id", "survey_id"]],
-        #                              how='inner', left_on="id", right_on="contact_id")
-        # contacts_in_resps = contacts_in_resps.drop("contact_id", axis=1)
-        # contacts_in_resps = contacts_in_resps.drop_duplicates()
-        # contacts_in_resps = contacts_in_resps.apply(pd.to_numeric, errors='ignore')
-        # contacts_in_resps.columns = ["sg_cid", "mdc_contact_id", "contact_list_id", "survey_id"]
+        # INITIAL INSERT OF contacts__lists
+        # if len(new_cl) > 0:
+        #     print("Writing new entries to Contacts__Lists")
+        #     insert_cl_sql = "insert_contacts_lists"
         #
-        # contacts__surveys_sql = CM.get_config("config.ini", "sql_queries", "contacts__lists")
-        # db_contacts__surveys = DB.pandas_read(contacts__surveys_sql)
-        #
-        # print("\nWriting new entries to Contacts__Surveys table. (this keeps track of what contacts in our DB have responded to which survey")
-        # contacts__surveys_not_in_db = pd.merge(contacts_in_resps, db_contacts__surveys, how='outer',
-        #                                        indicator=True, on=['sg_cid', 'survey_id'])
-        # contacts__surveys_not_in_db2 = contacts__surveys_not_in_db[contacts__surveys_not_in_db['_merge'] == 'left_only']\
-        #     .drop("_merge", axis=1)
-        #
-        # if len(contacts__surveys_not_in_db2) > 0:
-        #     cs_headers, cs_qmarks, cs_vals = self.get_sql_params(contacts__surveys_not_in_db2)
-        #
-        #     cs_header_str = self.get_header_str(cs_headers)
-        #
-        #     cs_sql = CM.get_config("config.ini", "sql_queries", "insert_contacts__lists")
-        #     cs_sql = cs_sql.replace("WHAT_HEADERS", cs_header_str).replace("WHAT_VALUES", cs_qmarks)
-        #     for lst in cs_vals:
-        #         for i in range(len(lst)):
-        #             element = lst[i]
-        #             try:
-        #                 if str(element).lower() == "nan":
-        #                     lst[i] = None
-        #             except AttributeError:
-        #                 continue
-        #             except TypeError:
-        #                 continue
-        #     DB.bulk_insert(cs_sql, cs_vals)
+        #     self.df_to_db(new_cl, insert_cl_sql, clean_numeric_cols=True)
 
         # get api answers where response_id = resps.id
 
@@ -747,6 +680,30 @@ class menu_actions():
         resps_not_in_db2 = resps_not_in_db[resps_not_in_db['_merge'] == 'left_only'].drop("_merge", axis=1)
 
         inserted_resps = []
+
+        # check if resps.contact_id contains any contact ids not found in contacts__lists
+        # resp_contact_ids_not_in_contacts__lists = pd.merge(resps_not_in_db2[['contact_id']],
+        #                                                    db_contacts_lists_df[['sg_cid']],
+        #                                                    how='left',
+        #                                                    indicator=True,
+        #                                                    left_on='contact_id',
+        #                                                    right_on='sg_cid')
+        # resp_contact_ids_not_in_contacts__lists2 = resp_contact_ids_not_in_contacts__lists[
+        #     resp_contact_ids_not_in_contacts__lists['_merge'] == 'left_only'].drop("_merge", axis=1)
+
+
+        # SECOND INSERT OF contacts__lists
+        new_cl = pd.merge(new_cl, db_contacts_lists_df, how='left', indicator=True, on=["sg_cid"])
+        new_cl = new_cl[new_cl["_merge"] == 'left_only']
+        new_cl = new_cl[["sg_cid", "mdc_contact_id_x", "contact_list_id_x"]]
+        new_cl.columns = ["sg_cid", "mdc_contact_id", "contact_list_id"]
+
+
+        if len(new_cl) > 0:
+            print("Writing new entries to Contacts__Lists")
+            insert_cl_sql = "insert_contacts_lists"
+
+            self.df_to_db(new_cl, insert_cl_sql, clean_numeric_cols=True)
 
         # update Survey_Responses where date_submitted has changed for existing response
         if len(changed_resps) > 0:

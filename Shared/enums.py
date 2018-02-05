@@ -137,6 +137,14 @@ class ImportStatus(Enum):
 	DELETED_FROM_REPORTING = 14
 
 
+class StageLevel(Enum):
+	IDEA = 4
+	DISCOVERY = 2
+	VALIDATION = 6
+	EFFICIENCY = 3
+	SCALE = 5
+
+
 class FileType(Enum):
 	SPREAD_SHEET = ['xls', 'xlsx']
 	CSV = ['csv']
@@ -186,11 +194,12 @@ class Table(Enum):
 
 
 class SQL(Enum):
-
-	sql_bap_quarterly_company = 'SELECT [Company Name] as Name, [FileName] FROM BAP.QuarterlyCompanyData'
+	sql_update = 'UPDATE {} SET {} = {} WHERE {} = {}'
+	sql_get_max_id = 'SELECT MAX({}) AS MaxID FROM {}'
+	sql_bap_quarterly_company = 'SELECT ID, [Company Name] as Name, [FileName], BatchID, Website, DataSource FROM BAP.QuarterlyCompanyData'
 		# 'SELECT [Company Name] as Name, [Former / Alternate Names], [Street Address], City, Province, [Postal Code],Website FROM BAP.QuarterlyCompanyData'
-	sql_dim_company_insert = 'INSERT INTO[Reporting].[DimCompany] VALUES({},\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',{},\'{}\',\'{}\')'
-	sql_dim_company_source_insert = 'INSERT INTO[Reporting].[DimCompanySource] VALUES({}, {},\'{}\',\'{}\',{},{},\'{}\',\'{}\',\'{}\''
+	# sql_dim_company_insert = 'INSERT INTO[Reporting].[DimCompany] VALUES({},\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',{},\'{}\',\'{}\')'
+	# sql_dim_company_source_insert = 'INSERT INTO[Reporting].[DimCompanySource] VALUES({}, {},\'{}\',\'{}\',{},{},\'{}\',\'{}\',\'{}\''
 	sql_dim_company_source_update = 'UPDATE[Reporting].[DimCompanySource] SET CompanyID = {} WHERE Name = \'{}\''
 	sql_dim_company = 'SELECT CompanyID, [CompanyName] FROM {} WHERE CompanyName IS NOT NULL'
 	sql_dim_company_source = 'SELECT CompanyID, [Name] as [CompanyName] FROM {} WHERE[Name] IS NOT NULL'
@@ -205,15 +214,31 @@ class SQL(Enum):
 	sql_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\' AND Quarter = \'Q{}\''
 	sql_annual_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\''
 
-	sql_other_insert = 'INSERT INTO[SURVEY].[Targetlist] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_target_list_insert = 'INSERT INTO[SURVEY].[Targetlist] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 
-	sql_bap_fact_ric_company_data_source = '''SELECT CompanyID, DataSource, BatchID,'20170930' AS DateID,DateOfIntake,IntakeDate, 
-				NULL AS [StageLevelID],NULL AS [SizeID], 'NULL' AS Age,HighPotential, NULL AS [DevelopmentID], 
-				NumberOfAdvisoryServiceHoursProvided,VolunteerMentorHours, GETDATE() AS [Modified Date], 
-				GETDATE() AS [CreatedDate], Youth,StreetAddress, City, Province, PostalCode, Website,Stage,
-				AnualRevenueCAN,NumberOfEmployees,FundingRaisedToDateCAN,FundingRaisedInCurrentQuarterCAN,
-				DateOfIncorporation,IndustrySector, SocialEnterprise, [Quarter], [Year] 
-				FROM [Config].[CompanyDataRaw] WHERE CompanyID IS NOT NULL  AND BatchID IN {}'''
+	sql_dim_company_insert = 'INSERT INTO [Reporting].[DimCompany] VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_dim_company_source_insert = 'INSERT INTO [Reporting].[DimCompanySource] VALUES (?,?,?,?,?,?,?,?,?)'
+
+	'''
+				SELECT CompanyID, DataSource, BatchID,'20171231' AS DateID,[Date of Intake] AS IntakeDate,
+				NULL AS [StageLevelID],NULL AS [SizeID], 'NULL' AS Age,[High Potential y/n], NULL AS [DevelopmentID],
+				[Number of advisory service hours provided] AS AdvisoryServiceHours, [Volunteer mentor hours] , GETDATE() AS [Modified Date],
+				GETDATE() AS [CreatedDate], Youth,[Street Address], City, Province, [Postal Code], Website,Stage,
+				'' as AnnualRevenue ,NULL as NumberOfEmployees,[Funding Raised to Date $CAN], NULL AS FundingCurrentQuarter,
+				[Incorporate year (YYYY)]+'-'+ [Incorporation month (MM)] + '-15' AS [Date of Incorporation],
+				[Industry Sector], [Social Enterprise y/n], [Quarter], [Year]
+				FROM BAP.QuarterlyCompanyData WHERE CompanyID IS NOT NULL AND Year = 2018 AND Quarter = 'Q3'
+	'''
+
+	sql_bap_fact_ric_company_data_source = '''
+				SELECT ID, CompanyID, DataSource, BatchID,'20171231' AS DateID,[Date of Intake] AS IntakeDate,
+				NULL AS [StageLevelID],NULL AS [SizeID], 'NULL' AS Age,[High Potential y/n], NULL AS [DevelopmentID],
+				[Number of advisory service hours provided] AS AdvisoryServiceHours, [Volunteer mentor hours] , GETDATE() AS [Modified Date],
+				GETDATE() AS [CreatedDate], Youth,[Street Address], City, Province, [Postal Code], Website,Stage,
+				'' as AnnualRevenue ,NULL as NumberOfEmployees,[Funding Raised to Date $CAN], NULL AS FundingCurrentQuarter,
+				 NULL AS [Date of Incorporation],[Industry Sector], [Social Enterprise y/n], [Quarter], [Year], [Incorporate year (YYYY)], [Incorporation month (MM)]
+				FROM BAP.QuarterlyCompanyData WHERE CompanyID IS NOT NULL AND Year = 2018 AND Quarter = 'Q3'
+				'''
 	sql_bap_ric_company_quarterly_data = '''
 				SELECT CompanyID, DataSource, BatchID,'20171231' AS DateID,[Date Of Intake],'INTAKE DATE' AS IntakeDate,
 				NULL AS [StageLevelID],NULL AS [SizeID], 'NULL' AS Age, [High Potential y/n], NULL AS [DevelopmentID], 
@@ -223,8 +248,7 @@ class SQL(Enum):
 				[Incorporate year (YYYY)]+'-'+[Incorporation month (MM)]+'-'+'15' AS DateOfIncorporation,[Industry Sector], [Social Enterprise y/n], [Quarter], [Year] 
 				FROM BAP.QuarterlyCompanyData WHERE Year = {} AND Quarter = \'{}\'
 	'''
-	sql_bap_fact_ric_company_insert = 'INSERT INTO [Reporting].[FactRICCompanyData] ' \
-									  'VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_bap_fact_ric_company_insert = 'INSERT INTO [Reporting].[FactRICCompanyData] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 
 	sql_bap_fact_ric_aggregation_insert = 'INSERT INTO [Reporting].[FactRICAggregation] VALUES (?,?,?,?,?,?,?,?)'
 
@@ -286,7 +310,7 @@ class SQL(Enum):
 	sql_industry_list_table = 'SELECT [Industry_Sector],[Lvl2IndustryName] FROM [RICSurveyFlat].[RICSurvey2016Industry]'
 
 	sql_columns = 'SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE Table_Schema = \'{}\''
-
+	
 	sql_rollup_select = '''
 								SELECT DISTINCT 
 								DimCompany.CompanyName, 
@@ -327,10 +351,10 @@ class SQL(Enum):
 									ELSE '0-6 months/pre-startup'
 									END AS AgeRangeFriendly,	
 
-						        CASE WHEN 
-						            DimStagelevel.StageFriendly IS NULL THEN 'Stage 0 - Idea'
-						            ELSE StageFriendly
-						            END AS StageFriendly,
+								CASE WHEN 
+									DimStagelevel.StageFriendly IS NULL THEN 'Stage 0 - Idea'
+									ELSE StageFriendly
+									END AS StageFriendly,
 								tPartnerRIC.Friendly AS RICFriendlyName,
 
 								---- Annual Revenue ----
@@ -361,18 +385,18 @@ class SQL(Enum):
 											CASE 
 									WHEN TRY_CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) IS NOT NULL THEN 
 										CASE
-						                    WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) = 0 THEN 'Employee Range of 0'
-						                    WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) BETWEEN 1 AND 4 THEN 'Employee Range of 001-4'
-						                    WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) BETWEEN 5 AND 9 THEN 'Employee Range of 005-9'
-						                    WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) BETWEEN 10 AND 19 THEN 'Employee Range of 010-19'
-						                    WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) BETWEEN 20 AND 49 THEN 'Employee Range of 020-49'
-						                    WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) BETWEEN 50 AND 99 THEN 'Employee Range of 050-99'
-						                    WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) BETWEEN 100 AND 199 THEN 'Employee Range of 100-199'
-						                    WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) BETWEEN 200 AND 499 THEN 'Employee Range of 200-499'
-						                    WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) >= 500 THEN 'Employee Range of 500 or over'
+											WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) = 0 THEN 'Employee Range of 0'
+											WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) BETWEEN 1 AND 4 THEN 'Employee Range of 001-4'
+											WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) BETWEEN 5 AND 9 THEN 'Employee Range of 005-9'
+											WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) BETWEEN 10 AND 19 THEN 'Employee Range of 010-19'
+											WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) BETWEEN 20 AND 49 THEN 'Employee Range of 020-49'
+											WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) BETWEEN 50 AND 99 THEN 'Employee Range of 050-99'
+											WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) BETWEEN 100 AND 199 THEN 'Employee Range of 100-199'
+											WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) BETWEEN 200 AND 499 THEN 'Employee Range of 200-499'
+											WHEN CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) >= 500 THEN 'Employee Range of 500 or over'
 										END
-					                WHEN TRY_CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) IS NULL AND FactRICCompanyHoursRolledUp.NumberEmployees != '' THEN MEmploy.Friendly  
-					                ELSE 'Employee Range of 0'
+									WHEN TRY_CAST(FactRICCompanyHoursRolledUp.NumberEmployees AS float) IS NULL AND FactRICCompanyHoursRolledUp.NumberEmployees != '' THEN MEmploy.Friendly  
+									ELSE 'Employee Range of 0'
 								END
 								AS EmployeeRange,
 
@@ -414,7 +438,7 @@ class SQL(Enum):
 									ELSE 
 								CASE WHEN TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime) IS NOT NULL THEN  --Handle the case where date has format "42034"
 									CASE WHEN MONTH(TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime)) BETWEEN 1 AND 3 THEN YEAR(TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime))
-							             WHEN MONTH(TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime)) BETWEEN 4 AND 12 THEN YEAR(TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime)) + 1
+										 WHEN MONTH(TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime)) BETWEEN 4 AND 12 THEN YEAR(TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime)) + 1
 									END
 								ELSE
 								CASE WHEN TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE) IS NULL THEN 
@@ -425,67 +449,67 @@ class SQL(Enum):
 								CASE WHEN TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE) IS NOT NULL THEN
 									CASE WHEN TRY_CAST(LEFT(FactRICCompanyHoursRolledUp.IntakeDate,3) AS INT) IS NULL AND TRY_CAST(LEFT(FactRICCompanyHoursRolledUp.IntakeDate,2) AS INT) IS NULL THEN
 										CASE WHEN MONTH(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) BETWEEN 1 AND 3 THEN YEAR(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE))
-							                    WHEN MONTH(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) BETWEEN 4 AND 12 THEN YEAR(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) + 1
-							            END
+												WHEN MONTH(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) BETWEEN 4 AND 12 THEN YEAR(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) + 1
+										END
 									ELSE
 									CASE WHEN LEFT(IntakeDate, 4) != LEFT(TRY_CAST(INTAKEDATE AS date), 4) THEN 
 										CASE WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 1 AND 3 THEN YEAR(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) 
-										        WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 4 AND 12 THEN YEAR(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) + 1
-							            END
+												WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 4 AND 12 THEN YEAR(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) + 1
+										END
 									ELSE
 									CASE WHEN LEFT(IntakeDate, 4) = LEFT(TRY_CAST(INTAKEDATE AS date), 4) OR YEAR(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) = LEFT(TRY_CAST(INTAKEDATE AS date), 4) THEN 
-							            CASE WHEN MONTH(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) BETWEEN 1 AND 3 THEN YEAR(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE))
-							                    WHEN MONTH(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) BETWEEN 4 AND 12 THEN YEAR(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) + 1
-							            END
+										CASE WHEN MONTH(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) BETWEEN 1 AND 3 THEN YEAR(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE))
+												WHEN MONTH(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) BETWEEN 4 AND 12 THEN YEAR(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS DATE)) + 1
+										END
 									END
 									END
 									END
 									END
 									END
 									END
-							        END AS IntakeFiscalYear,
+									END AS IntakeFiscalYear,
 
 
 							   ---- Intake Fiscal Quarter ----
 
-							     CASE WHEN FactRICCompanyHoursRolledUp.IntakeDate IS NULL OR FactRICCompanyHoursRolledUp.IntakeDate = '' THEN NULL
+								 CASE WHEN FactRICCompanyHoursRolledUp.IntakeDate IS NULL OR FactRICCompanyHoursRolledUp.IntakeDate = '' THEN NULL
 									ELSE
 
 									CASE WHEN TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime) IS NOT NULL THEN 
 										CASE WHEN MONTH(TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime)) BETWEEN 1 AND 3 THEN '4'
-							                 WHEN MONTH(TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime)) BETWEEN 4 AND 6 THEN '1'
-							                 WHEN MONTH(TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime)) BETWEEN 7 AND 9 THEN '2'
-							                 WHEN MONTH(TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime)) BETWEEN 10 AND 12 THEN '3'
-							            END
+											 WHEN MONTH(TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime)) BETWEEN 4 AND 6 THEN '1'
+											 WHEN MONTH(TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime)) BETWEEN 7 AND 9 THEN '2'
+											 WHEN MONTH(TRY_CAST(TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS float) AS datetime)) BETWEEN 10 AND 12 THEN '3'
+										END
 									ELSE
 									CASE WHEN TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS date) IS NULL THEN 
 											CASE WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 1 AND 3 THEN '4'
-							                     WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 4 AND 6 THEN '1'
-							                     WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 7 AND 9 THEN '2'
-							                     WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 10 AND 12 THEN '3'
+												 WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 4 AND 6 THEN '1'
+												 WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 7 AND 9 THEN '2'
+												 WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 10 AND 12 THEN '3'
 										END
 									ELSE
 									CASE WHEN TRY_CAST(FactRICCompanyHoursRolledUp.IntakeDate AS date) IS NOT NULL THEN
-							            CASE WHEN TRY_CAST(LEFT(FactRICCompanyHoursRolledUp.IntakeDate,3) AS INT) IS NOT NULL THEN 
-							                CASE WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 1 AND 3 THEN '4'
-							                     WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 4 AND 6 THEN '1'
-							                     WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 7 AND 9 THEN '2'
-							                     WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 10 AND 12 THEN '3'
-							                END
-							            ELSE
+										CASE WHEN TRY_CAST(LEFT(FactRICCompanyHoursRolledUp.IntakeDate,3) AS INT) IS NOT NULL THEN 
+											CASE WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 1 AND 3 THEN '4'
+												 WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 4 AND 6 THEN '1'
+												 WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 7 AND 9 THEN '2'
+												 WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 10 AND 12 THEN '3'
+											END
+										ELSE
 										CASE WHEN TRY_CAST(LEFT(FactRICCompanyHoursRolledUp.IntakeDate,3) AS INT) IS NULL THEN
 											CASE WHEN RIGHT(RTRIM(FactRICCompanyHoursRolledUp.IntakeDate),2) = 'AM' THEN 
 												CASE WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 1 AND 3 THEN '4'
-							                         WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 4 AND 6 THEN '1'
-							                         WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 7 AND 9 THEN '2'
-							                         WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 10 AND 12 THEN '3'
-							                    END
+													 WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 4 AND 6 THEN '1'
+													 WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 7 AND 9 THEN '2'
+													 WHEN MONTH(FactRICCompanyHoursRolledUp.IntakeDate) BETWEEN 10 AND 12 THEN '3'
+												END
 											ELSE 
 												CASE WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 1 AND 3 THEN '4'
-							                         WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 4 AND 6 THEN '1'
-							                         WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 7 AND 9 THEN '2'
-							                         WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 10 AND 12 THEN '3'
-					                            END	
+													 WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 4 AND 6 THEN '1'
+													 WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 7 AND 9 THEN '2'
+													 WHEN TRY_CAST(SUBSTRING(FactRICCompanyHoursRolledUp.IntakeDate,4,2) AS INT) BETWEEN 10 AND 12 THEN '3'
+												END	
 											END
 										END	
 									END
@@ -501,7 +525,7 @@ class SQL(Enum):
 
 
 
-						    FROM MaRSDataCatalyst.Reporting.FactRICCompanyHoursRolledUp
+							FROM MaRSDataCatalyst.Reporting.FactRICCompanyHoursRolledUp
 							LEFT JOIN MaRS.tPartnerRIC ON tPartnerRIC.DataSourceID = FactRICCompanyHoursRolledUp.DataSourceID
 							LEFT JOIN Reporting.DimCompany ON FactRICCompanyHoursRolledUp.CompanyID = DimCompany.CompanyID
 							LEFT JOIN RICSurveyFlat.RICSurvey2016Industry ON FactRICCompanyHoursRolledUp.IndustrySector = RICSurvey2016Industry.Industry_Sector

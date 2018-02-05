@@ -6,13 +6,12 @@ import requests
 from configparser import ConfigParser
 from dateutil import parser
 from dateutil.parser import parse
-from Shared.enums import DataSourceType, CONSTANTS, PATH
+from Shared.enums import DataSourceType, CONSTANTS, PATH, StageLevel as stg
 import pandas as pd
 
 
 class Common:
 
-	# sql_get_max = Common.get_config('sql_statement.ini', 'db_sql_common', 'sql_get_max')
 	user_response_yes = ['y', 'yes']
 	user_response_yesno = ['y', 'yes', 'n', 'no']
 	Provinces = ['ON', 'QC', 'NS', 'NB', 'MB', 'BC', 'PE', 'SK', 'AB', 'NL']
@@ -21,7 +20,7 @@ class Common:
 	email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
 	address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
 	suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'inc', 'Inc', 'Incorporated', 'Corp',  'Corp.', 'Corporation', 'Communications', 'Technologies', 'Tech.']
-	stage = []
+	stage = ['idea', 'discovery', 'validation', 'efficiency', 'scale']
 	basic_name = ''
 	temp_name = ''
 
@@ -104,9 +103,47 @@ class Common:
 			for sf in Common.suffix:
 				Common.temp_name = re.sub(sf, '', Common.temp_name)
 			Common.basic_name = re.sub('[^A-Za-z0-9]+', '', Common.temp_name).lower()
-			print(Common.basic_name)
+			# print(Common.basic_name)
 			return Common.basic_name
 		return {'error': 'No name found'}
+
+	@staticmethod
+	def get_stage_level(stage):
+		st = stage.lower() if stage is not None else ''
+		company_stage = None
+		if st == '':
+			company_stage = None
+		if 'idea' in st:
+			company_stage = stg.IDEA.value
+		elif 'discovery' in st:
+			company_stage = stg.DISCOVERY.value
+		elif 'validation' in st:
+			company_stage = stg.VALIDATION.value
+		elif 'efficiency' in st:
+			company_stage = stg.EFFICIENCY.value
+		elif 'scale' in st:
+			company_stage = stg.SCALE.value
+
+		if company_stage is not None:
+			return str(company_stage)
+		else:
+			return company_stage
+
+	@staticmethod
+	def get_yes_no(val):
+		v = val.lower() if val is not None else None
+		yes_no = None
+		if v is None:
+			yes_no = None
+		elif 'y' in v:
+			yes_no = 'Y'
+		elif 'n' in v:
+			yes_no = 'N'
+
+		if yes_no is None:
+			return yes_no
+		else:
+			return yes_no
 
 	@staticmethod
 	def get_config(config_file, header, item):
@@ -177,14 +214,14 @@ class Common:
 		nm = name.replace("\'", "\'\'")
 		return nm
 
-	@staticmethod
-	def get_table_seed(table, id_column):
-		seed = 0
-		sql_dc = Common.sql_get_max.format(id_column, table)
-		df = Common.dal.pandas_read(sql_dc)
-		if len(df) > 0:
-			seed = df[0].values
-		return seed
+	# @staticmethod
+	# def get_table_seed(table, id_column):
+	# 	seed = 0
+	# 	sql_dc = SQL.sql_get_max_id.value.format(id_column, table)
+	# 	df = db.DB.pandas_read(sql_dc)
+	# 	if len(df) > 0:
+	# 		seed = df[0].values
+	# 	return seed
 
 	@staticmethod
 	def sql_friendly(strs):
@@ -315,3 +352,8 @@ class Common:
 	def make_directory(directory_name):
 		if not os.path.exists(directory_name):
 			os.makedirs(directory_name)
+
+	@staticmethod
+	def generate_basic_name(df):
+		df['BasicName'] = df.apply(lambda dfs: Common.get_basic_name(dfs['Company Name']), axis=1)
+		return df

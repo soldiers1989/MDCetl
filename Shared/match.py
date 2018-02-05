@@ -5,6 +5,7 @@ import datetime as dt
 from Shared.enums import SQL as sql
 import pandas as pd
 import os
+import numpy as np
 from Shared.file_service import FileService
 
 
@@ -29,14 +30,23 @@ class CompanyService:
 
 		self.file = FileService(self.path)
 
+	def get_table_seed(self, table, id_column):
+		seed = 0
+		sql_dc = sql.sql_get_max_id.value.format(id_column, table)
+		df = db.pandas_read(sql_dc)
+		if len(df) > 0:
+			seed = df.values[0][0]
+		return seed
+
 	def get_company(self):
 		df_new_company = db.pandas_read(sql.sql_bap_quarterly_company.value)
 		df_old_company = db.pandas_read(self.sql_dim_company.format('Reporting.DimCompany'))
-		return df_new_company, df_old_company
+		df_company_source = db.pandas_read(self.sql_dim_company_source.format('Reporting.DimCompanySource'))
+		return df_new_company, df_old_company, df_company_source
 
 	def get_existing_company(self):
-		df_company = db.pandas_read(self.sql_dim_company)
-		df_company_source = db.pandas_read(self.sql_dim_company_source)
+		df_company = db.pandas_read(self.sql_dim_company.format('Reporting.DimCompany'))
+		df_company_source = db.pandas_read(self.sql_dim_company_source.format('Reporting.DimCompanySource'))
 		return df_company, df_company_source
 
 	def get_company_raw_data(self, batches, raw_table):
@@ -48,114 +58,121 @@ class CompanyService:
 		df['BasicName'] = df.apply(lambda dfs: CM.get_basic_name(dfs.Name), axis=1)
 		return df
 
-	def update_raw_company(self, year, quarter, source_system, raw_table):
-		batch = self.bs.get_batch(year, quarter, source_system)
-		com = self.get_company_raw_data(tuple(batch), raw_table)
-		dfdc, dfdcs = self.get_existing_company()
-
-		raw_company = self.generate_basic_name(com)
+	def update_raw_company(self):
+		dfnew, dfdc, _ = self.get_company()
+		raw_company = self.generate_basic_name(dfnew)
 		dim_company = self.generate_basic_name(dfdc) if len(dfdc) > 0 else None
 
 		for index, com in raw_company.iterrows():
-			company_name = com['BasicName']
-			if len(dim_company[dim_company.BasicName == company_name].CompanyID.values) > 0:
-				companyid = dim_company[dim_company.BasicName == company_name].CompanyID.values[0]
-				if companyid > 0:
-					sql = self.sql_update.format('[Config].[CompanyDataRaw]', 'CompanyID', companyid, 'ID', com.ID)
-					self.dal.execute(sql)
-			else:
-				print('{} >> {}'.format(com.ID, com.CompanyName))
+			try:
+				company_name = com['BasicName']
+				if len(dim_company[dim_company.BasicName == company_name].CompanyID.values) > 0:
+					companyid = dim_company[dim_company.BasicName == company_name].CompanyID.values[0]
+					if companyid > 0:
+						sql_update = sql.sql_update.value.format('BAP.QuarterlyCompanyData', 'CompanyID', companyid, 'ID', com.ID)
+						print(sql_update)
+						db.execute(sql_update)
+				else:
+					print('{} >> {}'.format(com.ID, com.CompanyName))
+			except Exception as ex:
+				print('UPDATE ISSUE: {}'.format(ex))
 
-	def move_company_data(self, year, quarter, source_system, raw_table):
-		batch = self.bs.get_batch(year, quarter, source_system)
-		com = self.get_company_raw_data(tuple(batch), raw_table)
-		df_dim_company, df_dim_company_source = self.get_existing_company()
+	def move_company_data(self):
+		df_new_company, df_dim_company, df_dim_company_source = self.get_company()
 
-		raw_company = self.reformat_company_name(com)
-		dim_company = self.reformat_company_name(df_dim_company) if len(df_dim_company) > 0 else None
-		dim_company_source = self.reformat_company_name(df_dim_company_source) if len(df_dim_company_source) > 0 else None
-		i, j, k = 0, 0, 0 # Log
-
-		response = input('Do you want to transfer the data? [Y/N] ')
+		raw_company = self.generate_basic_name(df_new_company)
+		dim_company = self.generate_basic_name(df_dim_company) if len(df_dim_company) > 0 else None
+		dim_company_source = self.generate_basic_name(df_dim_company_source) if len(df_dim_company_source) > 0 else None
+		i, j, k = 0, 0, 0
+		print('New Company: {}\nExisting Company: {}\nCompany Source: {}'.format(len(raw_company), len(dim_company), len(dim_company_source)))
+		response = input('Do you want to move the company data? [Y/N] ')
 		if response.lower() in CM.user_response_yes:
 			if dim_company is not None and dim_company_source is not None:
 				for index, com in raw_company.iterrows():
 					company_name = com['BasicName']
-					print('-' * 75)
-					print('{} || {}'.format(com['CompanyName'], company_name))
+					# print('{} | {}'.format(com['Name'], company_name))
 					if len(dim_company) > 0 and len(dim_company_source) > 0:
 						try:
 							cid = dim_company[dim_company.BasicName == company_name].CompanyID
-							print('Company ID: {} - Company Name {}'.format(cid, com.Name))
-							if company_name not in dim_company.BasicName.values and \
-											company_name not in dim_company_source.BasicName.values:
+							if len(cid) == 0:
+								cid = 0
+							elif len(cid) > 1:
+								cid = dim_company[dim_company.BasicName == company_name].CompanyID.values[0]
+							# print('[Company Id]: {}\t[Company Name]: {}'.format(int(cid), com.Name))
+							if company_name not in dim_company.BasicName.values and company_name not in dim_company_source.BasicName.values:
 								print('CASE I: NOT in DIMCOMPANY & DIMCOMPANYSOURCE')
-								print('{} does not exist both in DimCompany & DimCompanySource.'.format(company_name))
 								i = i + 1
-								print(i)
+								print('{}. {}'.format(i, company_name))
 								self.insert_dim_company(com)
-								self.insert_dimcompanysource(com)
-							if company_name not in dim_company.BasicName.values and \
-											company_name in dim_company_source.BasicName.values:
+								self.insert_dim_company_source(com)
+							if company_name not in dim_company.BasicName.values and company_name in dim_company_source.BasicName.values:
 								print('CASE II: NOT IN DIMCOMPANY BUT IN DIMCOMPANYSOURCE')
-								print('{} does not exist in DimCompany but exists in DimCompanySource'.format(
-									company_name))
 								j = j + 1
 								self.insert_dim_company(com)
-								self.update_company_id(self.dimcompanyid)
-							if company_name in dim_company.BasicName.values and \
-											company_name not in dim_company_source.BasicName.values:
+								self.update_dim_company_source(self.dim_company_id, com.Name)
+								print('{}. {}'.format(j, company_name))
+							if company_name in dim_company.BasicName.values and company_name not in dim_company_source.BasicName.values:
 								print('CASE III: IN DIMCOMPANY & NOT IN DIMCOMPANYSOURCE')
-								print('{} does not exist in DimCompanySource'.format(company_name))
 								k = k + 1
-								cid = dim_company[dim_company['BasicName'] == company_name]['CompanyId']
-								print('Company ID: {}'.format(cid))
-								self.update_company_id(cid)
+								if isinstance(cid, np.int64):
+									companyID = cid
+								elif cid.values:
+									companyID = cid.values[0]
+								self.update_dim_company_source(companyID, com.Name)
+								print('{}. {}'.format(k, company_name))
 						except Exception as ex:
-							print(ex)
+							val = '>>' * 100
+							print('EXCEPTION: {} {}'.format(ex, val))
 
-		print('\nNew Company: {}\nCompany in DCS: {}\nCompany in DC: {}'.format(i, j, k))
+		print('\nNew Company: {}\nCompanies ONLY in DCS: {}\nCompanies ONLY in DC: {}'.format(i, j, k))
 
 	def insert_dim_company(self, new_company):
-		self.dim_company_id = CM.get_table_seed('CompanyID', 'Reporting.DimCompany') + 1
-		date_time = str(dt.datetime.utcnow())[:-3]
-		sql = self.sql_dim_company_insert.format(
-			self.dim_company_id,
-			new_company['CompanyName'],
-			None,
-			None,
-			None,
-			None,
-			None,
-			new_company['Website'],
-			None,
-			new_company['BatchID'],
-			date_time,
-			date_time)
 		try:
-			db.execute(sql)
-			print('{} inserted in DimCompany.'.format(new_company['CompanyName'])) # Logging
+			self.dim_company_id = self.get_table_seed('Reporting.DimCompany', 'CompanyID') + 1
+			date_time = str(dt.datetime.utcnow())[:-3]
+			dc = dict()
+			dc['aCompanyID'] = self.dim_company_id
+			dc['bName'] = new_company['Name']
+			dc['cDescription'] = None
+			dc['dPhone'] = None
+			dc['ePhone2'] = None
+			dc['fFax'] = None
+			dc['gEmail'] = None
+			dc['hWebsite'] = new_company['Website']
+			dc['iCompanyType'] = None
+			dc['jBatchID'] = new_company['BatchID']
+			dc['kModifiedDate'] = date_time
+			dc['lCreatedDate'] = date_time
+			df = pd.DataFrame.from_dict([dc], orient='columns')
+			values = CM.df_list(df)
+			db.bulk_insert(sql.sql_dim_company_insert.value, values)
 		except Exception as es:
 			print(es)
 
 	def insert_dim_company_source(self, new_company):
-		date_time = str(dt.datetime.utcnow())[:-3]
-		self.dim_company_source_id = CM.get_table_seed('ID', 'Reporting.DimCompanySource') + 1
-		sql = self.sql_dim_company_insert.format(
-			self.dim_company_source_id,
-			self.dim_company_id,
-			new_company['CompanyName'],
-			'',
-			new_company['DataSource'],
-			new_company['BatchID'],
-			None,
-			date_time, date_time)
-		self.dal.execute(sql)
+		try:
+			date_time = str(dt.datetime.utcnow())[:-3]
+			self.dim_company_source_id = self.get_table_seed('Reporting.DimCompanySource', 'SourceCompanyID') + 1
+			dc = dict()
+			dc['aSourceID'] = self.dim_company_source_id
+			dc['bCompanyID'] = self.dim_company_id
+			dc['cName'] = new_company['Name']
+			dc['dSCC'] = None
+			dc['eDataSource'] = new_company['DataSource']
+			dc['eBatchID'] = new_company['BatchID']
+			dc['fCT'] = None
+			dc['gModified'] = date_time
+			dc['hCreated'] = date_time
+			df = pd.DataFrame.from_dict([dc], orient='columns')
+			values = CM.df_list(df)
+			db.bulk_insert(sql.sql_dim_company_source_insert.value, values)
+		except Exception as ex:
+			print(ex)
 
-	def update_dim_company_source(self, new_company):
-		sql = self.sql_dim_company_source_update.format(self.dim_company_id,
-														self.modify_string(new_company['CompanyName']))
-		db.execute(sql)
+	def update_dim_company_source(self, company_id, company_name):
+		sql_update = self.sql_dim_company_source_update.format(company_id, CM.sql_friendly(company_name))
+		print(sql_update)
+		db.execute(sql_update)
 
 	def generate_company_matching_result(self):
 		index = 0
@@ -200,7 +217,7 @@ class CompanyService:
 
 if __name__ == '__main__':
 	com = CompanyService()
-	com.move_company_data()
+	com.update_raw_company()
 
 
 

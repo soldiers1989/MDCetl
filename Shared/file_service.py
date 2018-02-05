@@ -57,21 +57,25 @@ class FileService:
 						if ds in [DST.COMMUNI_TECH.value, DST.HAL_TECH.value]:
 							com_a = pd.read_excel(fl, WS.bap_company_annual.value)
 							com_a.columns = self.annual_company_columns
+							l_company_annual.append(com_a)
 						if combine_for == Combine.FOR_ETL:
 							FileService.data_system_source(prg, prg_youth, com, com_a, os.getcwd(), str(fl), ds)
 
 						l_program.append(prg)
 						l_program_youth.append(prg_youth)
 						l_company.append(com)
-						l_company_annual.append(com_a)
+
 					except Exception as ex:
 						print(ex)
 				bap_program = pd.concat(l_program)
 				bap_program_youth = pd.concat(l_program_youth)
 				bap_company = pd.concat(l_company)
-				bap_company_annual = pd.concat(l_company_annual)
+				if combine_for == Combine.FOR_ETL.value:
+					bap_company_annual = pd.concat(l_company_annual)
+					return bap_program, bap_program_youth, bap_company, bap_company_annual
+				else:
+					return bap_program, bap_program_youth, bap_company
 
-				return bap_program, bap_program_youth, bap_company, bap_company_annual
 		elif data_source == DS.CBINSIGHT:
 			if ftype == FT.CSV:
 				if file_name != '':

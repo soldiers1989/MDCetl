@@ -87,7 +87,7 @@ class BapQA:
 		fl = FileService(path)
 		self.ric_files = fl.get_source_file()
 		if combined:
-			self.ric_files = [f for f in self.ric_files if 'QA_' in f]
+			self.ric_files = [f for f in self.ric_files if 'ALL_' in f]
 		print('-' * 100, '\nPROCESSING RIC FILES\n')
 		for fl in self.ric_files:
 			print(fl)

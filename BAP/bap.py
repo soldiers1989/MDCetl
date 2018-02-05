@@ -10,9 +10,10 @@ from Shared.enums import MDCDataSource as DS, WorkSheet as WS, \
 	FileName as FN, SQL as sql, FileType, \
 	SourceSystemType as ss, Table as tbl, \
 	Columns as clm, PATH as pth, Combine
-from Shared.db import DB
+from Shared.db import DB as db
 from Shared.batch import BatchService
 from pypostalcode import PostalCodeDatabase
+from dateutil import parser
 
 
 class BapQuarterly:
@@ -58,27 +59,27 @@ class BapQuarterly:
 
 	@staticmethod
 	def qa_bap_ric_combined(combined=False):
-		BapQuarterly.qa.check_rics_file(pth.QA, combined)
+		BapQuarterly.qa.check_rics_file(pth.COMBINED, combined)
 
 	@staticmethod
 	def transfer_csv_program(dataframe):
 		val = COM.df_list(dataframe)
-		DB.bulk_insert(sql.sql_program_insert.value, val)
+		db.bulk_insert(sql.sql_program_insert.value, val)
 	
 	@staticmethod
 	def transfer_csv_program_youth(dataframe):
 		val = COM.df_list(dataframe)
-		DB.bulk_insert(sql.sql_program_youth_insert.value, val)
+		db.bulk_insert(sql.sql_program_youth_insert.value, val)
 	
 	@staticmethod
 	def bulk_insert_quarterly_data(dataframe):
 		val = COM.df_list(dataframe)
-		DB.bulk_insert(sql.sql_bap_company_insert.value, val)
+		db.bulk_insert(sql.sql_bap_company_insert.value, val)
 
 	@staticmethod
 	def bulk_insert_annual_data(dataframe):
 		val = COM.df_list(dataframe)
-		DB.bulk_insert(sql.sql_bap_company_annual_insert.value, val)
+		db.bulk_insert(sql.sql_bap_company_annual_insert.value, val)
 
 	@staticmethod
 	def push_bap_quarterly_to_database():
@@ -96,17 +97,17 @@ class BapQuarterly:
 	@staticmethod
 	def create_bap_batch():
 		batch = BatchService()
-		program = DB.pandas_read(sql.sql_bap_distinct_batch.value.format(tbl.company_program.value,
-		                                                                 BapQuarterly.year,
-		                                                                 BapQuarterly.quarter))
-		program_youth = DB.pandas_read(sql.sql_bap_distinct_batch.value.format(tbl.company_program_youth.value,
-		                                                                       BapQuarterly.year,
-		                                                                       BapQuarterly.quarter))
-		company = DB.pandas_read(sql.sql_bap_distinct_batch.value.format(tbl.company_data.value,
-		                                                                 BapQuarterly.year,
-		                                                                 BapQuarterly.quarter))
-		comapny_annual = DB.pandas_read(sql.sql_annual_bap_distinct_batch.value.format(tbl.company_annual.value,
-		                                                                        BapQuarterly.year))
+		program = db.pandas_read(sql.sql_bap_distinct_batch.value.format(tbl.company_program.value,
+																		 BapQuarterly.year,
+																		 BapQuarterly.quarter))
+		program_youth = db.pandas_read(sql.sql_bap_distinct_batch.value.format(tbl.company_program_youth.value,
+																			   BapQuarterly.year,
+																			   BapQuarterly.quarter))
+		company = db.pandas_read(sql.sql_bap_distinct_batch.value.format(tbl.company_data.value,
+																		 BapQuarterly.year,
+																		 BapQuarterly.quarter))
+		comapny_annual = db.pandas_read(sql.sql_annual_bap_distinct_batch.value.format(tbl.company_annual.value,
+																				BapQuarterly.year))
 		batch.create_bap_batch(program, BapQuarterly.year, BapQuarterly.quarter, tbl.company_program.value, WS.bap_program.value, ss.RICPD_bap.value)
 		batch.create_bap_batch(program_youth, BapQuarterly.year, BapQuarterly.quarter, tbl.company_program_youth.value, WS.bap_program_youth.value, ss.RICPDY_bap.value)
 		batch.create_bap_batch(company, BapQuarterly.year, BapQuarterly.quarter, tbl.company_data.value, WS.bap_company.value, ss.RICCD_bap.value)
@@ -115,21 +116,83 @@ class BapQuarterly:
 	@staticmethod
 	def transfer_bap_company():
 		cs = CompanyService()
-		cs.move_company_data(BapQuarterly.year,
-		                     BapQuarterly.quarter - 1,
-		                     ss.RICPD_bap,
-		                     tbl.company_data
-		                     )
-	
+		cs.move_company_data()
+
+	@staticmethod
+	def get_proper_values(df):
+		df['StageLevelID'] = df.apply(lambda dfs: COM.get_stage_level(dfs.Stage), axis=1)
+		df['High Potential y/n'] = df.apply(lambda dfs: COM.get_yes_no(dfs['High Potential y/n']), axis=1)
+		df['Social Enterprise y/n'] = df.apply(lambda dfs: COM.get_yes_no(dfs['Social Enterprise y/n']), axis=1)
+		df['Youth'] = df.apply(lambda dfs: COM.get_yes_no(dfs['Youth']), axis=1)
+		df['Funding Raised to Date $CAN'] = df.apply(lambda dfs: BapQuarterly.split_funding_range(dfs['Funding Raised to Date $CAN']), axis=1)
+		return df
+
 	@staticmethod
 	def transfer_fact_ric_company_data():
-		batch = BatchService()
-		batches = batch.get_bap_batch(BapQuarterly.year, BapQuarterly.quarter, ss.RICCD_bap.value)
-		sq = sql.sql_bap_fact_ric_company_data_source.format(tuple(batches))
-		df = DB.pandas_read(sq)
-		values_list = COM.df_list(df)
-		DB.bulk_insert(sql.sql_bap_fact_ric_company_insert, values_list)
-	
+		df = db.pandas_read(sql.sql_bap_fact_ric_company_data_source.value)
+		df_frc = BapQuarterly.get_proper_values(df)
+		BapQuarterly.update_month_year(df_frc)
+		df_frc['IntakeDate'] = pd.to_datetime(df_frc['IntakeDate'])
+		df_frc['Date of Incorporation'] = pd.to_datetime(df_frc['Incorporate year (YYYY)'] +'-'+ df_frc['Incorporation month (MM)'] + '-15')
+		df_ric = df_frc.drop(columns=['ID', 'Incorporate year (YYYY)', 'Incorporation month (MM)'])
+		# BapQuarterly.file.save_as_csv(df_ric, '00 FactRICCompany.xlsx', os.getcwd(), 'FactRICCompany')
+		values_list = COM.df_list(df_ric)
+		db.bulk_insert(sql.sql_bap_fact_ric_company_insert.value, values_list)
+
+	@staticmethod
+	def split_funding_range(funding):
+		funding_value = 0
+		if funding == '$100-149k':
+			funding_value = '100000'
+		elif funding == '$10-24k':
+			funding_value = '10000'
+		elif funding == '$150-249k':
+			funding_value = '150000'
+		elif funding == '$1M-1.9M':
+			funding_value = '1000000'
+		elif funding == '$250-499k':
+			funding_value = '250000'
+		elif funding == '$25-49k':
+			funding_value = '25000'
+		elif funding == '$2-5M':
+			funding_value = '2000000'
+		elif funding == '$2M-5M':
+			funding_value = '2000000'
+		elif funding == '$500-999k':
+			funding_value = '500000'
+		elif funding == '$50-99k':
+			funding_value = '50000'
+		elif funding == '<$10k':
+			funding_value = '1000'
+		elif funding == '>$5M':
+			funding_value = '5000000'
+
+		return funding_value
+
+	@staticmethod
+	def update_month_year(df):
+		i = 0
+		for index, row in df.iterrows():
+			if row['Incorporate year (YYYY)'] is not None and row['Incorporation month (MM)'] is not None:
+				row['Date of Incorporation'] = parser.parse('{}-{}-15'.format(row['Incorporate year (YYYY)'], row['Incorporation month (MM)']))
+				i+=1
+				print('{}. {}'.format(i, row['Date of Incorporation']))
+		# for index, row in df.iterrows():
+		# 	if row['Incorporate year (YYYY)'] is not None and len(row['Incorporate year (YYYY)']) > 4:
+		# 		update = 'UPDATE BAP.QuarterlyCompanyData SET [Incorporate year (YYYY)] = {} WHERE ID = {} -- {}'.format(parser.parse(row['Incorporate year (YYYY)']).year, row['ID'], parser.parse(row['Incorporate year (YYYY)']))
+		# 		print(update)
+		# dfs = df[df['Incorporate year (YYYY)'].isnull()]
+		# for index, row in dfs.iterrows():
+		# 	if row['Incorporation month (MM)'] is not None and len(row['Incorporation month (MM)']) > 2:
+		# 		update = 'UPDATE BAP.QuarterlyCompanyData SET [Incorporate year (YYYY)] = {} WHERE ID = {}'.format(parser.parse(row['Incorporation month (MM)']).year, row['ID'])
+		# 		print(update)
+		# i= 0
+		# for index, row in df.iterrows():
+		# 	if row['Incorporation month (MM)'] is not None and len(row['Incorporation month (MM)']) > 2:
+		# 		i += 1
+		# 		update = 'UPDATE BAP.QuarterlyCompanyData SET [Incorporation month (MM)] = {} WHERE ID = {}'.format(parser.parse(row['Incorporation month (MM)']).month, row['ID'])
+		# 		print(update)
+
 	@staticmethod
 	def transfer_fact_ric_aggregation():
 		date_id = COM.get_dateid(datevalue=None)
@@ -137,15 +200,15 @@ class BapQuarterly:
 		metric_prg = [130, 132, 133, 129, 134, 63, 77, 60, 68, 67, 135, 136, 137]
 		metric_prg_youth = [134, 138]
 		batches_prg = BapQuarterly.batch.get_batch(BapQuarterly.year,
-		                                           BapQuarterly.quarter,
-		                                           ss.RICPD_bap)
+												   BapQuarterly.quarter,
+												   ss.RICPD_bap)
 		
 		batches_prg_y = BapQuarterly.batch.get_batch(BapQuarterly.year,
-		                                             BapQuarterly.quarter,
-		                                             ss.RICPDY_bap)
+													 BapQuarterly.quarter,
+													 ss.RICPDY_bap)
 		
-		df_program = DB.pandas_read(sql.sql_company_aggregate_program.format(tuple(batches_prg)))
-		df_program_youth = DB.pandas_read(sql.sql_company_aggregate_program_youth.format(batches_prg_y))
+		df_program = db.pandas_read(sql.sql_company_aggregate_program.format(tuple(batches_prg)))
+		df_program_youth = db.pandas_read(sql.sql_company_aggregate_program_youth.format(batches_prg_y))
 		
 		values = []
 		
@@ -196,17 +259,17 @@ class BapQuarterly:
 				values.append(val)
 				i = i + 1
 		
-		DB.bulk_insert(tbl.fact_ric_aggregation, values)
+		db.bulk_insert(tbl.fact_ric_aggregation, values)
 	
 	@staticmethod
 	def generate_bap_rolled_up():
 		company = []
 		i = 0
-		df_frcd = DB.pandas_read(sql.sql_bap_fact_ric_company.value.format(BapQuarterly.year))
+		df_frcd = db.pandas_read(sql.sql_bap_fact_ric_company.value.format(BapQuarterly.year))
 		print('Number of record to process {} '.format(len(df_frcd)))
-		df_fact_ds_quarter = DB.pandas_read(sql.sql_bap_report_company_ds_quarter.value.format(BapQuarterly.year))
+		df_fact_ds_quarter = db.pandas_read(sql.sql_bap_report_company_ds_quarter.value.format(BapQuarterly.year))
 		df_FactRICRolledUp = pd.DataFrame(columns=clm.clmn_fact_ric_rolled_up.value)
-		df_industry = DB.pandas_read(sql.sql_industry_list_table.value)
+		df_industry = db.pandas_read(sql.sql_industry_list_table.value)
 		cq = BapQuarterly.quarter - 1
 		total = 0
 		if not df_frcd.empty:
@@ -376,11 +439,11 @@ class BapQuarterly:
 			print(len(df_ins))
 			i, j = i + 1000, j + 1000
 			print('From {} to {}'.format(i, j))
-	
+
 	@staticmethod
 	def insert(df):
 		values_list = COM.df_list(df)
-		DB.bulk_insert(sql.sql_postal_code_insert.value, values_list)
+		db.bulk_insert(sql.sql_postal_code_insert.value, values_list)
 
 	@staticmethod
 	def main():
@@ -435,6 +498,7 @@ class BapQuarterly:
 
 
 if __name__ == '__main__':
+
 	# BapQuarterly.qa.check_columns_completeness()
 	# BapQuarterly.combine_rics_bap_quarterly(Combine.FOR_QA)
 	# BapQuarterly.combine_rics_bap_quarterly(Combine.FOR_ETL)

@@ -13,13 +13,19 @@ class BAPValidate:
 	def __init__(self):
 		self._path1 = Common.get_config('config.ini', 'box_file_path', 'path_validI')
 		self._path2 = Common.get_config('config.ini', 'box_file_path', 'path_validII')
+		self._path3 = Common.get_config('config.ini', 'box_file_path', 'path_validIII')
+
 		self.pathQ1 = os.path.join(os.path.expanduser(self._path1))
 		self.pathQ2 = os.path.join(os.path.expanduser(self._path2))
+		self.pathQ3 = os.path.join(os.path.expanduser(self._path3))
 
 		self._path_quarter_one = Common.get_config('config.ini', 'box_file_path', 'path_bap_validation_quarter_one')
 		self._path_quarter_two = Common.get_config('config.ini', 'box_file_path', 'path_bap_validation_quarter_two')
+		self._path_quarter_three = Common.get_config('config.ini', 'box_file_path', 'path_bap_validation_quarter_three')
+
 		self.path_quarter_one = os.path.join(os.path.expanduser(self._path_quarter_one))
 		self.path_quarter_two = os.path.join(os.path.expanduser(self._path_quarter_two))
+		self.path_quarter_three = os.path.join(os.path.expanduser(self._path_quarter_three))
 
 		self.year = 2018
 		self.Q1 = '\'Q1\''
@@ -29,30 +35,40 @@ class BAPValidate:
 
 		self.Q1CompanyData_sheet = None
 		self.Q2CompanyData_sheet = None
+		self.Q3CompanyData_sheet = None
 
 		self.Q1CompanyData = None
 		self.Q2CompanyData = None
+		self.Q3CompanyData = None
 
 		self.Q1CompanyData_dc = None
 		self.Q2CompanyData_dc = None
+		self.Q3CompanyData_dc = None
 
 		self.Q1CompanyData_fact_ric = None
 		self.Q2CompanyData_fact_ric = None
+		self.Q3CompanyData_fact_ric = None
 
 		self.Q1CompanyData_rollup = None
 		self.Q2CompanyData_rollup = None
+		self.Q3CompanyData_rollup = None
 
 		self.source_file = None
+
 		self.quarter_one_files = []
 		self.quarter_two_files = []
+		self.quarter_three_files = []
+
 		self.dict_list = []
 
-		self.rics = ['alliance', 'communitech', 'haltech', 'guelph',  'iion', 'innovationfactory', 'launchlab', 'mars',
-					 'niagara', 'noic', 'norcat', 'ottawa', 'ric', 'spark', 'ssmic', 'venturelab', 'wetec']
+		self.rics = ['alliance', 'communitech', 'haltech', 'guelph', 'iion', 'innovationfactory', 'launchlab', 'mars',
+		             'niagara', 'noic', 'norcat', 'ottawa', 'ric', 'spark', 'ssmic', 'venturelab', 'wetec']
 
-		self.batch = 'SELECT * FROM Config.ImportBatch WHERE Year = {} AND Quarter = {} ' \
-					 'AND DataSourceID = {} AND SourceSystemId = {} AND ImportStatusID = 5'
+		self.batch = '''SELECT * FROM Config.ImportBatch WHERE Year = {} AND Quarter = {} AND 
+						DataSourceID = {} AND SourceSystemId = {} AND ImportStatusID = 5'''
+
 		self.select = 'SELECT * FROM {} WHERE BatchID = {}'
+
 		self.selectQ1 = '''SELECT  [CompanyName]  AS  [Company Name],[ReferenceID] AS [Reference ID],FormerCompanyName AS 
 						[Former / Alternate Names],CRABusinessNumber AS [CRA Business Number],Address1  AS  StreetAddress,City,Province,
 						Postalcode,Website,StageName AS Stage,RevenueRange AS [Annual Revenue $CAN],CompanyNumberofEmployees AS 
@@ -76,20 +92,24 @@ class BAPValidate:
 			print(ric.upper())
 			self.Q1CompanyData_sheet = self.read_file_source(self.path_quarter_one, ric)
 			self.Q2CompanyData_sheet = self.read_file_source(self.path_quarter_two, ric)
+			self.Q3CompanyData_sheet = self.read_file_source(self.path_quarter_three, ric)
 
 			data_source = Common.set_datasource(ric)
 			batch1 = db.pandas_read(self.batch.format(self.year, self.Q1, data_source, SourceSystemType.RICCD_bap.value))['BatchID']
 			batch2 = db.pandas_read(self.batch.format(self.year, self.Q2, data_source, SourceSystemType.RICCD_bap.value))['BatchID']
+			batch3 = db.pandas_read(self.batch.format(self.year, self.Q3, data_source, SourceSystemType.RICCD_bap.value))['BatchID']
 
 			self.Q1CompanyData = db.pandas_read(self.selectQ1.format(str(batch1[0]) + ' ORDER BY CompanyName'))
-			self.Q2CompanyData = db.pandas_read(
-				self.select.format('Config.CompanyDataRaw', str(batch2[0]) + ' ORDER BY CompanyName'))
+			self.Q2CompanyData = db.pandas_read(self.select.format('Config.CompanyDataRaw', str(batch2[0]) + ' ORDER BY CompanyName'))
+			self.Q3CompanyData = db.pandas_read(self.select.format('BAP.QuarterlyCompanyData', str(batch3[0]) + ' ORDER BY [Company Name]'))
 
 			self.Q1CompanyData_fact_ric = db.pandas_read(self.select.format('Reporting.FactRICCompanyData', batch1[0]))
 			self.Q2CompanyData_fact_ric = db.pandas_read(self.select.format('Reporting.FactRICCompanyData', batch2[0]))
+			self.Q3CompanyData_fact_ric = db.pandas_read(self.select.format('Reporting.FactRICCompanyData', batch3[0]))
 
 			self.Q1CompanyData_rollup = db.pandas_read(SQL.sql_rollup_select.value.format(self.year, 1, data_source))
 			self.Q2CompanyData_rollup = db.pandas_read(SQL.sql_rollup_select.value.format(self.year, 2, data_source))
+			self.Q3CompanyData_rollup = db.pandas_read(SQL.sql_rollup_select.value.format(self.year, 3, data_source))
 
 			df_ric = self.bap_summary()
 			df_ric.to_excel(writer, ric.upper(), index=False)
@@ -114,8 +134,7 @@ class BAPValidate:
 		db_columns_one = list(map(lambda x: str(x) + '_db', self.Q1CompanyData.columns))
 		self.Q1CompanyData.columns = db_columns_one
 
-		df_one = pd.concat([self.Q1CompanyData.sort_values('Company Name_db'),
-							self.Q1CompanyData_sheet.sort_values('Company Name_sheet')], axis=1)
+		df_one = pd.concat([self.Q1CompanyData.sort_values('Company Name_db'),self.Q1CompanyData_sheet.sort_values('Company Name_sheet')], axis=1)
 		df_one = df_one[sorted(df_one.columns)]
 
 		sheet_columns_two = list(map(lambda x: str(x) + '_sheet', self.Q2CompanyData_sheet.columns))
@@ -125,8 +144,7 @@ class BAPValidate:
 		db_columns_two = list(map(lambda x: str(x) + '_db', self.Q2CompanyData.columns))
 		self.Q2CompanyData.columns = db_columns_two
 
-		df_two = pd.concat([self.Q2CompanyData.sort_values('CompanyName_db'),
-							self.Q2CompanyData_sheet.sort_values('Company Name_sheet')], axis=1)
+		df_two = pd.concat([self.Q2CompanyData.sort_values('CompanyName_db'),self.Q2CompanyData_sheet.sort_values('Company Name_sheet')], axis=1)
 		df_two = df_two[sorted(df_two.columns)]
 
 		self.save_to_csv(df_one, df_two)

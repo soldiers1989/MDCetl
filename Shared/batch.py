@@ -36,7 +36,7 @@ class BatchService:
 		value['DateCreated'] = str(dt.datetime.today())[:10]
 		value['DateUpdated'] = str(dt.datetime.today())[:10]
 		value['Year'] = year
-		value['Quarter'] = 'Q{}'.format(quarter - 1)
+		value['Quarter'] = 'Q{}'.format(quarter)
 		sql = self.sql_batch_single_insert.format('CONFIG.Batch', tuple(value.values()))
 		self.db.execute(sql)
 		new_batch = self.search_batch(year, quarter, systemsource, datasource, work_sheet_name, file_name,
@@ -44,7 +44,7 @@ class BatchService:
 		return new_batch
 
 	def search_batch(self, year, quarter, systemsource, datasource, worksheet_name='', file_name='', file_path=''):
-		criteria = "Year = {} AND Quarter LIKE '{}' AND SourceSystemId = {} AND DataSourceId = {}".format(year, "Q" + str(quarter - 1), systemsource, datasource)
+		criteria = "Year = {} AND Quarter LIKE '{}' AND SourceSystemId = {} AND DataSourceId = {}".format(year, "Q" + str(quarter), systemsource, datasource)
 		if file_path is not '':
 			criteria = criteria + ' AND FullPath = {}'.format(file_path)
 		if file_name is not '':

@@ -15,6 +15,7 @@ from Shared.common import Common as CM
 import numpy as np
 from Shared.batch import BatchService
 import datetime
+import math
 
 
 class menu_actions():
@@ -844,9 +845,13 @@ class menu_actions():
     @classmethod
     def write_all_survey_components_to_db(self, session_variables, surveys_df, survey_id, api_token):
 
+        print("\n================Loading survey entry to DB================\n")
         self.load_survey_entry(surveys_df, survey_id)
+        print("\n================Loading questions and options to survey================\n")
         self.load_qsos(survey_id, api_token)
+        print("\n================Loading responses, answers, contact lists, contacts================\n")
         self.load_resps_ans_contacts__lists(survey_id, api_token)
+        print("\n================Loading campaigns and campaign emails================\n")
         campaigns = self.get_campaigns(api_token, survey_id, session_variables, surveys_df)
         for c_id in campaigns["id"]:
             self.get_emails(survey_id, api_token, session_variables, surveys_df, campaign_id=c_id)
@@ -866,7 +871,14 @@ class menu_actions():
     @classmethod
     def write_survey_entries(self, api_token):
 
-        year = datetime.datetime.now().year
+        now = datetime.datetime.now()
+        year = now.year
+        quarter = math.ceil(now.month/3.)
+        mars_quarters = {1: 4,
+                         2: 1,
+                         3: 2,
+                         4: 3}
+        quarter = mars_quarters[quarter]
 
         api_surveys_df = self.get_surveys(api_token)
         api_surveys_df = api_surveys_df.apply(pd.to_numeric, errors='ignore')
@@ -882,12 +894,12 @@ class menu_actions():
         for index in range(len(surveys_not_in_db2)):
             # if index == 0:
             #     continue
-            row = surveys_not_in_db2.loc[0]
+            row = surveys_not_in_db2.iloc[index][:]
             df = pd.DataFrame([list(row.values)], columns=list(surveys_not_in_db2))
 
             batch = BatchService()
-            x = batch.create_batch_for_etl(datasource=36, systemsource=50, year=year, quarter=4)
-            batch_id = x.iloc[0][0]
+            x = batch.create_batch_for_etl(datasource=-1, systemsource=50, year=year, quarter=quarter)
+            batch_id = x.iloc[-1][0]
 
             # add batchID to end of df
             df['BatchID'] = int(batch_id)

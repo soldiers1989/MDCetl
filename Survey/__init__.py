@@ -21,7 +21,6 @@ def _main_():
 
     menu_actions.write_survey_entries(API_TOKEN)
 
-
     menu = menu_actions.construct_menu()
 
     survey_id = 'w'

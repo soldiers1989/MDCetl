@@ -89,7 +89,7 @@ class SourceSystemType(Enum):
 	FEDERAL_FUNDING = 47
 	OSVP = 48
 	RICACD_bap = 49
-	ANNUAL_SURVEY = 50
+	SURVEY = 50
 
 
 class CompanyStage(Enum):

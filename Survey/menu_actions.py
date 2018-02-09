@@ -13,6 +13,8 @@ from sg_db_interactions import sg_get_tables
 from sg_misc import misc_funcs as misc
 from Shared.common import Common as CM
 import numpy as np
+from Shared.batch import BatchService
+import datetime
 
 
 class menu_actions():
@@ -860,3 +862,37 @@ class menu_actions():
                 self.write_all_survey_components_to_db(session_variables, surveys_df, survey_id, api_token)
 
             return
+
+    @classmethod
+    def write_survey_entries(self, api_token):
+
+        year = datetime.datetime.now().year
+
+        api_surveys_df = self.get_surveys(api_token)
+        api_surveys_df = api_surveys_df.apply(pd.to_numeric, errors='ignore')
+
+        db_surveys_sql = CM.get_config("config.ini", "sql_queries", "surveys")
+        db_surveys_df = DB.pandas_read(db_surveys_sql)
+        db_surveys_df = db_surveys_df.apply(pd.to_numeric, errors='ignore')
+
+        surveys_not_in_db = pd.merge(api_surveys_df, db_surveys_df[['id']], how='outer', indicator=True, on="id")
+        surveys_not_in_db2 = surveys_not_in_db[surveys_not_in_db['_merge'] == 'left_only'].drop("_merge", axis=1)
+
+        # write surveys_not_in_db2 to db, one at a time so BatchService can be executed for each one
+        for index in range(len(surveys_not_in_db2)):
+            # if index == 0:
+            #     continue
+            row = surveys_not_in_db2.loc[0]
+            df = pd.DataFrame([list(row.values)], columns=list(surveys_not_in_db2))
+
+            batch = BatchService()
+            x = batch.create_batch_for_etl(datasource=36, systemsource=50, year=year, quarter=4)
+            batch_id = x.iloc[0][0]
+
+            # add batchID to end of df
+            df['BatchID'] = int(batch_id)
+
+            self.df_to_db(df, "insert_survey_entry")
+
+        pass
+

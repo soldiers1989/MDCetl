@@ -5,6 +5,7 @@ import pandas as pd
 from  sg_db_interactions import sg_get_tables
 from sg_contact_lists import sg_contact_lists
 from sg_misc import misc_funcs as misc
+from Shared.batch import BatchService
 
 
 API_TOKEN = "api_token=3918099598ee3da7e79c1add7f4b8ae392b5b543c5fe7f9d88&api_token_secret=A9XYpy0QvtH.o"
@@ -17,6 +18,9 @@ pd.set_option('display.width', desired_width)
 def _main_():
     """Menu-selected actions for SGizmo API
     """
+
+    menu_actions.write_survey_entries(API_TOKEN)
+
 
     menu = menu_actions.construct_menu()
 
@@ -46,6 +50,9 @@ def _main_():
         #     continue
 
     menu_title = "\nMenu\n Quit: 99\n Back to main menu: -1\n============================================"
+
+    # write all surveys from SG to DB, including BatchID
+
 
     while selection == 0:
 

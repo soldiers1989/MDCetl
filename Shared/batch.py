@@ -4,7 +4,6 @@ from Shared.db import DB
 import datetime as dt
 
 
-
 class BatchService:
 
 	def __init__(self):
@@ -45,15 +44,15 @@ class BatchService:
 		return new_batch
 
 	def search_batch(self, year, quarter, systemsource, datasource, worksheet_name='', file_name='', file_path=''):
-		criteria = 'Year = {} AND Quarter = {} AND SystemSourceId = {} AND DataSourceId = {}'.format(year, quarter, systemsource, datasource)
+		criteria = "Year = {} AND Quarter LIKE '{}' AND SourceSystemId = {} AND DataSourceId = {}".format(year, "Q" + str(quarter - 1), systemsource, datasource)
 		if file_path is not '':
-			criteria = criteria + ' AND FullPath = {}'.fromat(file_path)
+			criteria = criteria + ' AND FullPath = {}'.format(file_path)
 		if file_name is not '':
 			criteria = criteria + ' AND FileName = {}'.format(file_name)
 		if worksheet_name is not '':
 			criteria = criteria + ' AND WorkSheetName = {}'.format(worksheet_name)
 		sql = self.sql_batch_search.format('CONFIG.Batch', criteria)
-		df = db.pandas_read(sql)
+		df = DB.pandas_read(sql)
 		return df
 
 	def get_bap_batch(self, year, quarter, source_system):
@@ -135,7 +134,7 @@ class BatchService:
 		sql_stm = common.get_config('sql_statement.ini', 'db_sql_batch', 'sql_batch_count')
 		for tbl in table_list:
 			sql_stm = sql_stm.format(tbl, batches)
-			print('{} : {}'.format(tbl, db.pandas_read(sql_stm)['Total'].values))
+			print('{} : {}'.format(tbl, DB.pandas_read(sql_stm)['Total'].values))
 
 
 

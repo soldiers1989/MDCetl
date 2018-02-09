@@ -214,13 +214,12 @@ class Common:
 		nm = name.replace("\'", "\'\'")
 		return nm
 
-	# @staticmethod
-	# def get_table_seed(table, id_column):
+	# def get_table_seed(self, table, id_column):
 	# 	seed = 0
-	# 	sql_dc = SQL.sql_get_max_id.value.format(id_column, table)
-	# 	df = db.DB.pandas_read(sql_dc)
+	# 	sql_dc = sql.sql_get_max_id.value.format(id_column, table)
+	# 	df = db.pandas_read(sql_dc)
 	# 	if len(df) > 0:
-	# 		seed = df[0].values
+	# 		seed = df.values[0][0]
 	# 	return seed
 
 	@staticmethod
@@ -338,9 +337,9 @@ class Common:
 			match_path = os.path.join(os.path.expanduser('~'), path_match)
 			os.chdir(path_match)
 			return match_path
-		elif loc == PATH.OTHER:
+		elif loc == PATH.FASTLANE:
 			other_path = os.path.join(os.path.expanduser('~'), path_other)
-			os.chdir(path_other)
+			os.chdir(other_path)
 			return other_path
 
 	@staticmethod

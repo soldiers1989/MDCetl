@@ -35,6 +35,7 @@ class DataSourceType(Enum):
 	ENDEAVOR = 33
 	FEDERAL = 34
 	THOMSON_REUTERS = 35
+	SURVEY_GIZMO = 36
 
 
 class SourceSystemType(Enum):
@@ -88,6 +89,7 @@ class SourceSystemType(Enum):
 	FEDERAL_FUNDING = 47
 	OSVP = 48
 	RICACD_bap = 49
+	ANNUAL_SURVEY = 50
 
 
 class CompanyStage(Enum):
@@ -214,7 +216,7 @@ class SQL(Enum):
 	sql_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\' AND Quarter = \'Q{}\''
 	sql_annual_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\''
 
-	sql_target_list_insert = 'INSERT INTO[SURVEY].[Targetlist] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_target_list_insert = 'INSERT INTO[SURVEY].[Targetlist] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 
 	sql_dim_company_insert = 'INSERT INTO [Reporting].[DimCompany] VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
 	sql_dim_company_source_insert = 'INSERT INTO [Reporting].[DimCompanySource] VALUES (?,?,?,?,?,?,?,?,?)'
@@ -252,8 +254,8 @@ class SQL(Enum):
 
 	sql_bap_fact_ric_aggregation_insert = 'INSERT INTO [Reporting].[FactRICAggregation] VALUES (?,?,?,?,?,?,?,?)'
 
-	sql_company_aggregate_program = 'SELECT  * FROM [Config].[CompanyAggProgram] WHERE BatchID IN {}'
-	sql_company_aggregate_program_youth = 'SELECT  * FROM [Config].[CompanyAggProgramYouth] WHERE BatchID IN {}'
+	sql_company_aggregate_program = 'SELECT  * FROM BAP.ProgramData WHERE Year = {} AND Quarter = \'Q{}\''
+	sql_company_aggregate_program_youth = 'SELECT  * FROM BAP.ProgramDataYouth WHERE Year = {} AND Quarter = \'Q{}\''
 
 	sql_postal_code_insert = 'INSERT INTO [dbo].[DimPostalCode] VALUES (?,?,?,?,?,?,?,?)'
 
@@ -554,33 +556,15 @@ class SQL(Enum):
 
 			'''
 
+	sql_target_list = 'SELECT Venture_name, Venture_basic_name FROM SURVEY.Targetlist'
 
 class Columns(Enum):
 	ric_aggregation_id = 'RICAggregationID'
-	clmn_fact_ric_rolled_up = ['DataSourceID',
-							   'CompanyID',
-							   'MinDate',
-							   'CurrentDate',
-							   'VolunteerYTD',
-							   'AdvisoryHoursYTD',
-							   'VolunteerThisQuarter',
-							   'AdvisoryThisQuarter',
-							   'FiscalQuartecr',
-							   'BatchID',
-							   'ModifiedDate',
-							   'SocialEnterprise',
-							   'Stage',
-							   'HighPotential',
-							   'Lvl2IndustryName',
-							   'FiscalYear',
-							   'Youth',
-							   'DateOfIncorporation',
-							   'AnnualRevenue',
-							   'NumberEmployees',
-							   'FundingToDate',
-							   'IndustrySector',
-							   'IntakeDate',
-							   'FundingCurrentQuarter']
+	clmn_fact_ric_rolled_up = ['DataSourceID', 'CompanyID', 'MinDate', 'CurrentDate', 'VolunteerYTD', 'AdvisoryHoursYTD',
+							   'VolunteerThisQuarter', 'AdvisoryThisQuarter', 'FiscalQuartecr', 'BatchID', 'ModifiedDate',
+							   'SocialEnterprise', 'Stage', 'HighPotential', 'Lvl2IndustryName', 'FiscalYear', 'Youth',
+							   'DateOfIncorporation', 'AnnualRevenue', 'NumberEmployees', 'FundingToDate', 'IndustrySector',
+							   'IntakeDate', 'FundingCurrentQuarter']
 
 
 class VAR(Enum):

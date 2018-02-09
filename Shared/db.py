@@ -1,6 +1,7 @@
 import pyodbc
 import pandas as pd
 from Shared.common import Common
+from Shared.enums import SQL as sq
 
 
 class DB:
@@ -62,5 +63,14 @@ class DB:
 			i, j = i + chunk_size, j + chunk_size
 			if j > total_size:
 				j = total_size
+
+	@staticmethod
+	def get_table_seed(table, id_column):
+		seed = 0
+		sql_dc = sq.sql_get_max_id.value.format(id_column, table)
+		df = DB.pandas_read(sql_dc)
+		if len(df) > 0:
+			seed = df.values[0][0]
+		return seed
 
 

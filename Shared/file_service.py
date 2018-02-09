@@ -95,15 +95,20 @@ class FileService:
 				for f in file_list:
 					j += 1
 					print('{}. {}'.format(j, f))
-					tl = pd.read_excel(f, WS.target_list.value)
-					tl['Year'] = self.year
+					tl = pd.read_excel(f, WS.target_list.value)#, date_parser=['Date_founded', 'Date_of_incorporation'])
 					tl.insert(5, 'Venture_basic_name', None)
-					tl.columns = self.tl_columns
-					target_list.append(tl)
+					datasource = COM.set_datasource(f)
+					tl.insert(0, 'DataSource', datasource)
 					tl.insert(0, 'Worksheet', str(WS.target_list.value))
 					tl.insert(0, 'FileName', str(f))
 					tl.insert(0, 'Path', self.path)
-					tl.insert(0, 'BatchID', None)
+					tl.insert(0, 'BatchID', 0)
+					tl['Year'] = self.year
+					tl.columns = self.tl_columns
+					tl['Date_founded'] = tl['Date_founded'][:10]
+					tl['Date_of_incorporation'] = tl['Date_of_incorporation'][:10]
+					target_list.append(tl)
+					print('{} - {}'.format(len(tl.columns), tl.columns))
 
 				df_tl = pd.concat(target_list)
 				return df_tl
@@ -148,7 +153,8 @@ class FileService:
 	def target_list_dataframe(self):
 		df = DB.pandas_read(sql.sql_columns.value.format('SURVEY'))
 		if df is not None:
-			self.tl_columns = list(df[df['TABLE_NAME'] == 'Targetlist']['COLUMN_NAME'][5:])
+			self.tl_columns = list(df[df['TABLE_NAME'] == 'Targetlist']['COLUMN_NAME'][1:])
+			print(self.tl_columns)
 
 	def save_as_excel(self, dfs, file_name, path_key):
 		print(os.getcwd())

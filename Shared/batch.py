@@ -2,7 +2,7 @@ from Shared.enums import ImportStatus, SQL as sql
 from Shared.common import Common as common
 from Shared.db import DB
 import datetime as dt
-
+import pandas as pd
 
 class BatchService:
 
@@ -16,6 +16,7 @@ class BatchService:
 		self.sql_batch_search = common.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_search')
 		self.update_statement = common.get_config('config_sql.ini', 'db_sql_batch', 'sql_batch_update')
 		self.db = DB()
+		self.year, self.quarter = common.fiscal_year_quarter()
 
 	def create_batch_for_etl(self, datasource, systemsource, year, quarter, file_name='', full_path='', work_sheet_name=''):
 		value = dict()
@@ -67,7 +68,7 @@ class BatchService:
 			val = []
 			data_source = row['DataSource']
 			val.append(0)
-			val.append(ImportStatus.STARTED.value)
+			val.append(ImportStatus.COMPLETED.value)
 			val.append(row['FileName'])
 			val.append(row['Path'])
 			val.append(row['SourceSystem'])
@@ -87,7 +88,34 @@ class BatchService:
 			values.append(val)
 		self.db.bulk_insert(self.sql_batch_insert, values)
 		self.update_source_batch(table, year, quarter, system_source)
-		# print(values[0])
+
+	def create_batch(self, dataframe):
+		values = []
+		for i, df in dataframe.iterrows():
+			val = dict()
+			val['UserId'] = None
+			val['ImportStatusId'] = 5
+			val['FileName'] = df.FileName
+			val['FullPath'] = df.Path
+			val['SourceSystemId'] = df.SourceSystem
+			val['WorksheetName'] = df.WorkSheet
+			val['FileModifiedDate'] = str(dt.datetime.today())[:10]
+			val['DataSourceId'] = df.DataSource
+			val['StartDate'] = str(dt.datetime.today())[:10]
+			val['EndDate'] = str(dt.datetime.today())[:10]
+			val['Records'] = None
+			val['StgRecords'] = None
+			val['DWRecords'] = None
+			val['IsDeleted'] = 0
+			val['DateCreated'] = str(dt.datetime.today())[:10]
+			val['DateUpdated'] = str(dt.datetime.today())[:10]
+			val['Year'] = self.year
+			val['Quarter'] = None
+			values.append(val)
+		df = pd.DataFrame(values, columns=values[0].keys())
+		vals = common.df_list(df)
+		self.db.bulk_insert(sql.sql_batch_insert.value, vals)
+
 
 	def update_source_batch(self, table, year, quarter, source_system):
 		df = self.get_bap_batch(year, quarter, source_system)
@@ -135,6 +163,14 @@ class BatchService:
 		for tbl in table_list:
 			sql_stm = sql_stm.format(tbl, batches)
 			print('{} : {}'.format(tbl, DB.pandas_read(sql_stm)['Total'].values))
+
+	def get_table_seed(self, table, id_column):
+		seed = 0
+		sql_dc = sql.sql_get_max_id.value.format(id_column, table)
+		df = self.db.pandas_read(sql_dc)
+		if len(df) > 0:
+			seed = df.values[0][0]
+		return seed
 
 
 

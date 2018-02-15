@@ -207,9 +207,11 @@ class Table(Enum):
 
 
 class SQL(Enum):
+	sql_target_list_update = 'UPDATE SURVEY.Targetlist SET CompanyID = {} WHERE ID = {}'
+	sql_batch_insert = 'INSERT INTO Config.ImportBatch VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 	sql_update = 'UPDATE {} SET {} = {} WHERE {} = {}'
 	sql_get_max_id = 'SELECT MAX({}) AS MaxID FROM {}'
-	sql_bap_quarterly_company = 'SELECT ID, [Company Name] as Name, [FileName], BatchID, Website, DataSource FROM BAP.QuarterlyCompanyData'
+	sql_bap_quarterly_company = 'SELECT ID, [Company Name] as Name, [FileName], BatchID, Website, DataSource FROM BAP.QuarterlyCompanyData WHERE CompanyID = \'0\''
 		# 'SELECT [Company Name] as Name, [Former / Alternate Names], [Street Address], City, Province, [Postal Code],Website FROM BAP.QuarterlyCompanyData'
 	# sql_dim_company_insert = 'INSERT INTO[Reporting].[DimCompany] VALUES({},\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',{},\'{}\',\'{}\')'
 	# sql_dim_company_source_insert = 'INSERT INTO[Reporting].[DimCompanySource] VALUES({}, {},\'{}\',\'{}\',{},{},\'{}\',\'{}\',\'{}\''
@@ -227,9 +229,9 @@ class SQL(Enum):
 	sql_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\' AND Quarter = \'Q{}\''
 	sql_annual_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\''
 
-	sql_target_list_insert = 'INSERT INTO[SURVEY].[Targetlist] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_target_list_insert = 'INSERT INTO [SURVEY].[Targetlist] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 
-	sql_dim_company_insert = 'INSERT INTO [Reporting].[DimCompany] VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_dim_company_insert = 'INSERT INTO MaRSDataCatalyst.[Reporting].[DimCompany] VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
 	sql_dim_company_source_insert = 'INSERT INTO [Reporting].[DimCompanySource] VALUES (?,?,?,?,?,?,?,?,?)'
 
 	'''
@@ -244,12 +246,12 @@ class SQL(Enum):
 	'''
 
 	sql_bap_fact_ric_company_data_source = '''
-				SELECT ID, CompanyID, DataSource, BatchID,'20171231' AS DateID,[Date of Intake] AS IntakeDate,
+				SELECT CompanyID, DataSource, BatchID,'20171231' AS DateID,[Date of Intake] AS IntakeDate,
 				NULL AS [StageLevelID],NULL AS [SizeID], 'NULL' AS Age,[High Potential y/n], NULL AS [DevelopmentID],
 				[Number of advisory service hours provided] AS AdvisoryServiceHours, [Volunteer mentor hours] , GETDATE() AS [Modified Date],
 				GETDATE() AS [CreatedDate], Youth,[Street Address], City, Province, [Postal Code], Website,Stage,
 				'' as AnnualRevenue ,NULL as NumberOfEmployees,[Funding Raised to Date $CAN], NULL AS FundingCurrentQuarter,
-				 NULL AS [Date of Incorporation],[Industry Sector], [Social Enterprise y/n], [Quarter], [Year], [Incorporate year (YYYY)], [Incorporation month (MM)]
+				 Date_of_Incorporation AS [Date of Incorporation],[Industry Sector], [Social Enterprise y/n], [Quarter], [Year]
 				FROM BAP.QuarterlyCompanyData WHERE CompanyID IS NOT NULL AND Year = 2018 AND Quarter = 'Q3'
 				'''
 	sql_bap_ric_company_quarterly_data = '''
@@ -264,6 +266,7 @@ class SQL(Enum):
 	sql_bap_fact_ric_company_insert = 'INSERT INTO [Reporting].[FactRICCompanyData] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 
 	sql_bap_fact_ric_aggregation_insert = 'INSERT INTO [Reporting].[FactRICAggregation] VALUES (?,?,?,?,?,?,?,?)'
+	sql_bap_fra_insert = 'INSERT INTO [Reporting].[FactRICAggregation] VALUES {}'
 
 	sql_company_aggregate_program = 'SELECT  * FROM BAP.ProgramData WHERE Year = {} AND Quarter = \'Q{}\''
 	sql_company_aggregate_program_youth = 'SELECT  * FROM BAP.ProgramDataYouth WHERE Year = {} AND Quarter = \'Q{}\''
@@ -271,39 +274,40 @@ class SQL(Enum):
 	sql_postal_code_insert = 'INSERT INTO [dbo].[DimPostalCode] VALUES (?,?,?,?,?,?,?,?)'
 
 	sql_bap_fact_ric_company = ''' 
-	SELECT [RICCompanyDataID]
-	  ,[CompanyID]
-	  ,[DataSourceID]
-	  ,[BatchID]
-	  ,[DateID]
-	  ,[IntakeDate]
-	  ,[StageLevelID]
-	  ,[SizeID]
-	  ,[Age]
-	  ,[HighPotential]
-	  ,[DevelopmentID]
-	  ,ISNULL([AdvisoryServicesHours],0) AS AdvisoryServicesHours
-	  ,ISNULL([VolunteerMentorHours],0) AS VolunteerMentorHours
-	  ,[ModifiedDate]
-	  ,[CreateDate]
-	  ,[Youth]
-	  ,[StreetAddress]
-	  ,[City]
-	  ,[Province]
-	  ,[PostalCode]
-	  ,[Website]
-	  ,[Stage]
-	  ,[AnnualRevenue]
-	  ,[NumberEmployees]
-	  ,[FundingToDate]
-	  ,ISNULL([FundingCurrentQuarter],0) AS FundingCurrentQuarter
-	  ,[DateOfIncorporation]
-	  ,[IndustrySector]
-	  ,[SocialEnterprise]
-	  ,[FiscalQuarter]
-	  ,[FiscalYear]
-	FROM [Reporting].[FactRICCompanyData]
-	WHERE FiscalYear = {}'''
+		SELECT [RICCompanyDataID]
+		  ,[CompanyID]
+		  ,[DataSourceID]
+		  ,[BatchID]
+		  ,[DateID]
+		  ,[IntakeDate]
+		  ,[StageLevelID]
+		  ,[SizeID]
+		  ,[Age]
+		  ,[HighPotential]
+		  ,[DevelopmentID]
+		  ,ISNULL([AdvisoryServicesHours],0) AS AdvisoryServicesHours
+		  ,ISNULL([VolunteerMentorHours],0) AS VolunteerMentorHours
+		  ,[ModifiedDate]
+		  ,[CreateDate]
+		  ,[Youth]
+		  ,[StreetAddress]
+		  ,[City]
+		  ,[Province]
+		  ,[PostalCode]
+		  ,[Website]
+		  ,[Stage]
+		  ,[AnnualRevenue]
+		  ,[NumberEmployees]
+		  ,[FundingToDate]
+		  ,ISNULL([FundingCurrentQuarter],0) AS FundingCurrentQuarter
+		  ,[DateOfIncorporation]
+		  ,[IndustrySector]
+		  ,[SocialEnterprise]
+		  ,[FiscalQuarter]
+		  ,[FiscalYear]
+		FROM [Reporting].[FactRICCompanyData]
+		WHERE FiscalYear = {}
+		'''
 
 	sql_bap_report_company_ds_quarter = '''SELECT CompanyID,DataSourceID,  MIN(RIGHT(FiscalQuarter,1)) AS MinFQ 
 											FROM Reporting.FactRICCompanyData 
@@ -567,7 +571,7 @@ class SQL(Enum):
 
 			'''
 
-	sql_target_list = 'SELECT Venture_name, Venture_basic_name FROM SURVEY.Targetlist'
+	sql_target_list = 'SELECT ID,Invite_first_name, Invite_last_name, Venture_name, Venture_basic_name, Email, Datasource,RIC_organization_name FROM SURVEY.Targetlist'
 
 class Columns(Enum):
 	ric_aggregation_id = 'RICAggregationID'

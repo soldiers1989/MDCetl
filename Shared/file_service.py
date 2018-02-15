@@ -32,6 +32,7 @@ class FileService:
 		return [f for f in self.source_file if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)]
 
 	def read_source_file(self, ftype, data_source, combine_for:Combine, file_name='', current_path=''):
+		com_a = None
 		if current_path != '':
 			current_path = os.path.join(os.path.expanduser("~"), current_path)
 			os.chdir(current_path)
@@ -70,7 +71,7 @@ class FileService:
 				bap_program = pd.concat(l_program)
 				bap_program_youth = pd.concat(l_program_youth)
 				bap_company = pd.concat(l_company)
-				if combine_for == Combine.FOR_ETL.value:
+				if combine_for == Combine.FOR_ETL:
 					bap_company_annual = pd.concat(l_company_annual)
 					return bap_program, bap_program_youth, bap_company, bap_company_annual
 				else:
@@ -96,12 +97,14 @@ class FileService:
 					j += 1
 					print('{}. {}'.format(j, f))
 					tl = pd.read_excel(f, WS.target_list.value)#, date_parser=['Date_founded', 'Date_of_incorporation'])
+
 					tl.insert(5, 'Venture_basic_name', None)
 					datasource = COM.set_datasource(f)
 					tl.insert(0, 'DataSource', datasource)
 					tl.insert(0, 'Worksheet', str(WS.target_list.value))
 					tl.insert(0, 'FileName', str(f))
 					tl.insert(0, 'Path', self.path)
+					tl.insert(0, 'CompanyID', None)
 					tl.insert(0, 'BatchID', 0)
 					tl['Year'] = self.year
 					tl.columns = self.tl_columns
@@ -174,10 +177,13 @@ class FileService:
 			print(ex)
 
 	def save_as_csv(self, df, file_name, path, sheet_name='SheetI'):
-		os.chdir(path)
-		writer = pd.ExcelWriter(file_name)
-		df.to_excel(writer, sheet_name, index=False)
-		writer.save()
+		try:
+			os.chdir(path)
+			writer = pd.ExcelWriter(file_name)
+			df.to_excel(writer, sheet_name, index=False)
+			writer.save()
+		except Exception as es:
+			print(es)
 
 	@staticmethod
 	def data_system_source(cv, cvy, cd, cda, path, file_name, datasource):
@@ -187,22 +193,22 @@ class FileService:
 		cv.insert(0, 'Path', path)
 		cv.insert(0, 'FileName', file_name)
 		cv.insert(0, 'FileID', str(uuid.uuid4()))
-		cv.insert(0, 'BatchID', '-')
+		cv.insert(0, 'BatchID', '0')
 
 		cvy.insert(0, 'SourceSystem', SS.RICPDY_bap.value)
 		cvy.insert(0, 'DataSource', datasource)
 		cvy.insert(0, 'Path', path)
 		cvy.insert(0, 'FileName', file_name)
 		cvy.insert(0, 'FileID', str(uuid.uuid4()))
-		cvy.insert(0, 'BatchID', '-')
+		cvy.insert(0, 'BatchID', '0')
 
 		cd.insert(0, 'SourceSystem', SS.RICCD_bap.value)
 		cd.insert(0, 'DataSource', datasource)
 		cd.insert(0, 'Path', path)
 		cd.insert(0, 'FileName', file_name)
 		cd.insert(0, 'FileID', str(uuid.uuid4()))
-		cd.insert(0, 'BatchID', '-')
-		cd.insert(0, 'CompanyID', '-')
+		cd.insert(0, 'BatchID', '0')
+		cd.insert(0, 'CompanyID', '0')
 
 		if datasource in [DST.HAL_TECH.value, DST.COMMUNI_TECH.value]:
 			cda.insert(0, 'SourceSystem', SS.RICACD_bap.value)
@@ -210,6 +216,6 @@ class FileService:
 			cda.insert(0, 'Path', path)
 			cda.insert(0, 'FileName', file_name)
 			cda.insert(0, 'FileID', str(uuid.uuid4()))
-			cda.insert(0, 'BatchID', '-')
-			cda.insert(0, 'CompanyID', '-')
+			cda.insert(0, 'BatchID', '0')
+			cda.insert(0, 'CompanyID', '0')
 

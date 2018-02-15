@@ -1,0 +1,1673 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BookmarkManager">
+    <bookmark url="file://$PROJECT_DIR$/BAP/Validate.py" line="402" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4f830f79-9e01-4766-8ab3-ee6aa41518a8" name="Default" comment="Organization relationship entities save method.">
+      <change afterPath="$PROJECT_DIR$/.idea/MDCetl.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/mnadew.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CVCA/cvca.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OSVP/osvp.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.MD" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BAP/Validate.py" beforeDir="false" afterPath="$PROJECT_DIR$/BAP/Validate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BAP/bap.py" beforeDir="false" afterPath="$PROJECT_DIR$/BAP/bap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CBInsights/cbinsights.py" beforeDir="false" afterPath="$PROJECT_DIR$/CBInsights/cbinsights.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MISC/fast_lane.py" beforeDir="false" afterPath="$PROJECT_DIR$/MISC/fast_lane.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shared/batch.py" beforeDir="false" afterPath="$PROJECT_DIR$/Shared/batch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shared/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/Shared/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shared/config.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Shared/config.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shared/enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/Shared/enums.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shared/file_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/Shared/file_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shared/match.py" beforeDir="false" afterPath="$PROJECT_DIR$/Shared/match.py" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/MDCetl$iaf.coverage" NAME="iaf Coverage Results" MODIFIED="1517667595615" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/IAF" />
+    <SUITE FILE_PATH="coverage/MDCetl$match.coverage" NAME="match Coverage Results" MODIFIED="1517785437584" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Shared" />
+    <SUITE FILE_PATH="coverage/MDCetl$bap.coverage" NAME="bap Coverage Results" MODIFIED="1518448785345" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/BAP" />
+    <SUITE FILE_PATH="coverage/MDCetl$Validate.coverage" NAME="Validate Coverage Results" MODIFIED="1518452236171" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/BAP" />
+    <SUITE FILE_PATH="coverage/MDCetl$fast_lane.coverage" NAME="fast_lane Coverage Results" MODIFIED="1518640591574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MISC" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_TABLE_DETAILS" value="true" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <expand>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="MDCRaw@10.101.2.74" type="feb32156:DbDataSourceImpl" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="Favs">
+      <favorite_root url="file://$PROJECT_DIR$/Shared/file_service.py" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+    </favorites_list>
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Unit Test" />
+        <option value="SQL Script" />
+        <option value="Jupyter Notebook" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>s0</find>
+      <find>datas</find>
+      <find>sql_orgs_summary</find>
+      <find>file</find>
+      <find>Venture</find>
+      <find>values</find>
+      <find>Box Sync/MDC Shared/Innovation Economy/Data/BAP/Quarterly Data/</find>
+      <find>Y</find>
+      <find>rics_sheet_header</find>
+      <find>P</find>
+      <find>pd.isnot</find>
+      <find>pd.isnotnull</find>
+      <find>self.common</find>
+      <find>db_sql_batch</find>
+      <find>sql</find>
+      <find>BATCH</find>
+      <find>from_dict</find>
+      <find>update</find>
+      <find>update_company_id</find>
+      <find>dimcompan</find>
+      <find>sql_dim_company_insert</find>
+      <find>sql_dim_company_source</find>
+      <find>DB</find>
+      <find>concatenate</find>
+      <find>;</find>
+      <find>row['Funding Raised to Date $CAN']</find>
+      <find>get_table_seed</find>
+      <find>quarter</find>
+      <find>2</find>
+      <find>com_a</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>db_sql_batch</replace>
+      <replace>IE</replace>
+      <replace>mnadew</replace>
+      <replace />
+      <replace>current_quarter</replace>
+      <replace>bap_file_path</replace>
+      <replace>box_file_path</replace>
+      <replace>se</replace>
+      <replace>s1</replace>
+      <replace>Scale</replace>
+      <replace>2</replace>
+      <replace>s0</replace>
+      <replace>s3</replace>
+      <replace>value</replace>
+      <replace>Box Sync/WorkBench/BAP/</replace>
+      <replace>common</replace>
+      <replace>db</replace>
+      <replace>:</replace>
+      <replace>funding</replace>
+      <replace>3</replace>
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Mussie Nadew &lt;mnadew@marsdd.com&gt;" />
+      </list>
+    </option>
+    <option name="PUSH_AUTO_UPDATE" value="true" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/OSVP/osvp_test.py" />
+        <option value="$PROJECT_DIR$/CBInsights/cbinsight_test.py" />
+        <option value="$PROJECT_DIR$/CrunchBase/crunch_test.py" />
+        <option value="$PROJECT_DIR$/CVCA/cvca_test.py" />
+        <option value="$PROJECT_DIR$/IAF/iaf_test.py" />
+        <option value="$PROJECT_DIR$/Survey/survey_test.py" />
+        <option value="$PROJECT_DIR$/TDW/tdw_test.py" />
+        <option value="$PROJECT_DIR$/TR/tr_test.py" />
+        <option value="$PROJECT_DIR$/WebScrape/ws_test.py" />
+        <option value="$PROJECT_DIR$/DataCheck/README.md" />
+        <option value="$PROJECT_DIR$/BAP/company.py" />
+        <option value="$PROJECT_DIR$/QA/test_qa.py" />
+        <option value="$PROJECT_DIR$/BAP/Readme.MD" />
+        <option value="$PROJECT_DIR$/Shared/Config/config.ini" />
+        <option value="$PROJECT_DIR$/Shared/Config/sql_statement.ini" />
+        <option value="$PROJECT_DIR$/Shared/sql_statement.ini" />
+        <option value="$PROJECT_DIR$/Shared/Farooq.ipynb" />
+        <option value="$PROJECT_DIR$/Shared/Tweet.ipynb" />
+        <option value="$PROJECT_DIR$/Airflow/dags.py" />
+        <option value="$PROJECT_DIR$/Survey/menu_actions.py" />
+        <option value="$PROJECT_DIR$/Survey/sg_db_interactions.py" />
+        <option value="$PROJECT_DIR$/Survey/__init__.py" />
+        <option value="$PROJECT_DIR$/Survey/sg_survey.py" />
+        <option value="$PROJECT_DIR$/CrunchBase/crunchbase.py" />
+        <option value="$PROJECT_DIR$/ZTest/Validate.py" />
+        <option value="$PROJECT_DIR$/TR/TTest.py" />
+        <option value="$PROJECT_DIR$/CVCA/cvca.py" />
+        <option value="$PROJECT_DIR$/Pitchbook/pitchbook.py" />
+        <option value="$PROJECT_DIR$/Shared/DataSource.py" />
+        <option value="$PROJECT_DIR$/Shared/__init__.py" />
+        <option value="$PROJECT_DIR$/OSVP/osvp.py" />
+        <option value="$PROJECT_DIR$/Shared/datasource.py" />
+        <option value="$PROJECT_DIR$/CBInsights/cbinsights.py" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/2fd9d0a1-3d1e-4415-9adb-054fecc1f85f/console_1.sql" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/2fd9d0a1-3d1e-4415-9adb-054fecc1f85f/console_2.sql" />
+        <option value="$PROJECT_DIR$/IAF/iaf.py" />
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/Shared/qa.py" />
+        <option value="$PROJECT_DIR$/Shared/config_sql.ini" />
+        <option value="$PROJECT_DIR$/Shared/db.py" />
+        <option value="$PROJECT_DIR$/Shared/match.py" />
+        <option value="$PROJECT_DIR$/BAP/bap.py" />
+        <option value="$PROJECT_DIR$/BAP/Validate.py" />
+        <option value="$PROJECT_DIR$/Shared/file_service.py" />
+        <option value="$PROJECT_DIR$/Shared/batch.py" />
+        <option value="$PROJECT_DIR$/Shared/enums.py" />
+        <option value="$PROJECT_DIR$/Shared/common.py" />
+        <option value="$PROJECT_DIR$/Shared/config.ini" />
+        <option value="$PROJECT_DIR$/MISC/fast_lane.py" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="x" value="3600" />
+    <option name="width" value="1920" />
+    <option name="height" value="1080" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
+              <item name="BAP" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
+              <item name="DataCheck" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
+              <item name="MISC" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
+              <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
+              <item name="Shared" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="SearchEverywhereHistoryKey" value="CONFIG.BATCH&#9;null&#9;null&#10;box_file_path&#9;null&#9;null" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="com.intellij.database.dataSource.DataSourceTemplate" value="SQL Server (Microsoft)" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.ide.settings.uml" />
+    <property name="two.files.diff.last.used.folder" value="$PROJECT_DIR$/Shared" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/CVCA" />
+      <recent name="$PROJECT_DIR$/Shared" />
+      <recent name="$PROJECT_DIR$/DataCheck" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/BAP" />
+      <recent name="$PROJECT_DIR$/Shared" />
+      <recent name="$PROJECT_DIR$/IAF" />
+      <recent name="$PROJECT_DIR$/OSVP" />
+      <recent name="$PROJECT_DIR$/Survey" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.fast_lane">
+    <configuration name="Validate" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="MDCetl" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/BAP" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/BAP/Validate.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="bap" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="MDCetl" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/BAP" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/BAP/bap.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="fast_lane" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="MDCetl" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/MISC" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MISC/fast_lane.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="iaf" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="MDCetl" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/IAF" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/IAF/iaf.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="match" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="MDCetl" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Shared" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Shared/match.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="MDCetl" type="Python.Ipnb" factoryName="Jupyter Notebook">
+      <module name="MDCetl" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="additionalOptions" value="" />
+      <option name="ipnbHost" value="127.0.0.1" />
+      <option name="ipnbPort" value="8888" />
+    </configuration>
+    <list>
+      <item itemvalue="Jupyter Notebook.MDCetl" />
+      <item itemvalue="Python.bap" />
+      <item itemvalue="Python.match" />
+      <item itemvalue="Python.fast_lane" />
+      <item itemvalue="Python.iaf" />
+      <item itemvalue="Python.Validate" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.fast_lane" />
+        <item itemvalue="Python.Validate" />
+        <item itemvalue="Python.bap" />
+        <item itemvalue="Python.match" />
+        <item itemvalue="Python.iaf" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4f830f79-9e01-4766-8ab3-ee6aa41518a8" name="Default" comment="" />
+      <created>1510155397650</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1510155397650</updated>
+    </task>
+    <task id="LOCAL-00025" summary="BAP Quarterly QA and other method refactorings.">
+      <created>1514416857054</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1514416857054</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Save all crunchbase data for the 4 main nodes of the API.">
+      <created>1514912401972</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1514912401972</updated>
+    </task>
+    <task id="LOCAL-00027" summary="BAP Quarterly Program youth sheet QA implemented.">
+      <created>1514912451799</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1514912451799</updated>
+    </task>
+    <task id="LOCAL-00028" summary="BAP Quarterly Program sheet QA implemented.">
+      <created>1514912517007</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1514912517007</updated>
+    </task>
+    <task id="LOCAL-00029" summary="BAP Quarterly QA for quarterly and annual company data sheet implemented.">
+      <created>1514920454529</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1514920454529</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Combined all RICs file data in to one spreadsheet.">
+      <created>1514923960055</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1514923960055</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Combined all RICs file data from spreadsheet to the database implementation.">
+      <created>1514927229004</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1514927229004</updated>
+    </task>
+    <task id="LOCAL-00032" summary="BAP quarterly data saving added the Annual sheet.">
+      <created>1515180996495</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1515180996495</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Organization relationship entities data extraction.">
+      <created>1515181054193</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1515181054193</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Organization relationship entities save method.">
+      <created>1515188341143</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1515188341143</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Refactoring similar code base betwwen SG and Shared">
+      <created>1515608215330</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1515608215330</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Refactoring funding rounds, teams and investment save methods.">
+      <created>1515608287931</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1515608287932</updated>
+    </task>
+    <task id="LOCAL-00037" summary="Haltech BAP report validation data collection.">
+      <created>1515781876802</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1515781876802</updated>
+    </task>
+    <task id="LOCAL-00038" summary="Config file update.">
+      <created>1515782094412</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1515782094412</updated>
+    </task>
+    <task id="LOCAL-00039" summary="BAP quarterly QA Column list test and data QA implementation.">
+      <created>1516127286605</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1516127286605</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Remove bap validate folder.">
+      <created>1516127406138</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1516127406138</updated>
+    </task>
+    <task id="LOCAL-00041" summary="BAP quarterly QA for columns and data.">
+      <created>1516137051998</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1516137051998</updated>
+    </task>
+    <task id="LOCAL-00042" summary="BAP QA per ric files refined.">
+      <created>1516204571019</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1516204571019</updated>
+    </task>
+    <task id="LOCAL-00043" summary="Shared code base clean up and refining.">
+      <created>1516204620536</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1516204620536</updated>
+    </task>
+    <task id="LOCAL-00044" summary="Crunchbase database test sql script.">
+      <created>1516204665101</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1516204665101</updated>
+    </task>
+    <task id="LOCAL-00045" summary="BAP quarterley summary check for Q1 and Q2">
+      <created>1516223432407</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1516223432407</updated>
+    </task>
+    <task id="LOCAL-00046" summary="Bap Validation summary for a single RIC completed.">
+      <created>1516305043581</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1516305043581</updated>
+    </task>
+    <task id="LOCAL-00047" summary="BAP FY18 schedule G report validation.">
+      <created>1516479917945</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1516479917945</updated>
+    </task>
+    <task id="LOCAL-00048" summary="Organization relationship entities save method.">
+      <created>1516743136941</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1516743136941</updated>
+    </task>
+    <task id="LOCAL-00049" summary="Shared class and method changes.">
+      <created>1516743236057</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1516743236057</updated>
+    </task>
+    <task id="LOCAL-00050" summary="CBInsights ETL preliminary implementation.">
+      <created>1516743275942</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1516743275943</updated>
+    </task>
+    <task id="LOCAL-00051" summary="CBInsights ETL complete implementation.">
+      <created>1516829912748</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1516829912748</updated>
+    </task>
+    <task id="LOCAL-00052" summary="Dataframe to values list conversion updated.">
+      <created>1516829954887</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1516829954887</updated>
+    </task>
+    <task id="LOCAL-00053" summary="Creating batch for etl method added.">
+      <created>1516829989856</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1516829989856</updated>
+    </task>
+    <task id="LOCAL-00054" summary="Parent class for all data sources created.">
+      <created>1516923126085</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1516923126085</updated>
+    </task>
+    <task id="LOCAL-00055" summary="Inheritance from parent class implemented for CBInsights.">
+      <created>1516923204323</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1516923204323</updated>
+    </task>
+    <task id="LOCAL-00056" summary="Box folder structure update.">
+      <created>1516983822274</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1516983822274</updated>
+    </task>
+    <task id="LOCAL-00057" summary="Initializing File service and other properties only when needed.">
+      <created>1516983915846</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1516983915846</updated>
+    </task>
+    <task id="LOCAL-00058" summary="BAP QA updates for year and quarter, overriding what is provided.">
+      <created>1517076918303</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1517076918303</updated>
+    </task>
+    <task id="LOCAL-00059" summary="Batch creation and update implementation.">
+      <created>1517350647338</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1517350647338</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Helper classes and methods refactoring.">
+      <created>1517350687581</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1517350687581</updated>
+    </task>
+    <task id="LOCAL-00061" summary="CBInsight datasource inheritance implementation.">
+      <created>1517350741478</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1517350741479</updated>
+    </task>
+    <task id="LOCAL-00062" summary="Airflow implementation for all the datasource.">
+      <created>1517406170451</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1517406170451</updated>
+    </task>
+    <task id="LOCAL-00063" summary="Target list ETL for Annual survey implemented as MISC">
+      <created>1517492577958</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1517492577959</updated>
+    </task>
+    <task id="LOCAL-00064" summary="Pitchbook Datasource added to the implementation list.">
+      <created>1517492614495</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1517492614495</updated>
+    </task>
+    <task id="LOCAL-00065" summary="Company matching re-implemented.">
+      <created>1517492667861</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1517492667861</updated>
+    </task>
+    <task id="LOCAL-00066" summary="Shared class refactoring and clean up.">
+      <created>1517492707398</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1517492707398</updated>
+    </task>
+    <task id="LOCAL-00067" summary="Fast lane ETLs implemented for one-off etls.">
+      <created>1517665823250</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1517665823251</updated>
+    </task>
+    <task id="LOCAL-00068" summary="IAF etl implementation and first test run.">
+      <created>1517665873219</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1517665873219</updated>
+    </task>
+    <task id="LOCAL-00069" summary="IAF file read for ETL and enums for it.">
+      <created>1517665935438</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1517665935438</updated>
+    </task>
+    <task id="LOCAL-00070" summary="BAP FactRIC data processing and bulk insertion.">
+      <created>1517867699041</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1517867699042</updated>
+    </task>
+    <task id="LOCAL-00071" summary="BAP related refactoring and refining.">
+      <created>1517867744466</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1517867744466</updated>
+    </task>
+    <task id="LOCAL-00072" summary="Miscellaneous changes.">
+      <created>1517867797698</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1517867797698</updated>
+    </task>
+    <task id="LOCAL-00073" summary="Method refactoring for shared functions.">
+      <created>1518205341382</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1518205341382</updated>
+    </task>
+    <option name="localTasksCounter" value="74" />
+    <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="3600" y="0" width="1920" height="1080" extended-state="0" />
+    <layout>
+      <window_info anchor="bottom" id="TODO" order="4" weight="0.32969216" />
+      <window_info id="DB Browser" order="5" weight="0.32960597" />
+      <window_info anchor="bottom" id="DB Execution Console" order="6" />
+      <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.2172524" side_tool="true" weight="0.3634558" />
+      <window_info anchor="right" x="0" y="0" width="430" height="880" id="Documentation" order="7" sideWeight="0.5004965" side_tool="true" weight="0.3397231" />
+      <window_info anchor="bottom" id="Version Control" order="6" weight="0.29418743" />
+      <window_info anchor="bottom" id="Python Console" order="7" sideWeight="0.6801242" weight="0.326713" />
+      <window_info anchor="bottom" id="Run" order="10" sideWeight="0.7349709" weight="0.21251242" />
+      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49751553" weight="0.14995034" />
+      <window_info anchor="right" id="FAQ Robot" order="5" weight="0.32960597" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1773163" />
+      <window_info id="Project Explorer" order="2" weight="0.32960597" />
+      <window_info id="Job Explorer" order="3" weight="0.32960597" />
+      <window_info anchor="bottom" id="Docker" order="6" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Console" order="11" />
+      <window_info id="Database" order="6" weight="0.16134185" />
+      <window_info anchor="right" id="SciView" order="0" sideWeight="0.49950346" weight="0.342918" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.24920128" />
+      <window_info id="Favorites" order="4" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="9" sideWeight="0.7827476" weight="0.30387288" />
+      <window_info anchor="bottom" id="Inspection" order="3" weight="0.4" />
+      <window_info anchor="right" id="Commander" order="1" weight="0.4" />
+      <window_info anchor="bottom" id="Database Console" order="6" weight="0.42800397" />
+      <window_info anchor="bottom" id="Cvs" order="2" weight="0.25" />
+      <window_info anchor="right" id="Ant Build" order="2" weight="0.25" />
+      <window_info anchor="right" id="Coverage" order="3" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Concurrent Activities Diagram" order="6" sideWeight="0.49579832" weight="0.67551965" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="4" weight="0.24973376" />
+      <window_info anchor="right" id="Data View" order="6" weight="0.2087327" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.326713" />
+      <window_info anchor="bottom" id="MaxCompute Console" order="6" />
+    </layout>
+    <layout-to-restore>
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16422467" />
+      <window_info anchor="bottom" id="Run" order="10" visible="true" weight="0.29989764" />
+      <window_info anchor="bottom" id="Cvs" order="2" weight="0.25" />
+      <window_info anchor="right" id="Data View" order="3" weight="0.314164" />
+      <window_info id="Structure" order="1" weight="0.25" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="TODO" order="4" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Python Console" order="7" weight="0.38828203" />
+      <window_info anchor="bottom" id="Inspection" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="9" weight="0.5243297" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.4021847" />
+      <window_info anchor="bottom" id="Event Log" order="5" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="6" weight="0.32969216" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+    </layout-to-restore>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/Survey/SGizmoAPI" />
+    </ignored-roots>
+    <MESSAGE value="Shared class and method changes." />
+    <MESSAGE value="CBInsights ETL preliminary implementation." />
+    <MESSAGE value="CBInsights ETL complete implementation." />
+    <MESSAGE value="Dataframe to values list conversion updated." />
+    <MESSAGE value="Creating batch for etl method added." />
+    <MESSAGE value="Parent class for all data sources created." />
+    <MESSAGE value="Inheritance from parent class implemented for CBInsights." />
+    <MESSAGE value="Box folder structure update." />
+    <MESSAGE value="Initializing File service and other properties only when needed." />
+    <MESSAGE value="BAP QA updates for year and quarter, overriding what is provided." />
+    <MESSAGE value="Batch creation and update implementation." />
+    <MESSAGE value="Helper classes and methods refactoring." />
+    <MESSAGE value="CBInsight datasource inheritance implementation." />
+    <MESSAGE value="Airflow implementation for all the datasource." />
+    <MESSAGE value="Target list ETL for Annual survey implemented as MISC" />
+    <MESSAGE value="Pitchbook Datasource added to the implementation list." />
+    <MESSAGE value="Company matching re-implemented." />
+    <MESSAGE value="Shared class refactoring and clean up." />
+    <MESSAGE value="Fast lane ETLs implemented for one-off etls." />
+    <MESSAGE value="IAF etl implementation and first test run." />
+    <MESSAGE value="IAF file read for ETL and enums for it." />
+    <MESSAGE value="BAP FactRIC data processing and bulk insertion." />
+    <MESSAGE value="BAP related refactoring and refining." />
+    <MESSAGE value="Miscellaneous changes." />
+    <MESSAGE value="Method refactoring for shared functions." />
+    <option name="LAST_COMMIT_MESSAGE" value="Method refactoring for shared functions." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/BAP/bap.py</url>
+          <line>431</line>
+          <option name="timeStamp" value="181" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Survey/sg_survey.py</url>
+          <line>23</line>
+          <option name="timeStamp" value="362" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Survey/__init__.py</url>
+          <line>37</line>
+          <option name="timeStamp" value="363" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ZTest/Validate_old.py</url>
+          <line>332</line>
+          <option name="timeStamp" value="424" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/ZTest/Validate_old.py</url>
+          <line>312</line>
+          <option name="timeStamp" value="426" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Shared/batch.py</url>
+          <line>42</line>
+          <option name="timeStamp" value="696" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/CBInsights/cbinsights.py</url>
+          <line>17</line>
+          <option name="timeStamp" value="760" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/CBInsights/cbinsights.py</url>
+          <line>10</line>
+          <option name="timeStamp" value="761" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Shared/batch.py</url>
+          <line>89</line>
+          <option name="timeStamp" value="863" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Shared/qa.py</url>
+          <line>176</line>
+          <option name="timeStamp" value="960" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Shared/match.py</url>
+          <line>126</line>
+          <option name="timeStamp" value="998" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Shared/match.py</url>
+          <line>104</line>
+          <option name="timeStamp" value="1224" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/BAP/bap.py</url>
+          <line>141</line>
+          <option name="timeStamp" value="1235" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/BAP/bap.py</url>
+          <line>138</line>
+          <option name="timeStamp" value="1236" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/BAP/bap.py</url>
+          <line>257</line>
+          <option name="timeStamp" value="1242" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/BAP/Validate.py</url>
+          <line>248</line>
+          <option name="timeStamp" value="1250" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Shared/file_service.py</url>
+          <line>185</line>
+          <option name="timeStamp" value="1262" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Shared/batch.py</url>
+          <line>116</line>
+          <option name="timeStamp" value="1290" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/MISC/fast_lane.py</url>
+          <line>201</line>
+          <option name="timeStamp" value="1322" />
+        </line-breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+      <option name="time" value="1329" />
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="os.getcwd()" language="Python" />
+        <watch expression="len(data)" language="Python" />
+        <watch expression="len(df_match)" language="Python" />
+        <watch expression="os.getcwd()" language="Python" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="breakpointCondition">
+      <expression>
+        <expression-string>len(df) &gt; 1</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(df) &gt; 0</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>df==None</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>df == None</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>row['CompanyID'] == 236</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>company_id == 236</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>company_id == 1149</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>c.row==2</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>c.row == 2</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>c.row == 1</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+    <expressions id="watch">
+      <expression>
+        <expression-string>os.getcwd()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(df_match)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(data)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>'@' in email</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>dfs.loc[3]['Email']</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>dfs.loc[3]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(dfs)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>dfs.drop([0])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>dfs.drop(['index'])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+    <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>os.getcwd()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self.data</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/Shared/common.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2715">
+          <caret line="190" column="16" lean-forward="true" selection-start-line="190" selection-start-column="16" selection-end-line="190" selection-end-column="16" />
+          <folding>
+            <element signature="e#1101#1105#0" />
+            <element signature="e#1176#1444#0" />
+            <element signature="e#1491#1951#0" />
+            <element signature="e#1516#1724#0" />
+            <element signature="e#1736#1951#0" />
+            <element signature="e#1995#2124#0" />
+            <element signature="e#2161#2292#0" />
+            <element signature="e#2415#2550#0" />
+            <element signature="e#2587#2661#0" />
+            <element signature="e#2595#2624#0" />
+            <element signature="e#3056#3568#0" />
+            <element signature="e#3609#3832#0" />
+            <element signature="e#3895#4132#0" />
+            <element signature="e#3903#4078#0" />
+            <element signature="e#4108#4132#0" />
+            <element signature="e#4179#4316#0" />
+            <element signature="e#4378#4730#0" />
+            <element signature="e#4450#4707#0" />
+            <element signature="e#4494#4682#0" />
+            <element signature="e#4806#5216#0" />
+            <element signature="e#4878#5193#0" />
+            <element signature="e#4922#5168#0" />
+            <element signature="e#5266#5505#0" />
+            <element signature="e#5294#5482#0" />
+            <element signature="e#5559#5590#0" />
+            <element signature="e#5782#5825#0" />
+            <element signature="e#5828#5873#0" />
+            <element signature="e#6089#6303#0" />
+            <element signature="e#6349#7655#0" />
+            <element signature="e#7699#7840#0" />
+            <element signature="e#7905#8174#0" />
+            <element signature="e#8220#8353#0" />
+            <element signature="e#8399#9672#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/db.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="24" selection-start-line="24" selection-end-line="24" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/config.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="11" lean-forward="true" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/config_sql.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="48" lean-forward="true" selection-start-line="9" selection-end-line="9" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CVCA/Addis Fortune_tweet_1515961722.txt" />
+    <entry file="file://$PROJECT_DIR$/CVCA/All Tweets/Ethiopian Reporter_tweet_1515963134.txt" />
+    <entry file="file://$PROJECT_DIR$/CVCA/All Tweets/Addis Fortune_tweet_1515963406.txt" />
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/site-packages/openpyxl/reader/excel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2550">
+          <caret line="170" selection-start-line="170" selection-end-line="170" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CVCA/cvca.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="382">
+          <caret line="68" column="29" selection-start-line="68" selection-start-column="29" selection-end-line="68" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/site-packages/openpyxl/workbook/workbook.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="310">
+          <caret line="199" column="8" selection-start-line="199" selection-start-column="8" selection-end-line="199" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CrunchBase/crunchbase_queries_for_test.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CBInsights/cbinsight_test.py" />
+    <entry file="file://$PROJECT_DIR$/Shared/__init__.py" />
+    <entry file="file://$PROJECT_DIR$/OSVP/osvp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="7" column="83" selection-start-line="7" selection-start-column="83" selection-end-line="7" selection-end-column="83" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="uml://DATABASE/2fd9d0a1-3d1e-4415-9adb-054fecc1f85f.DATABASE:master">
+      <provider selected="true" editor-type-id="UmlEditorProvider">
+        <state>
+          <ID>DATABASE</ID>
+          <OriginalElement>2fd9d0a1-3d1e-4415-9adb-054fecc1f85f.DATABASE:master</OriginalElement>
+          <nodes>
+            <node x="" y="">2fd9d0a1-3d1e-4415-9adb-054fecc1f85f.VIEW:master.dbo.spt_values</node>
+            <node x="" y="">2fd9d0a1-3d1e-4415-9adb-054fecc1f85f.TABLE:master.dbo.spt_fallback_usg</node>
+            <node x="" y="">2fd9d0a1-3d1e-4415-9adb-054fecc1f85f.TABLE:master.dbo.spt_monitor</node>
+            <node x="" y="">2fd9d0a1-3d1e-4415-9adb-054fecc1f85f.TABLE:master.dbo.spt_fallback_db</node>
+            <node x="" y="">2fd9d0a1-3d1e-4415-9adb-054fecc1f85f.TABLE:master.dbo.MSreplication_options</node>
+            <node x="" y="">2fd9d0a1-3d1e-4415-9adb-054fecc1f85f.TABLE:master.dbo.spt_fallback_dev</node>
+          </nodes>
+          <notes />
+          <edges />
+          <settings layout="Hierarchic Group" zoom="1.0" x="361.0" y="261.0" />
+          <SelectedNodes />
+          <Categories>
+            <Category>Columns</Category>
+            <Category>Key columns</Category>
+          </Categories>
+          <SCOPE>All</SCOPE>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/2fd9d0a1-3d1e-4415-9adb-054fecc1f85f/console_1.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="15" selection-start-column="15" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="uml://AlchemyModelDependency/#MDCetl">
+      <provider selected="true" editor-type-id="UmlEditorProvider">
+        <state>
+          <ID>AlchemyModelDependency</ID>
+          <OriginalElement>#MDCetl</OriginalElement>
+          <nodes />
+          <notes />
+          <edges />
+          <settings layout="Hierarchic Group" zoom="1.0" x="819.0" y="262.0" />
+          <SelectedNodes />
+          <Categories />
+          <SCOPE>All</SCOPE>
+        </state>
+      </provider>
+    </entry>
+    <entry file="uml://Python/#/Users/mnadew/Box Sync/mnadew/IE/MDCetl/Shared/batch.py">
+      <provider selected="true" editor-type-id="UmlEditorProvider">
+        <state>
+          <ID>Python</ID>
+          <OriginalElement>#/Users/mnadew/Box Sync/mnadew/IE/MDCetl/Shared/batch.py</OriginalElement>
+          <nodes>
+            <node x="-19.347258485639713" y="266.8389904264577">Shared.batch.BatchService</node>
+            <node x="-393.56135770234994" y="251.514360313316">object</node>
+          </nodes>
+          <notes />
+          <edges>
+            <edge source="Shared.batch.BatchService" target="object">
+              <point x="0.0" y="-213.0" />
+              <point x="0.0" y="246.0" />
+            </edge>
+          </edges>
+          <settings layout="Hierarchic Group" zoom="0.9303643724696355" x="-245.0" y="460.0" />
+          <SelectedNodes>
+            <node>Shared.batch.BatchService</node>
+            <node>object</node>
+          </SelectedNodes>
+          <Categories>
+            <Category>Fields</Category>
+            <Category>Inner Classes</Category>
+            <Category>Methods</Category>
+          </Categories>
+          <SCOPE>All</SCOPE>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/2fd9d0a1-3d1e-4415-9adb-054fecc1f85f/console_2.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/xml/etree/ElementTree.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="237">
+          <caret line="1222" selection-start-line="1222" selection-end-line="1222" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/IAF/iaf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="25" column="67" selection-start-line="25" selection-start-column="67" selection-end-line="25" selection-end-column="67" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/__future__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-839">
+          <caret line="37" column="59" lean-forward="true" selection-start-line="37" selection-start-column="59" selection-end-line="37" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CBInsights/cbinsights.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret lean-forward="true" />
+          <folding>
+            <element signature="e#1#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="788">
+          <caret line="97" selection-start-line="97" selection-end-line="97" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BAP/Readme.MD" />
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/site-packages/OpenSSL/crypto.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="78">
+          <caret line="15" selection-start-line="15" selection-end-line="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/site-packages/pandas/io/formats/excel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="401">
+          <caret line="648" selection-start-line="648" selection-end-line="648" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/site-packages/openpyxl/compat/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="690">
+          <caret line="59" selection-start-line="59" selection-end-line="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CrunchBase/crunchbase.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/config_sql.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="48" selection-start-line="9" selection-end-line="9" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/calendar.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="169">
+          <caret line="122" selection-start-line="122" selection-end-line="122" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/datasource.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/site-packages/numpy/core/numeric.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="1938" selection-start-line="1938" selection-end-line="1938" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/enum.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="279">
+          <caret line="323" selection-start-line="323" selection-end-line="323" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/site-packages/pandas/core/frame.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1621">
+          <caret line="4957" column="27" lean-forward="true" selection-start-line="4957" selection-start-column="27" selection-end-line="4957" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/qa.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-44">
+          <caret line="85" selection-start-line="85" selection-end-line="85" />
+          <folding>
+            <element signature="e#129#148#0" expanded="true" />
+            <element signature="e#452#1233#0" />
+            <element signature="e#1267#1402#0" />
+            <element signature="e#1431#1538#0" />
+            <element signature="e#1581#2978#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BAP/Validate.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="258" column="68" lean-forward="true" selection-start-line="258" selection-start-column="25" selection-end-line="258" selection-end-column="68" />
+          <folding>
+            <element signature="e#0#83#0" expanded="true" />
+            <element signature="e#2129#2329#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/batch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="444">
+          <caret line="170" column="40" selection-start-line="170" selection-start-column="40" selection-end-line="170" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#49#0" expanded="true" />
+            <element signature="e#1121#2073#0" />
+            <element signature="e#2190#2710#0" />
+            <element signature="e#2770#2907#0" />
+            <element signature="e#2995#3790#0" />
+            <element signature="e#3884#4248#0" />
+            <element signature="e#4315#4627#0" />
+            <element signature="e#4699#5387#0" />
+            <element signature="e#5440#5663#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/site-packages/pandas/core/series.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="397" selection-start-line="397" selection-end-line="397" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/site-packages/pandas/core/generic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="3612" selection-start-line="3612" selection-end-line="3612" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="310" selection-start-line="310" selection-end-line="310" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/socket.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="712" selection-start-line="712" selection-end-line="712" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/file_service.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="185">
+          <caret line="185" selection-start-line="185" selection-end-line="185" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/types.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="116">
+          <caret line="141" selection-start-line="141" selection-end-line="141" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/db.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="256">
+          <caret line="36" selection-start-line="36" selection-end-line="36" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/config.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="25" column="123" selection-start-line="25" selection-start-column="123" selection-end-line="25" selection-end-column="123" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/common.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-305">
+          <caret line="159" column="23" lean-forward="true" selection-start-line="159" selection-start-column="23" selection-end-line="159" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#1101#1105#0" />
+            <element signature="e#1176#1444#0" />
+            <element signature="e#1491#1951#0" />
+            <element signature="e#1516#1724#0" />
+            <element signature="e#1736#1951#0" />
+            <element signature="e#1995#2124#0" />
+            <element signature="e#2161#2292#0" />
+            <element signature="e#2415#2550#0" />
+            <element signature="e#2587#2661#0" />
+            <element signature="e#2595#2624#0" />
+            <element signature="e#2757#2970#0" />
+            <element signature="e#3054#3566#0" />
+            <element signature="e#3607#3830#0" />
+            <element signature="e#3893#4130#0" />
+            <element signature="e#3901#4076#0" />
+            <element signature="e#4106#4130#0" />
+            <element signature="e#4177#4314#0" />
+            <element signature="e#4376#4728#0" />
+            <element signature="e#4448#4705#0" />
+            <element signature="e#4492#4680#0" />
+            <element signature="e#4804#5214#0" />
+            <element signature="e#4876#5191#0" />
+            <element signature="e#4920#5166#0" />
+            <element signature="e#5264#5503#0" />
+            <element signature="e#5292#5480#0" />
+            <element signature="e#5557#5588#0" />
+            <element signature="e#5645#5733#0" />
+            <element signature="e#5780#5823#0" />
+            <element signature="e#5826#5871#0" />
+            <element signature="e#6087#6301#0" />
+            <element signature="e#6130#6161#0" />
+            <element signature="e#6193#6287#0" />
+            <element signature="e#6347#7653#0" />
+            <element signature="e#7697#7838#0" />
+            <element signature="e#7705#7802#0" />
+            <element signature="e#7903#8172#0" />
+            <element signature="e#8007#8172#0" />
+            <element signature="e#8016#8126#0" />
+            <element signature="e#8091#8126#0" />
+            <element signature="e#8218#8351#0" />
+            <element signature="e#8397#9670#0" />
+            <element signature="e#8912#9007#0" />
+            <element signature="e#9034#9129#0" />
+            <element signature="e#9162#9266#0" />
+            <element signature="e#9294#9393#0" />
+            <element signature="e#9423#9530#0" />
+            <element signature="e#9725#9753#0" />
+            <element signature="e#9809#9878#0" />
+            <element signature="e#9927#10029#0" />
+            <element signature="e#10073#10260#0" />
+            <element signature="e#10361#11158#0" />
+            <element signature="e#10376#10839#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/enums.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="13" lean-forward="true" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+          <folding>
+            <element signature="e#5715#6530#1" />
+            <element signature="e#6572#7342#0" />
+            <element signature="e#7381#8167#0" />
+            <element signature="e#8847#9597#0" />
+            <element signature="e#10501#25784#0" />
+            <element signature="e#25974#26486#0" />
+            <element signature="e#26507#27523#0" />
+            <element signature="e#27550#27695#0" />
+            <element signature="e#27809#27917#0" />
+            <element signature="e#27941#27998#0" />
+            <element signature="e#28026#28275#0" />
+            <element signature="e#28300#28370#0" />
+            <element signature="e#28396#28489#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/BAP/bap.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="623">
+          <caret line="488" column="20" lean-forward="true" selection-start-line="488" selection-start-column="20" selection-end-line="488" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/match.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="840">
+          <caret line="130" column="46" selection-start-line="130" selection-start-column="46" selection-end-line="130" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#44#0" expanded="true" />
+            <element signature="e#1852#2074#0" />
+            <element signature="e#2131#2231#0" />
+            <element signature="e#2271#2358#0" />
+            <element signature="e#2393#3158#0" />
+            <element signature="e#2599#3158#0" />
+            <element signature="e#2608#3090#0" />
+            <element signature="e#2754#3025#0" />
+            <element signature="e#2866#3025#0" />
+            <element signature="e#3192#5785#0" />
+            <element signature="e#5328#5340#0" />
+            <element signature="e#5621#5686#0" />
+            <element signature="e#5833#6548#0" />
+            <element signature="e#6603#7282#0" />
+            <element signature="e#6611#7243#0" />
+            <element signature="e#7350#7492#0" />
+            <element signature="e#7541#8987#0" />
+            <element signature="e#7748#8786#0" />
+            <element signature="e#7796#8719#0" />
+            <element signature="e#7895#8424#0" />
+            <element signature="e#8440#8719#0" />
+            <element signature="e#9018#9066#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MISC/fast_lane.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
+          <folding>
+            <element signature="e#0#30#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

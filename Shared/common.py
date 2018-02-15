@@ -8,6 +8,9 @@ from dateutil import parser
 from dateutil.parser import parse
 from Shared.enums import DataSourceType, CONSTANTS, PATH, StageLevel as stg
 import pandas as pd
+import dns.resolver
+import socket
+import smtplib
 
 
 class Common:
@@ -103,7 +106,7 @@ class Common:
 			for sf in Common.suffix:
 				Common.temp_name = re.sub(sf, '', Common.temp_name)
 			Common.basic_name = re.sub('[^A-Za-z0-9]+', '', Common.temp_name).lower()
-			# print(Common.basic_name)
+			print(Common.basic_name)
 			return Common.basic_name
 		return {'error': 'No name found'}
 
@@ -356,3 +359,47 @@ class Common:
 	def generate_basic_name(df):
 		df['BasicName'] = df.apply(lambda dfs: Common.get_basic_name(dfs['Company Name']), axis=1)
 		return df
+
+	@staticmethod
+	def valid_email(email):
+		pattern = re.compile('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$')
+		match = re.match(pattern, email)
+		if match is None:
+			return False
+		else:
+			return True
+
+	@staticmethod
+	def verify_email_exists(email):
+		try:
+			_, domain = email.split('@')
+			records = dns.resolver.query(domain, 'MX')
+			mxRecord = records[0].exchange
+			mxRecord = str(mxRecord)
+			#Get local server hostname
+			host = socket.gethostbyname(mxRecord)
+			#SMTP lib setup
+			server = smtplib.SMTP()
+			server.set_debuglevel(0)
+			#SMTP Conversation
+			server.connect(mxRecord)
+			server.helo(host)
+			server.mail(email)
+			code, message = server.rcpt(str(email))
+			server.quit()
+			if code == 250:
+				return True
+			else:
+				return False
+		except ConnectionRefusedError:
+			return False
+		except smtplib.SMTPServerDisconnected:
+			return False
+		except dns.resolver.NoAnswer:
+			return False
+		except dns.resolver.NXDOMAIN:
+			return False
+		except dns.resolver.NoNameservers:
+			return False
+		except socket.error:
+			return False

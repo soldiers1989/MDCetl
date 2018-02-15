@@ -66,6 +66,7 @@ class CompanyService:
 		for index, com in raw_company.iterrows():
 			try:
 				company_name = com['BasicName']
+				print(company_name)
 				if len(dim_company[dim_company.BasicName == company_name].CompanyID.values) > 0:
 					companyid = dim_company[dim_company.BasicName == company_name].CompanyID.values[0]
 					if companyid > 0:
@@ -82,16 +83,16 @@ class CompanyService:
 
 		raw_company = self.generate_basic_name(df_new_company)
 		dim_company = self.generate_basic_name(df_dim_company) if len(df_dim_company) > 0 else None
-		dim_company_source = self.generate_basic_name(df_dim_company_source) if len(df_dim_company_source) > 0 else None
+		# dim_company_source = self.generate_basic_name(df_dim_company_source) if len(df_dim_company_source) > 0 else None
 		i, j, k = 0, 0, 0
-		print('New Company: {}\nExisting Company: {}\nCompany Source: {}'.format(len(raw_company), len(dim_company), len(dim_company_source)))
+		print('New Company: {}\nExisting Company: {}'.format(len(raw_company), len(dim_company)))
 		response = input('Do you want to move the company data? [Y/N] ')
 		if response.lower() in CM.user_response_yes:
-			if dim_company is not None and dim_company_source is not None:
+			if dim_company is not None:# and dim_company_source is not None:
 				for index, com in raw_company.iterrows():
 					company_name = com['BasicName']
 					# print('{} | {}'.format(com['Name'], company_name))
-					if len(dim_company) > 0 and len(dim_company_source) > 0:
+					if len(dim_company) > 0: #and len(dim_company_source) > 0:
 						try:
 							cid = dim_company[dim_company.BasicName == company_name].CompanyID
 							if len(cid) == 0:
@@ -99,27 +100,28 @@ class CompanyService:
 							elif len(cid) > 1:
 								cid = dim_company[dim_company.BasicName == company_name].CompanyID.values[0]
 							# print('[Company Id]: {}\t[Company Name]: {}'.format(int(cid), com.Name))
-							if company_name not in dim_company.BasicName.values and company_name not in dim_company_source.BasicName.values:
+							print(company_name)
+							if company_name not in dim_company.BasicName.values:# and company_name not in dim_company_source.BasicName.values:
 								print('CASE I: NOT in DIMCOMPANY & DIMCOMPANYSOURCE')
 								i = i + 1
 								print('{}. {}'.format(i, company_name))
 								self.insert_dim_company(com)
-								self.insert_dim_company_source(com)
-							if company_name not in dim_company.BasicName.values and company_name in dim_company_source.BasicName.values:
-								print('CASE II: NOT IN DIMCOMPANY BUT IN DIMCOMPANYSOURCE')
-								j = j + 1
-								self.insert_dim_company(com)
-								self.update_dim_company_source(self.dim_company_id, com.Name)
-								print('{}. {}'.format(j, company_name))
-							if company_name in dim_company.BasicName.values and company_name not in dim_company_source.BasicName.values:
-								print('CASE III: IN DIMCOMPANY & NOT IN DIMCOMPANYSOURCE')
-								k = k + 1
-								if isinstance(cid, np.int64):
-									companyID = cid
-								elif cid.values:
-									companyID = cid.values[0]
-								self.update_dim_company_source(companyID, com.Name)
-								print('{}. {}'.format(k, company_name))
+								# self.insert_dim_company_source(com)
+							if company_name not in dim_company.BasicName.values:# and company_name in dim_company_source.BasicName.values:
+								print('CASE II: NOT IN DIMCOMPANY ....but already taken care of.  >>> NO ACTION NECESSARY')
+								#j = j + 1
+								#self.insert_dim_company(com)
+								## self.update_dim_company_source(self.dim_company_id, com.Name)
+								#print('{}. {}'.format(j, company_name))
+							if company_name in dim_company.BasicName.values:# and company_name not in dim_company_source.BasicName.values:
+								print('CASE III: IN DIMCOMPANY  {}  >>> NO ACTION NECESSARY'.format(cid.values[0]))
+							# 	k = k + 1
+							# 	if isinstance(cid, np.int64):
+							# 		companyID = cid
+							# 	elif cid.values:
+							# 		companyID = cid.values[0]
+							# 	self.update_dim_company_source(companyID, com.Name)
+							# 	print('{}. {}'.format(k, company_name))
 						except Exception as ex:
 							val = '>>' * 100
 							print('EXCEPTION: {} {}'.format(ex, val))

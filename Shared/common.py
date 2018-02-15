@@ -106,7 +106,8 @@ class Common:
 			for sf in Common.suffix:
 				Common.temp_name = re.sub(sf, '', Common.temp_name)
 			Common.basic_name = re.sub('[^A-Za-z0-9]+', '', Common.temp_name).lower()
-			print(Common.basic_name)
+			# print(Common.basic_name)
+			print('#')
 			return Common.basic_name
 		return {'error': 'No name found'}
 

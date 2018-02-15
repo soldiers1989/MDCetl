@@ -216,11 +216,46 @@ class CompanyService:
 		CM.change_location(PATH.MATCH)
 		self.file.save_as_csv(df, 'Company_Matching_FY18_Q3.xlsx', self.path, 'Company Matched')
 
+	def move_annual_company_data(self):
+		i, j = 0, 0
+		dfac = db.pandas_read('SELECT ID, BatchID, CompanyID,[Company Name] FROM BAP.AnnualCompanyData')
+		dfdc = db.pandas_read('SELECT CompanyID, CompanyName FROM Reporting.DimCompany')
+		dfac['BasicName'] = dfac.apply(lambda dfs: CM.get_basic_name(dfs['Company Name']), axis=1)
+		dfdc['BasicName'] = dfdc.apply(lambda dfs: CM.get_basic_name(dfs.CompanyName), axis=1)
+		for i, c in dfac.iterrows():
+			dfc = dfdc[dfdc['BasicName'] == c.BasicName]
+			val = dict()
+			if len(dfc) > 0:
+				i+=1
+				db.execute(sql.sql_annual_comapny_data_update.value.format(dfc.CompanyID.values[0], c.ID))
+				print(sql.sql_annual_comapny_data_update.value.format(dfc.CompanyID.values[0], c.ID))
+			else:
+				j+=1
+				print(sql.sql_dim_company_insert.value)
+				new_com_id = self.batch.get_table_seed('MaRSDataCatalyst.Reporting.DimCompany', 'CompanyID') + 1
+				val['CompanyID'] = new_com_id
+				val['Company Name'] = c['Company Name']
+				val['Description'] = None
+				val['Phone'] = None
+				val['Phone2'] = None
+				val['Fax'] = None
+				val['Email'] = None
+				val['Website'] = None
+				val['CompanyType'] = None
+				val['BatchID'] = c.BatchID
+				val['ModifiedDate'] = str(dt.datetime.utcnow())[:-3]
+				val['CreatedDate'] = str(dt.datetime.utcnow())[:-3]
+				df = pd.DataFrame([val], columns=val.keys())
+				values = CM.df_list(df)
+				db.bulk_insert(sql.sql_dim_company_insert.value, values)
+				db.execute(sql.sql_annual_comapny_data_update.value.format(new_com_id, c.ID))
+		print('{} exists and {} doesn not exist'.format(i, j))
+
 
 if __name__ == '__main__':
 	com = CompanyService()
-	com.update_raw_company()
-
+	# com.update_raw_company()
+	com.move_annual_company_data()
 
 
 

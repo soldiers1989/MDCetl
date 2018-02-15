@@ -207,6 +207,7 @@ class Table(Enum):
 
 
 class SQL(Enum):
+	sql_annual_comapny_data_update = 'UPDATE BAP.AnnualCompanyData SET CompanyID = {} WHERE ID = {}'
 	sql_target_list_update = 'UPDATE SURVEY.Targetlist SET CompanyID = {} WHERE ID = {}'
 	sql_batch_insert = 'INSERT INTO Config.ImportBatch VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 	sql_update = 'UPDATE {} SET {} = {} WHERE {} = {}'

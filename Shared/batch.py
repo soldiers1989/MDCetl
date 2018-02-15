@@ -4,6 +4,7 @@ from Shared.db import DB
 import datetime as dt
 import pandas as pd
 
+
 class BatchService:
 
 	def __init__(self):

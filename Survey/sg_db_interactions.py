@@ -1,6 +1,7 @@
 
 from Shared.db import DB as DAL
-
+from Shared.common import Common
+CM = Common()
 
 class sg_get_tables:
 
@@ -54,7 +55,7 @@ class sg_get_tables:
         """
 
         schema_str = "'" + str(schema) + "'"
-        sql_str = DAL.get_config("dependency_query", "query")
+        sql_str = CM.get_config("config.ini", "dependency_query", "query")
         dependency_sql = sql_str + schema_str
         dependencies = DAL.pandas_read(dependency_sql)
         dependencies.columns = ["FKTable", "ReferencedTable"]
@@ -71,7 +72,7 @@ class sg_get_tables:
         """
 
         schema_str = "'" + str(schema) + "'"
-        sql_str = DAL.get_config("dependency_query", "load_order_query")
+        sql_str = CM.get_config("config.ini", "dependency_query", "load_order_query")
         sql_str = sql_str.replace("WHAT_SCHEMA", schema_str)
         load_order = DAL.pandas_read(sql_str)
         return load_order

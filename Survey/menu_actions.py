@@ -52,19 +52,21 @@ class menu_actions():
                      14: "Display survey answers",
                      15: "Read all DB tables from schema into dataframes",
                      16: "Display schema dependencies (TEST)",
-                     17: "Set survey ID for this session"
+                     17: "Set survey ID for this session",
+                     18: "DELETE all components of current survey from DB"
                      }
 
         return menu_list
 
     @classmethod
-    def get_surveys(self, api_token, with_stats=False):
+    def get_surveys(self, api_token, with_stats=False, prin=True):
 
         if with_stats:
             surveys_df = sg_survey.get_list_df(api_token, with_stats=True)
         else:
             surveys_df = sg_survey.get_list_df(api_token, with_stats=False)
-        print("\n", surveys_df)
+        if prin:
+            print("\n", surveys_df)
 
         return surveys_df
 
@@ -880,7 +882,7 @@ class menu_actions():
                          4: 3}
         quarter = mars_quarters[quarter]
 
-        api_surveys_df = self.get_surveys(api_token)
+        api_surveys_df = self.get_surveys(api_token, prin=False)
         api_surveys_df = api_surveys_df.apply(pd.to_numeric, errors='ignore')
 
         db_surveys_sql = CM.get_config("config.ini", "sql_queries", "surveys")
@@ -907,4 +909,26 @@ class menu_actions():
             self.df_to_db(df, "insert_survey_entry")
 
         pass
+
+    @classmethod
+    def del_survey_components(self, survey_id):
+
+        del_sql = CM.get_config("config.ini", "sql_queries", "del_all_for_survey")
+        del_sql = del_sql.replace("WHAT_SURVEY", str(survey_id))
+        DB.execute(del_sql)
+        print("\nDeletion attempt was made. Survey components check:")
+
+        comps_dict = {"questions": "select_questions",
+                      "options": "select_options",
+                      "answers": "select_answers",
+                      "responses": "select_responses",
+                      "emails": "select_emails",
+                      "campaigns": "select_campaigns"}
+
+        for component, sql in comps_dict.items():
+            sql = CM.get_config("config.ini", "sql_queries", sql).replace("WHAT_SURVEY", str(survey_id))
+            df = DB.pandas_read(sql)
+            print("\nCount of {}: {}".format(component, len(df)))
+
+        return
 

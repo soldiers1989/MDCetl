@@ -66,7 +66,7 @@ def _main_():
             survey_title = None
 
         for key in menu:
-            if survey_id != 'w' and key == 11:
+            if survey_id != 'w' and key == 17:
                 # specify current session survey
                 print(str(key) + ".\t" + str(menu[key]) + " (Set as " + str(survey_id) + " : " + str(survey_title) + ")")
             elif key in session_variables:
@@ -336,31 +336,12 @@ def _main_():
             menu_actions.do_everything_for_all_surveys(session_variables, surveys_df, API_TOKEN)
             session_variables.append(8)
 
-        # elif selection == 16:
-        #
-        #     # still can't handle single quotes
-        #     contacts_sql = CM.get_config("sql_queries", "all_contacts")
-        #     contacts_df = DB.pandas_read(contacts_sql)
-        #     session_variables.append(16)
-        #
-        #     sg_contact_lists.sg_put_contact_list("Nov21", API_TOKEN)
-        #     sg_contact_lists.sg_post_contacts("Nov21", contacts_df, API_TOKEN)
+        elif selection == 18:
 
-
-        # # test contacts xl to df
-        # elif selection == 14:
-        #     path = input("Enter path to contact file: ")
-        #     contacts = sg_contact_lists.xl_to_contacts_df(path)
-        #
-        # # test new contact list
-        # elif selection == 15:
-        #     name = input("Enter name of new list: ")
-        #     sg_contact_lists.sg_put_contact_list(name, API_TOKEN)
-        #
-        # # test upload contacts to list
-        # elif selection == 16:
-        #     name = input("Enter name of contact list you would like to upload contacts to: ")
-        #     sg_contact_lists.sg_post_contacts(name, contacts, API_TOKEN)
+            sure = input(
+                "\nAre you sure you wish to delete all components of current survey from the database? (y/n): ")
+            if str(sure).lower() == "y":
+                menu_actions.del_survey_components(survey_id)
 
         # quit program
         elif selection == 99:

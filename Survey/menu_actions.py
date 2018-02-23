@@ -53,7 +53,8 @@ class menu_actions():
                      15: "Read all DB tables from schema into dataframes",
                      16: "Display schema dependencies (TEST)",
                      17: "Set survey ID for this session",
-                     18: "DELETE all components of current survey from DB"
+                     18: "DELETE all components of current survey from DB",
+                     19: "Get response statuses for all campaigns for this survey"
                      }
 
         return menu_list
@@ -279,9 +280,8 @@ class menu_actions():
         return answers_df, resp_df
 
     @classmethod
-    def get_resp_stats(self, survey_id, api_token):
+    def get_resp_stats(self, survey_id, api_token, campaign_id='w'):
 
-        campaign_id = 'w'
         if survey_id == 'w':
             while type(survey_id) != int:
                 try:
@@ -873,14 +873,7 @@ class menu_actions():
     @classmethod
     def write_survey_entries(self, api_token):
 
-        now = datetime.datetime.now()
-        year = now.year
-        quarter = math.ceil(now.month/3.)
-        mars_quarters = {1: 4,
-                         2: 1,
-                         3: 2,
-                         4: 3}
-        quarter = mars_quarters[quarter]
+        year, quarter = CM.fiscal_year_quarter()
 
         api_surveys_df = self.get_surveys(api_token, prin=False)
         api_surveys_df = api_surveys_df.apply(pd.to_numeric, errors='ignore')
@@ -894,8 +887,6 @@ class menu_actions():
 
         # write surveys_not_in_db2 to db, one at a time so BatchService can be executed for each one
         for index in range(len(surveys_not_in_db2)):
-            # if index == 0:
-            #     continue
             row = surveys_not_in_db2.iloc[index][:]
             df = pd.DataFrame([list(row.values)], columns=list(surveys_not_in_db2))
 

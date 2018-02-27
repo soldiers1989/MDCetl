@@ -59,6 +59,11 @@ class sg_contact_status:
         resp_statuses = []
         headers = ["report_id", "first_name", "last_name", "email", "contact_status", "response_status",
                    "date_last_sent", "invite_link"]
+        try:
+            x = json["data"]
+        except KeyError:
+            return [], []
+
         for contact in json["data"]:
             fname = contact["first_name"]
             lname = contact["last_name"]

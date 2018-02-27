@@ -52,19 +52,22 @@ class menu_actions():
                      14: "Display survey answers",
                      15: "Read all DB tables from schema into dataframes",
                      16: "Display schema dependencies (TEST)",
-                     17: "Set survey ID for this session"
+                     17: "Set survey ID for this session",
+                     18: "DELETE all components of current survey from DB",
+                     19: "Get response statuses for all campaigns for this survey"
                      }
 
         return menu_list
 
     @classmethod
-    def get_surveys(self, api_token, with_stats=False):
+    def get_surveys(self, api_token, with_stats=False, prin=True):
 
         if with_stats:
             surveys_df = sg_survey.get_list_df(api_token, with_stats=True)
         else:
             surveys_df = sg_survey.get_list_df(api_token, with_stats=False)
-        print("\n", surveys_df)
+        if prin:
+            print("\n", surveys_df)
 
         return surveys_df
 
@@ -277,9 +280,8 @@ class menu_actions():
         return answers_df, resp_df
 
     @classmethod
-    def get_resp_stats(self, survey_id, api_token):
+    def get_resp_stats(self, survey_id, api_token, campaign_id='w'):
 
-        campaign_id = 'w'
         if survey_id == 'w':
             while type(survey_id) != int:
                 try:
@@ -871,16 +873,9 @@ class menu_actions():
     @classmethod
     def write_survey_entries(self, api_token):
 
-        now = datetime.datetime.now()
-        year = now.year
-        quarter = math.ceil(now.month/3.)
-        mars_quarters = {1: 4,
-                         2: 1,
-                         3: 2,
-                         4: 3}
-        quarter = mars_quarters[quarter]
+        year, quarter = CM.fiscal_year_quarter()
 
-        api_surveys_df = self.get_surveys(api_token)
+        api_surveys_df = self.get_surveys(api_token, prin=False)
         api_surveys_df = api_surveys_df.apply(pd.to_numeric, errors='ignore')
 
         db_surveys_sql = CM.get_config("config.ini", "sql_queries", "surveys")
@@ -892,8 +887,6 @@ class menu_actions():
 
         # write surveys_not_in_db2 to db, one at a time so BatchService can be executed for each one
         for index in range(len(surveys_not_in_db2)):
-            # if index == 0:
-            #     continue
             row = surveys_not_in_db2.iloc[index][:]
             df = pd.DataFrame([list(row.values)], columns=list(surveys_not_in_db2))
 
@@ -907,4 +900,26 @@ class menu_actions():
             self.df_to_db(df, "insert_survey_entry")
 
         pass
+
+    @classmethod
+    def del_survey_components(self, survey_id):
+
+        del_sql = CM.get_config("config.ini", "sql_queries", "del_all_for_survey")
+        del_sql = del_sql.replace("WHAT_SURVEY", str(survey_id))
+        DB.execute(del_sql)
+        print("\nDeletion attempt was made. Survey components check:")
+
+        comps_dict = {"questions": "select_questions",
+                      "options": "select_options",
+                      "answers": "select_answers",
+                      "responses": "select_responses",
+                      "emails": "select_emails",
+                      "campaigns": "select_campaigns"}
+
+        for component, sql in comps_dict.items():
+            sql = CM.get_config("config.ini", "sql_queries", sql).replace("WHAT_SURVEY", str(survey_id))
+            df = DB.pandas_read(sql)
+            print("\nCount of {}: {}".format(component, len(df)))
+
+        return
 

@@ -335,9 +335,9 @@ class sg_contact_lists:
     # Process for uploading a new contact list is as follows:
     # Step 1: contacts = xl_to_contacts_df("pathstring")
     # (creates df from xl file's first sheet)
-        #
+    #
     # Step 2: Call sg_put_contact_list("list name string", api_token)
     # (creates a new contact list on account, ready to be populated)
-        #
+    #
     # Step 3: Call sg_post_contacts("list name str from above", contacts, api_token
     # (uploads each contact from contact df to the list named. Requires specific contact sheet format)

@@ -6,6 +6,8 @@ from  sg_db_interactions import sg_get_tables
 from sg_contact_lists import sg_contact_lists
 from sg_misc import misc_funcs as misc
 from Shared.batch import BatchService
+from Shared.common import Common as CM
+import datetime
 
 
 API_TOKEN = "api_token=3918099598ee3da7e79c1add7f4b8ae392b5b543c5fe7f9d88&api_token_secret=A9XYpy0QvtH.o"
@@ -66,7 +68,7 @@ def _main_():
             survey_title = None
 
         for key in menu:
-            if survey_id != 'w' and key == 11:
+            if survey_id != 'w' and key == 17:
                 # specify current session survey
                 print(str(key) + ".\t" + str(menu[key]) + " (Set as " + str(survey_id) + " : " + str(survey_title) + ")")
             elif key in session_variables:
@@ -103,17 +105,8 @@ def _main_():
         # get campaigns
         elif selection == 3:
 
-            # if 2 not in session_variables:
             campaigns_df = menu_actions.get_campaigns(API_TOKEN, survey_id, session_variables, surveys_df)
-            #     if campaigns_df is not None:
             session_variables.append(3)
-            #
-            # elif 2 in session_variables:
-            #     print("Campaign data already downloaded for this survey.")
-            #     sleep(0.75)
-            #     print(campaigns_df)
-            #     print("Returning to main menu.")
-            #     sleep(1)
 
         # get email msgs
         elif selection == 5:
@@ -209,7 +202,42 @@ def _main_():
             if "JLAB" in survey_title:
                 path = "/Users/gcree/Box Sync/MaRS DataCatalyst 2017 CONFIDENTIAL/JLABS Toronto Annual Survey 2017/Response_Status_Reports/"
                 misc.write_to_xl(status_df.drop("invite_link", axis=1), "ResponseStatuses", out_path=path, sheetname="response_statuses")
-            
+            elif "annual" in survey_title.lower() and "2018" in survey_title:
+                path = CM.get_config("config.ini", "paths", "survey2018_response_stats")
+                misc.write_to_xl(status_df, 'ResponseStatuses', out_path=path, sheetname="response_statuses")
+
+        # get resp stats for all campaigns
+        elif selection == 19:
+
+            campaigns_df = menu_actions.get_campaigns(API_TOKEN, survey_id, session_variables, surveys_df)
+            campaigns_df = campaigns_df[['id', 'campaign_name', 'link_type', 'campaign_status']]
+            reports_list = []
+            status_list = []
+            for cid in campaigns_df["id"]:
+                reports_df, status_df = menu_actions.get_resp_stats(survey_id, API_TOKEN, campaign_id=int(cid))
+                if len(reports_df) > 0:
+                    reports_list.append(reports_df)
+                    status_list.append(status_df)
+
+            # concat all reports dfs and concat all status dfs
+            if len(reports_list) == 0:
+                pass
+            elif len(reports_list) == 1:
+                reports_df = reports_list[0]
+                status_df = status_list[0]
+            else:
+                reports_df = pd.concat(reports_list)
+                status_df = pd.concat(status_list)
+
+            # left join campaigns <- reports <- statuses dfs
+            df1 = pd.merge(campaigns_df, reports_df, how='inner', left_on=["id"], right_on=["campaign_id"])
+            all_resp_stats = pd.merge(df1, status_df, how='left', left_on='id_y', right_on='report_id')
+            all_resp_stats = all_resp_stats.drop('id_y', axis=1).drop('campaign_id', axis=1).drop('report_id', axis=1)
+            all_resp_stats = all_resp_stats.rename(columns={'id_x': "campaign_id"})
+
+            path = CM.get_config("config.ini", "paths", "survey2018_response_stats")
+            misc.write_to_xl(all_resp_stats, 'ResponseStatuses', out_path=path, sheetname="response_statuses")
+
         # set survey ID
         elif selection == 17:
 
@@ -240,18 +268,19 @@ def _main_():
         # get all tables from schema into dfs
         elif selection == 15:
 
-            schema = "JLABS"
+            # schema = "JLABS"
             # schema = str(input("Enter name of schema for which you would like to load all tables into dataframes: "))
-
-            table_dict = menu_actions.get_db_tables(schema, printout=True)
-
-            session_variables.append(15)
-
-            # ========= Dependency query and dict ==========
-
-            dependency_dict = menu_actions.get_dependencies(schema, printout=True)
-
-            load_ordered_tables = menu_actions.get_load_order(schema, printout=True)
+            #
+            # table_dict = menu_actions.get_db_tables(schema, printout=True)
+            #
+            # session_variables.append(15)
+            #
+            # # ========= Dependency query and dict ==========
+            #
+            # dependency_dict = menu_actions.get_dependencies(schema, printout=True)
+            #
+            # load_ordered_tables = menu_actions.get_load_order(schema, printout=True)
+            pass
 
         # test get dependencies
         elif selection == 16:
@@ -336,31 +365,12 @@ def _main_():
             menu_actions.do_everything_for_all_surveys(session_variables, surveys_df, API_TOKEN)
             session_variables.append(8)
 
-        # elif selection == 16:
-        #
-        #     # still can't handle single quotes
-        #     contacts_sql = CM.get_config("sql_queries", "all_contacts")
-        #     contacts_df = DB.pandas_read(contacts_sql)
-        #     session_variables.append(16)
-        #
-        #     sg_contact_lists.sg_put_contact_list("Nov21", API_TOKEN)
-        #     sg_contact_lists.sg_post_contacts("Nov21", contacts_df, API_TOKEN)
+        elif selection == 18:
 
-
-        # # test contacts xl to df
-        # elif selection == 14:
-        #     path = input("Enter path to contact file: ")
-        #     contacts = sg_contact_lists.xl_to_contacts_df(path)
-        #
-        # # test new contact list
-        # elif selection == 15:
-        #     name = input("Enter name of new list: ")
-        #     sg_contact_lists.sg_put_contact_list(name, API_TOKEN)
-        #
-        # # test upload contacts to list
-        # elif selection == 16:
-        #     name = input("Enter name of contact list you would like to upload contacts to: ")
-        #     sg_contact_lists.sg_post_contacts(name, contacts, API_TOKEN)
+            sure = input(
+                "\nAre you sure you wish to delete all components of current survey from the database? (y/n): ")
+            if str(sure).lower() == "y":
+                menu_actions.del_survey_components(survey_id)
 
         # quit program
         elif selection == 99:

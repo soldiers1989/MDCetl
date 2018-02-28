@@ -33,7 +33,7 @@ class DB:
 	def pandas_read(sql):
 		try:
 			conn = DB.connect()
-			data = pd.read_sql(sql, conn)
+			data = pd.read_sql(sql, conn, parse_dates=['IntakeDate'])
 			return data
 		except Exception as ex:
 			print('Read SQL Exception: {}'.format(ex))

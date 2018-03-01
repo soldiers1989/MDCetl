@@ -458,26 +458,6 @@ class menu_actions():
         print("\nInserting Options: \n")
         self.df_to_db(os, insert_os_sql, remove_single_quotes=False, clean_numeric_cols=True)
 
-        # # get Questions headers, values, and question marks for pyodbc query
-        # qs_headers, qs_qmarks, qs_insert_vals = self.get_sql_params(qs)
-        # qs_header_str = self.get_header_str(qs_headers)
-        #
-        # # get Options headers, values, and question marks for pyodbc query
-        # os_headers, os_qmarks, os_insert_vals = self.get_sql_params(os)
-        # os_header_str = self.get_header_str(os)
-        #
-        # print("\nInserting Questions: \n")
-        # # load Questions to DB
-        # qs_sql = CM.get_config("config.ini", "sql_queries", "insert_qs")
-        # qs_sql = qs_sql.replace("WHAT_HEADERS", qs_header_str).replace("WHAT_VALUES", qs_qmarks)
-        # DB.bulk_insert(qs_sql, qs_insert_vals)
-        #
-        # print("\nInserting Options: \n")
-        # # load Options to DB
-        # os_sql = CM.get_config("config.ini", "sql_queries", "insert_os")
-        # os_sql = os_sql.replace("WHAT_HEADERS", os_header_str).replace("WHAT_VALUES", os_qmarks)
-        # DB.bulk_insert(os_sql, os_insert_vals)
-
     @classmethod
     def get_sql_params(self, df, remove_single_quotes=True):
 
@@ -557,14 +537,6 @@ class menu_actions():
         print("\nGetting API responses (respondents)")
         api_ans, api_resps = self.get_ans(survey_id, api_token)
 
-        # print("\nGetting API responses (respondents)")
-        # api_resps = self.get_resps(survey_id, api_token)
-        # api_resps["id"] = api_resps["id"].apply(pd.to_numeric, errors='ignore')
-
-        # get api contacts where contacts.id = resps.contact_id:
-        #   for each list in api contact_lists, download contacts in list
-        #   put merge all api contacts into single dataframe
-        #   discard where contacts.id != resps.contact_id
         print("\nGetting contact lists on account")
         contact_lists = self.get_contact_lists(survey_id, api_token)
         contact_lists = contact_lists.apply(pd.to_numeric, errors='ignore')
@@ -580,14 +552,8 @@ class menu_actions():
         if len(lists_not_in_db2) > 0:
             print("\nOne or more new contact lists detected on acct. Loading into DB now")
             insert_lists_sql = "insert_contactlists"
-
+            lists_not_in_db2 = lists_not_in_db2.drop_duplicates()
             self.df_to_db(lists_not_in_db2, insert_lists_sql, remove_single_quotes=False)
-
-            # list_headers, list_qmarks, list_vals = self.get_sql_params(lists_not_in_db2)
-            # list_header_str = self.get_header_str(list_headers)
-            # lists_sql = CM.get_config("config.ini", "sql_queries", "insert_contactlists")
-            # lists_sql = lists_sql.replace("WHAT_HEADERS", list_header_str).replace("WHAT_VALUES", list_qmarks)
-            # DB.bulk_insert(lists_sql, list_vals)
 
         print("\nGathering all contacts from all lists on acct into single dataframe")
         all_contacts = []
@@ -625,7 +591,7 @@ class menu_actions():
         if len(new_contacts) > 0:
             print("Writing new contacts to DB.")
             insert_cs_sql = "insert_contacts"
-
+            new_contacts = new_contacts.drop_duplicates()
             self.df_to_db(new_contacts, insert_cs_sql, clean_numeric_cols=True)
 
         updated_db_contacts = DB.pandas_read(all_contacts_sql)
@@ -649,13 +615,6 @@ class menu_actions():
         new_cl = cl_merge[["sg_cid", "mdc_contact_id", "contact_list_id"]][cl_merge["_merge"] == 'left_only']
         new_cl = new_cl.apply(pd.to_numeric, errors='ignore')
 
-        # INITIAL INSERT OF contacts__lists
-        # if len(new_cl) > 0:
-        #     print("Writing new entries to Contacts__Lists")
-        #     insert_cl_sql = "insert_contacts_lists"
-        #
-        #     self.df_to_db(new_cl, insert_cl_sql, clean_numeric_cols=True)
-
         # get api answers where response_id = resps.id
 
         # get db resps where resps.survey_id = survey_id
@@ -666,19 +625,14 @@ class menu_actions():
         db_resps["date_submitted"] = db_resps["date_submitted"].astype(str)
 
         print(
-            "\nDetecting responses that have changed (looking for discrepancy between DB date_submitted and API date_submitted")
+            "\nDetecting responses that have changed (looking for discrepancy between DB date_submitted and API date_submitted)")
         # changed_resps = []
         i = 0
-        changed_resps = pd.merge(api_resps[["id", "date_submitted"]], db_resps[["id", "date_submitted"]], how='left',
+        changed_resps = pd.merge(db_resps[["id", "date_submitted"]], api_resps[["id", "date_submitted"]],  how='left',
                                  indicator=True, on=["id", "date_submitted"])
-        changed_resps = changed_resps[["id"]][changed_resps["_merge"] == 'left_only']
+        changed_resps = changed_resps[["id"]][changed_resps["_merge"] == 'right_only']
         changed_resps = changed_resps["id"].tolist()
-        # for api_index, api_row in api_resps.iterrows():
-        #     for db_index, db_row in db_resps.iterrows():
-        #         i += 1
-        #         print(str(i) + ".", api_row["id"], api_row["date_submitted"], "compared to", db_row["id"], db_row["date_submitted"])
-        #         if api_row["id"] == db_row["id"] and api_row["date_submitted"] != db_row["date_submitted"]:
-        #             changed_resps.append(api_row["id"])
+        print("{} responses changed".format(len(changed_resps)))
 
         print("\nDetecting responses in API that are not in DB at all.")
         resps_not_in_db = pd.merge(api_resps, db_resps[["id"]], how='outer', indicator=True, on="id")
@@ -686,28 +640,16 @@ class menu_actions():
 
         inserted_resps = []
 
-        # check if resps.contact_id contains any contact ids not found in contacts__lists
-        # resp_contact_ids_not_in_contacts__lists = pd.merge(resps_not_in_db2[['contact_id']],
-        #                                                    db_contacts_lists_df[['sg_cid']],
-        #                                                    how='left',
-        #                                                    indicator=True,
-        #                                                    left_on='contact_id',
-        #                                                    right_on='sg_cid')
-        # resp_contact_ids_not_in_contacts__lists2 = resp_contact_ids_not_in_contacts__lists[
-        #     resp_contact_ids_not_in_contacts__lists['_merge'] == 'left_only'].drop("_merge", axis=1)
-
-
         # SECOND INSERT OF contacts__lists
         new_cl = pd.merge(new_cl, db_contacts_lists_df, how='left', indicator=True, on=["sg_cid"])
         new_cl = new_cl[new_cl["_merge"] == 'left_only']
         new_cl = new_cl[["sg_cid", "mdc_contact_id_x", "contact_list_id_x"]]
         new_cl.columns = ["sg_cid", "mdc_contact_id", "contact_list_id"]
 
-
         if len(new_cl) > 0:
             print("Writing new entries to Contacts__Lists")
             insert_cl_sql = "insert_contacts_lists"
-
+            new_cl = new_cl.drop_duplicates()
             self.df_to_db(new_cl, insert_cl_sql, clean_numeric_cols=True)
 
         # update Survey_Responses where date_submitted has changed for existing response
@@ -733,22 +675,12 @@ class menu_actions():
         if len(resps_not_in_db2) > 0:
             print("\nInserting new responses that aren't in DB at all")
             insert_resp_sql = "insert_rs"
+            resps_not_in_db2 = resps_not_in_db2.drop_duplicates()
 
             self.df_to_db(resps_not_in_db2, insert_resp_sql, remove_single_quotes=False)
 
-            # resp_headers, resp_qmarks, resp_vals = self.get_sql_params(resps_not_in_db2)
-            # resp_header_str = self.get_header_str(resp_headers)
-            # resp_Sql = CM.get_config("config.ini", "sql_queries", "insert_rs")
-            # resp_Sql = resp_Sql.replace("WHAT_HEADERS", resp_header_str).replace("WHAT_VALUES", resp_qmarks)
-            # CM.bulk_insert(resp_Sql, resp_vals)
-
             for id in resps_not_in_db2["id"]:
                 inserted_resps.append(id)
-
-        # get api answers
-        # print("\nGetting survey answers from API")
-        # api_ans = self.get_ans(survey_id, api_token)
-        # api_ans = api_ans.apply(pd.to_numeric, errors='ignore')
 
         # write to db only answers where answers.response_id is in list of response ids written to db above
 
@@ -758,7 +690,6 @@ class menu_actions():
             update_a_sql = CM.get_config("config.ini", "sql_queries", "update_a_sql")
             changed_ans_df = api_ans[api_ans["survey_response_id"].isin(changed_resps)]
             ans_headers, ans_qmarks, ans_vals = self.get_sql_params(changed_ans_df)
-            ans_header_str = self.get_header_str(ans_headers)
 
             del_ans_sql = CM.get_config("config.ini", "sql_queries", "del_ans")
             for id in changed_resps:
@@ -769,19 +700,10 @@ class menu_actions():
         # insert ans where id in inserted_resps
         if len(inserted_resps) > 0:
             print("\nInserting answers into DB (includes updated responses and new responses)")
-            # for id in inserted_resps:
-
             ans_insert_df = api_ans[api_ans["survey_response_id"].isin(inserted_resps)]
             inserts_ans_sql = "insert_as"
-
+            ans_insert_df = ans_insert_df.drop_duplicates()
             ans_vals = self.df_to_db(ans_insert_df, inserts_ans_sql, remove_single_quotes=False, return_vals=True)
-
-            # ans_headers, ans_qmarks, ans_vals = self.get_sql_params(ans_insert_df, remove_single_quotes=False)
-            # ans_header_str = self.get_header_str(ans_headers)
-            # ans_sql = CM.get_config("config.ini", "sql_queries", "insert_as")
-            # ans_sql = ans_sql.replace("WHAT_HEADERS", ans_header_str).replace("WHAT_VALUES", ans_qmarks)
-            # misc.write_to_xl(pd.DataFrame(ans_vals), "Survey Answer Load", "/Users/gcree/Box Sync/gcree/TESTING/")
-            # DB.bulk_insert(ans_sql, ans_vals)
 
         elif len(inserted_resps) == 0:
             print("\nNo new answers to insert or update.")

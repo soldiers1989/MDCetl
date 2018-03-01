@@ -80,7 +80,7 @@ class sg_qsos:
 
         ##gather question and sub-question ids
         for data in questions["data"]:
-            if data["base_type"] == "Question":
+            if data["base_type"] == "Question" or data["type"] == "HIDDEN":
                 qid = int(str(surveyID) + str(data["id"]))
                 if qid not in qids:
                     qids.append(qid)
@@ -93,7 +93,7 @@ class sg_qsos:
 
         # get questions
         for data in questions["data"]:
-            if data["base_type"] == "Question":
+            if data["base_type"] == "Question" or data['base_type'] == "Action":
                 qid = int(str(surveyID) + str(data["id"]))
                 try:
                     if data["options"] != []:
@@ -210,6 +210,10 @@ class sg_qsos:
                     if question["options"] != []:
                         for option in question["options"]:
                             question_id = int(str(surveyID) + str(question["id"]))
+                            try:
+                                x = int(option['id'])
+                            except ValueError:
+                                continue
                             oid = int(str(question_id) + str(option["id"]))
                             opt_name = self.remove_HTML(option["title"]["English"])
                             opt_val = self.remove_HTML(option["value"])

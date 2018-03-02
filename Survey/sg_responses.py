@@ -200,7 +200,19 @@ class sg_responses:
                         rid = int(sg_qid + str(surveyID) + str(resp["id"]))
                         qid = int(str(surveyID) + str(resp["survey_data"][key]["id"]))
                         answer = resp["survey_data"][key]["answer"]
-                        resps.append([rid, qid, oid, survey_resp_id, answer])
+
+                        # account for drag & drop answer dicts
+                        if type(answer) == dict and resp['survey_data'][key]['type'] == 'RANK':
+                            for opt_key in answer.keys():
+                                if answer[opt_key]['rank']:
+                                    oid = int(str(qid) + str(opt_key))
+                                    rid = int(str(sg_qid) + str(surveyID) + str(resp["id"] + str(opt_key)))
+                                    rank_answer = answer[opt_key]['rank']
+                                    resps.append([rid, qid, oid, survey_resp_id, rank_answer])
+                                    oid = "NULL"
+                                oid = "NULL"
+                        else:
+                            resps.append([rid, qid, oid, survey_resp_id, answer])
                     # get option answers
                     if resp["survey_data"][key]["type"] == "parent":
                         for key2 in resp["survey_data"][key]["options"]:
@@ -216,8 +228,11 @@ class sg_responses:
                             oid = "NULL"
                             rid = "NULL"
                 except KeyError:
-                    if resp["survey_data"][key]["id"] not in bad_qs:
-                        bad_qs.append(resp["survey_data"][key]["id"])
+                    try:
+                        if resp["survey_data"][key]["id"] not in bad_qs:
+                            bad_qs.append(resp["survey_data"][key]["id"])
+                    except KeyError:
+                        pass
 
                 # get answers to subquestions without options
                 # TO-DO: GET OPTIONS FROM SUBQUESTIONS

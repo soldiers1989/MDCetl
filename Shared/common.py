@@ -11,7 +11,6 @@ import pandas as pd
 import dns.resolver
 import socket
 import smtplib
-import decimal
 
 
 class Common:
@@ -23,9 +22,10 @@ class Common:
 	url_pattern = '^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$'
 	email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
 	address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
-	suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'inc', 'Inc', 'INC',
-			  'INC.', 'LTD', 'LTD.', 'Incorporated', 'Corp', 'Corp.', 'Corporation',
-			  'Communications', 'Technologies', 'Tech.', 'Technology', 'TECHNOLOGY']
+	suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'inc', 'Inc', 'Incorporated', 'Corp',  'Corp.', 'Corporation', 'Communications', 'Technologies', 'Tech.']
+		# ['Limited', 'Ltd.',  'Ltd', 'ltd','Incorporated', 'Inc.', 'inc', 'Inc', 'INC',
+		# 	  'INC.', 'LTD', 'LTD.', 'Corporation', 'Corp', 'Corp.', 'Solutions',
+		# 	  'Communications', 'Technologies', 'Technology', 'TECHNOLOGY', 'Tech.','Enterprise']
 	stage = ['idea', 'discovery', 'validation', 'efficiency', 'scale']
 	basic_name = ''
 	temp_name = ''
@@ -105,7 +105,8 @@ class Common:
 	@staticmethod
 	def get_basic_name(name):
 		Common.temp_name = name
-		if name is not None:
+		print(name)
+		if name is not None and name != '':
 			for sf in Common.suffix:
 				Common.temp_name = re.sub(sf, '', Common.temp_name)
 			Common.basic_name = re.sub('[^A-Za-z0-9]+', '', Common.temp_name).lower()
@@ -280,12 +281,14 @@ class Common:
 			d_source = DataSourceType.RIC_CENTER.value
 		elif 'ssmic' in file:
 			d_source = DataSourceType.SSMIC.value
-		elif 'noic' in file:
+		elif 'noic' in file or 'nwoic' in file:
 			d_source = DataSourceType.NWOIC.value
 		elif 'alliance' in file:
 			d_source = DataSourceType.TECH_ALLIANCE.value
 		elif 'wetec' in file:
 			d_source = DataSourceType.WE_TECH.value
+		else:
+			d_source = None
 
 		return d_source
 
@@ -299,7 +302,7 @@ class Common:
 			return None
 
 	@staticmethod
-	def get_api_data(url, user_key, attempts=5):
+	def get_api_data_old(url, user_key, attempts=5):
 		count = 0
 		if user_key != '':
 			url = url + '?user_key=' + user_key
@@ -314,12 +317,16 @@ class Common:
 				pass
 
 	@staticmethod
-	def get_crunch_data(url):
+	def get_api_data(url):
 		try:
 			response = requests.request(CONSTANTS.get.value, url)
 			return response
 		except requests.RequestException as e:
 			print(e)
+		except requests.HTTPError as h:
+			print(h)
+		except requests.ConnectionError as ex:
+			print(ex)
 
 	@staticmethod
 	def change_location(loc):

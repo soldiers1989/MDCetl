@@ -20,7 +20,7 @@ class sg_emails:
         for i in range(0, attempts):
             try:
                 attempt_count += 1
-                output = requests.get(URL)
+                output = requests.get(URL, verify=False)
                 if output.ok:
                     output = output.json()
                     print("Success. Stored API output in json dict.")

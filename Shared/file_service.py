@@ -7,7 +7,10 @@ from Shared.db import DB
 from Shared.common import Common as COM
 from Shared.enums import FileType as FT
 from Shared.enums import MDCDataSource as DS
-from Shared.enums import WorkSheet as WS, SourceSystemType as SS, FileType, Schema, SQL as sql, Combine, DataSourceType as DST
+from Shared.enums import WorkSheet as WS, SourceSystemType as SS, FileType, Schema, SQL as sql, Combine, \
+	DataSourceType as DST
+
+
 # import Shared.enums as enum
 
 
@@ -29,9 +32,10 @@ class FileService:
 		COM.print_list(file_list)
 
 	def get_source_file(self):
-		return [f for f in self.source_file if f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)]
+		return [f for f in self.source_file if
+				f[0:2] != '~$' and (f[-3:] in FileType.SPREAD_SHEET.value or f[-4:] in FileType.SPREAD_SHEET.value)]
 
-	def read_source_file(self, ftype, data_source, combine_for:Combine, file_name='', current_path=''):
+	def read_source_file(self, ftype, data_source, combine_for: Combine, file_name='', current_path=''):
 		com_a = None
 		if current_path != '':
 			current_path = os.path.join(os.path.expanduser("~"), current_path)
@@ -46,7 +50,7 @@ class FileService:
 				i = 0
 				for fl in file_list:
 					try:
-						i+=1
+						i += 1
 						ds = COM.set_datasource(str(fl))
 						print('{}. {}'.format(i, fl))
 						prg = pd.read_excel(fl, WS.bap_program.value)
@@ -92,11 +96,12 @@ class FileService:
 			if ftype == FT.SPREAD_SHEET:
 				target_list = []
 				self.target_list_dataframe()
-				j=0
+				j = 0
 				for f in file_list:
 					j += 1
 					print('{}. {}'.format(j, f))
-					tl = pd.read_excel(f, WS.target_list.value)#, date_parser=['Date_founded', 'Date_of_incorporation'])
+					tl = pd.read_excel(f,
+									   WS.target_list.value)  # , date_parser=['Date_founded', 'Date_of_incorporation'])
 
 					tl.insert(5, 'Venture_basic_name', None)
 					datasource = COM.set_datasource(f)
@@ -107,9 +112,9 @@ class FileService:
 					tl.insert(0, 'CompanyID', None)
 					tl.insert(0, 'BatchID', 0)
 					tl['Year'] = self.year
-					tl.columns = self.tl_columns
-					tl['Date_founded'] = tl['Date_founded'][:10]
-					tl['Date_of_incorporation'] = tl['Date_of_incorporation'][:10]
+					# tl.columns = self.tl_columns
+					# tl['Date_founded'] = tl['Date_founded'][:10]
+					# tl['Date_of_incorporation'] = tl['Date_of_incorporation'][:10]
 					target_list.append(tl)
 					print('{} - {}'.format(len(tl.columns), tl.columns))
 
@@ -152,6 +157,37 @@ class FileService:
 			return l_company, l_company_annual, l_program, l_program_youth
 		else:
 			return None, None, None, None
+
+	def combine_bap_missing_source_file(self, current_path=''):
+		clms = ['CompanyName', 'Website', 'AnnualRevenue', 'NumberOfEmployees', 'FundingToDate', 'DataSource', 'Fiscal_Quarter','FiscalYear']
+		if current_path != '':
+			current_path = os.path.join(os.path.expanduser("~"), current_path)
+			os.chdir(current_path)
+			self.source_file = os.listdir(current_path)
+
+		file_list = self.get_source_file()
+		q_company = []
+		i = 0
+		print(os.getcwd())
+		for fl in file_list:
+			try:
+				i += 1
+				ds = COM.set_datasource(str(fl))
+				if ds is not None:
+					com = pd.read_excel(fl, WS.bap_company.value)
+					print('{}.[{}] {} -->{}'.format(i, ds, fl, len(com.columns)))
+					# print(com.head())
+					com.insert(5,'DataSource', ds)
+					com.columns = clms
+					q_company.append(com)
+				else:
+					print('\tMissing - {}'.format(fl))
+			except Exception as ex:
+				print(ex)
+
+		bap_company = pd.concat(q_company)
+
+		return bap_company
 
 	def target_list_dataframe(self):
 		df = DB.pandas_read(sql.sql_columns.value.format('SURVEY'))
@@ -218,4 +254,3 @@ class FileService:
 			cda.insert(0, 'FileID', str(uuid.uuid4()))
 			cda.insert(0, 'BatchID', '0')
 			cda.insert(0, 'CompanyID', '0')
-

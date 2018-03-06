@@ -3,6 +3,7 @@ import requests
 import json
 from time import sleep
 from fake_useragent import UserAgent
+from Shared.common import Common as common
 
 API_TOKEN = "api_token=3918099598ee3da7e79c1add7f4b8ae392b5b543c5fe7f9d88&api_token_secret=A9XYpy0QvtH.o"
 
@@ -12,7 +13,7 @@ class sg_survey:
         pass
 
     @classmethod
-    def get_list_json(self, api_token, attempts=10, wait_sec=3):
+    def get_list_json(self, api_token, attempts=6, wait_sec=3):
         """
         Takes str api token and returns all surveys
         associated with account (in json-like dict).
@@ -26,7 +27,8 @@ class sg_survey:
                 attempt_count += 1
                 # ua = UserAgent()
                 # headers = {"User-Agent": ua.chrome}
-                output = requests.get(URL) #, headers=headers)
+                output = requests.get(URL, verify=False) #, headers=headers)
+                # output = common.get_api_data(URL)
                 if output.ok:
                     output = output.json()
                     print("Success. Stored API output in json dict.")
@@ -50,6 +52,7 @@ class sg_survey:
 
         headers = ["id", "title", "created_on", "modified_on", "survey_status", "survey_type"]
         json = self.get_list_json(api_token)
+        # if json is not None:
         df = pd.DataFrame(json["data"])
         if with_stats:
             headers = ["id", "title", "created_on", "modified_on", "survey_status", "survey_type", "resp_statistics"]

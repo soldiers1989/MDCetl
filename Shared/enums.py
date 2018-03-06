@@ -572,7 +572,7 @@ class SQL(Enum):
 
 			'''
 
-	sql_target_list = 'SELECT ID,Invite_first_name, Invite_last_name, Venture_name, Venture_basic_name, Email, Datasource,RIC_organization_name FROM SURVEY.Targetlist'
+	sql_target_list = 'SELECT ID,Invite_first_name, Invite_last_name, Venture_name, Venture_basic_name, Email, Datasource,RIC_organization_name FROM SURVEY.Targetlist WHERE Status = 1'
 
 class Columns(Enum):
 	ric_aggregation_id = 'RICAggregationID'
@@ -679,4 +679,5 @@ class FilePath(Enum):
 	path_iaf_source = 'Box Sync/IAF-MDC_Shared'
 	path_cbinsight_source = ''
 	path_bap_source = ''
+	path_missing_bap_etl = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q3/for ETL/Missing Data Reports'
 

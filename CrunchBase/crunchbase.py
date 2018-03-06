@@ -77,7 +77,7 @@ class Crunchbase:
 		self.get_data(self.url_loc, CONSTANTS.locations.value)
 
 	def get_data(self, url, object_name):
-		self.data = CM.get_crunch_data(url.format('1'))
+		self.data = CM.get_api_data(url.format('1'))
 		if self.data.ok:
 			total_items = self.data.json()[VAR.data.value][VAR.paging.value][VAR.total_items.value]
 			number_of_pages = self.data.json()[VAR.data.value][VAR.paging.value][VAR.number_of_pages.value]
@@ -88,7 +88,7 @@ class Crunchbase:
 			print('Total items: {}\nTotal Pages: {}'.format(total_items, number_of_pages))
 			data_list = []
 			for j in range(0, number_of_pages):
-				self.data = CM.get_crunch_data(url.format(j + 1))
+				self.data = CM.get_api_data(url.format(j + 1))
 				data = self.data.json()[VAR.data.value][VAR.items.value]
 				print(j, '*' * j, len(data))
 				for i in range(0, len(data)):
@@ -121,7 +121,7 @@ class Crunchbase:
 	def save_orgs_detail(self, api_url):
 		self.i = self.i + 1
 		url = api_url + self.api_org_token
-		orgs = CM.get_crunch_data(url)
+		orgs = CM.get_api_data(url)
 		if orgs.ok:
 			uuid = orgs.json()[VAR.data.value]['uuid']
 			print('{}. UUID: {}'.format(self.i, uuid))
@@ -142,7 +142,7 @@ class Crunchbase:
 	def save_orgs_relationship(self, api_url):
 		url = api_url + self.api_org_token
 		print(url)
-		orgs = CM.get_crunch_data(url)
+		orgs = CM.get_api_data(url)
 		if orgs.ok:
 
 			self.org_uuid = orgs.json()[VAR.data.value][VAR.uuid.value]

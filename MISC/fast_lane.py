@@ -6,6 +6,8 @@ import os
 import pandas as pd
 import datetime as dt
 
+import turtle
+
 
 class TargetList(ds.DataSource):
 	def __init__(self):
@@ -16,10 +18,10 @@ class TargetList(ds.DataSource):
 
 	def push_data_to_db(self):
 		self.read_misc_file()
-		self.data['Venture_basic_name'] = self.data.apply(lambda df: self.common.get_basic_name(df.Venture_name), axis=1)
+		self.data['Venture_basic_name'] = self.data.apply(lambda df: self.common.get_basic_name(df.Venture_Name), axis=1)
 		# self.data['CompanyID'] = None
 		print(os.getcwd())
-		# self.file.save_as_csv(self.data, '00 Annual Survey Target List.xlsx', os.getcwd(), 'Target List')
+		self.file.save_as_csv(self.data, '00 Annual Survey Target List.xlsx', os.getcwd(), 'Target List')
 		values = self.common.df_list(self.data)
 		self.db.bulk_insert(self.enum.SQL.sql_target_list_insert.value, values=values)
 		print('Target list uploaded.')
@@ -99,7 +101,7 @@ class TargetList(ds.DataSource):
 				print('{} - MATCHED'.format(val['RICs']))
 		# df_match = pd.DataFrame.from_dict(values, orient='columns')
 		dfs = pd.DataFrame(values, columns=values[0].keys())
-		self.file.save_as_csv(dfs, 'Targetlist Matching Result.xlsx', os.getcwd(), 'Targetlist DE-dupe')
+		self.file.save_as_csv(dfs, 'Targetlist Matching Result_NEW.xlsx', os.getcwd(), 'Targetlist DE-dupe')
 
 	def target_list_comapny_match_to_csv(self):
 		dftl = self.db.pandas_read('SELECT ID, BatchID, CompanyID,Venture_name, Venture_basic_name FROM SURVEY.Targetlist')
@@ -205,13 +207,16 @@ class TargetList(ds.DataSource):
 			print(ex)
 
 
+		print('Done')
+
 if __name__ == '__main__':
 	tl = TargetList()
-	tl.match_communitech_ventures()
-	# tl.push_data_to_db()
+	# tl.match_communitech_ventures()
+	tl.push_data_to_db()
 	# tl.split_fullname()
 	# tl.match_targetlist_ventures()
 	# tl.create_target_list_batch()
 	# tl.target_list_comapny_id_update()
 	# tl.get_invalid_email()
 	# tl.get_name_and_email_issue()
+	# tl.circle()

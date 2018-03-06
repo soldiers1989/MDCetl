@@ -19,7 +19,7 @@ class sg_contact_lists:
         url = base + "/?" + api_token
         for i in range(0, 10):
             try:
-                output = requests.get(url)
+                output = requests.get(url, verify=False)
                 if output.ok:
                     output = output.json()
                     print("Success. ContactList json retrieved.")
@@ -63,7 +63,7 @@ class sg_contact_lists:
         url = base + "/" + list_id + "/contactlistcontact" + "/?" + "resultsperpage=500" + "&" + api_token
         for i in range(0, 10):
             try:
-                output = requests.get(url)
+                output = requests.get(url, verify=False)
                 if output.ok:
                     output = output.json()
                     print("Success. ContactList json retrieved.")
@@ -86,7 +86,7 @@ class sg_contact_lists:
         url = base + "/" + survey_id + "/surveycampaign" + "/" + campaign_id + "/surveycontact" + "/?" + "resultsperpage=500" + "&" + api_token
         for i in range(0, 10):
             try:
-                output = requests.get(url)
+                output = requests.get(url, verify=False)
                 if output.ok:
                     output = output.json()
                     if output['result_ok'] is False:

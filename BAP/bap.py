@@ -10,7 +10,7 @@ from Shared.common import Common as COM
 from Shared.enums import MDCDataSource as DS, WorkSheet as WS, \
 	FileName as FN, SQL as sql, FileType, \
 	SourceSystemType as ss, Table as tbl, \
-	Columns as clm, PATH as pth, Combine
+	Columns as clm, PATH as pth, Combine, FilePath as fp
 from Shared.db import DB as db
 from Shared.batch import BatchService
 from pypostalcode import PostalCodeDatabase
@@ -29,7 +29,7 @@ class BapQuarterly:
 	qa = BapQA()
 	season = '18_Q3'
 	company = CompanyService()
-	
+
 	@staticmethod
 	def show_bap_quarterly_template():
 		BapQuarterly.file.show_source_file()
@@ -488,9 +488,54 @@ class BapQuarterly:
 			if str(option) == '12':
 				pass
 
+	@staticmethod
+	def tech_alliance_intake_date_TEMP():
+		# update = 'UPDATE BAP.QuarterlyCompanyData SET [Date of Intake] = \'{}\' WHERE [Company Name] = \'{}\' AND DataSource = 6'
+		update = ' SELECT * FROM BAP.QuarterlyCompanyData WHERE [Company Name] = \'{}\' AND DataSource = 6 UNION'
+		current_path = os.path.join(os.path.expanduser("~"), '/Users/mnadew/Box Sync/Workbench/BAP/BAP_FY18/FY18_Q3/for ETL/Missing Data Reports')
+		os.chdir(current_path)
+		df = pd.read_excel('01 TechAlliance_BAP_qtrly_perCompany_MISSING DATA(2).xlsx', 'Quarterly Company Data')
+		# df['BasicName'] = df.apply(lambda dfs: COM.get_basic_name(dfs['Company Name']), axis=1)
+		i = 0
+		for i, r in df.iterrows():
+			if r[2] is not None or r[2]== 'nan':
+				# print(r[2])
+				year = r[2][-4:]
+				month = r[2][3:5]
+				date = r[2][:2]
+				i = i + 1
+				# print('{}. {} ---> {}-{}-{}'.format(i, r[2], year, month, date))
+				d = '{}-{}-{}'.format(year, month, date)
+				# print(update.format(d, r[0]))
+				print(update.format(r[0]))
+
+	@staticmethod
+	def combine_missing_data():
+		quarterly_missing = BapQuarterly.file.combine_bap_missing_source_file(
+			current_path=fp.path_missing_bap_etl.value)
+		quarterly_missing = quarterly_missing.where(pd.notnull(quarterly_missing), None)
+		quarterly_missing['BasicName'] = quarterly_missing.apply(lambda dfs: COM.get_basic_name(dfs.CompanyName),
+																 axis=1)
+		df = quarterly_missing.where(pd.notnull(quarterly_missing), None)
+		print(df.columns)
+		dfs = df[['CompanyName', 'BasicName', 'Website', 'AnnualRevenue', 'NumberOfEmployees', 'FundingToDate',
+				  'DataSource']]
+		BapQuarterly.file.save_as_csv(dfs, '00 BAP Missing Data Combined.xlsx', os.getcwd(), 'BAP Missing Data')
+		print(dfs.head())
+
+	@staticmethod
+	def push_bap_missing_data_to_temp_table():
+		current_path = os.path.join(os.path.expanduser("~"),
+									'/Users/mnadew/Box Sync/Workbench/BAP/BAP_FY18/FY18_Q3/for ETL/Missing Data Reports')
+		os.chdir(current_path)
+		df = pd.read_excel('00 BAP Missing Data Combined.xlsx', 'BAP Missing Data')
+		df.insert(0, 'CompanyID', 0)
+		sql = 'INSERT INTO BAP.BAP_FY18Q3_Missing_Data VALUES (?, ?, ?, ?, ?, ?, ?)'
+		values = COM.df_list(df)
+		db.bulk_insert(sql, values)
+
 
 if __name__ == '__main__':
-	pass
 	# BapQuarterly.qa.check_columns_completeness()
 	# BapQuarterly.combine_rics_bap_quarterly(Combine.FOR_QA)
 	# BapQuarterly.combine_rics_bap_quarterly(Combine.FOR_ETL)
@@ -502,5 +547,8 @@ if __name__ == '__main__':
 	# BapQuarterly.company.move_company_data()
 	# BapQuarterly.company.update_raw_company()
 	# BapQuarterly.transfer_fact_ric_company_data()
-	BapQuarterly.transfer_fact_ric_aggregation()
+	# BapQuarterly.transfer_fact_ric_aggregation()
 	# BapQuarterly.generate_bap_rolled_up()
+	# BapQuarterly.tech_alliance_intake_date_TEMP()
+    # BapQuarterly.combine_missing_data()
+	BapQuarterly.push_bap_missing_data_to_temp_table()

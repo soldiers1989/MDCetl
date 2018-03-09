@@ -45,8 +45,28 @@ class BatchService:
 									  file_path=full_path)
 		return new_batch
 
+	def create_new_batch(self, datasource, systemsource, year, quarter, file_name='', full_path='', work_sheet_name=''):
+		value = dict()
+
+		value['FullPath'] = full_path
+		value['FileName'] = file_name
+		value['WorksheetName'] = work_sheet_name
+		value['SourceSystem'] = systemsource
+		value['DataSource'] = datasource
+		value['ImportStatus'] = 5
+		value['DateCreated'] = str(dt.datetime.today())[:10]
+		value['DateModified'] = str(dt.datetime.today())[:10]
+		value['FiscalQuarter'] = 'Q{}'.format(quarter)
+		value['FiscalYear'] = year
+
+		sql = self.sql_batch_single_insert.format('CONFIG.Batch', tuple(value.values()))
+		self.db.execute(sql)
+		new_batch = self.search_batch(year, quarter, systemsource, datasource, work_sheet_name, file_name,
+									  file_path=full_path)
+		return new_batch
+
 	def search_batch(self, year, quarter, systemsource, datasource, worksheet_name='', file_name='', file_path=''):
-		criteria = "Year = {} AND Quarter LIKE '{}' AND SourceSystemId = {} AND DataSourceId = {}".format(year, "Q" + str(quarter), systemsource, datasource)
+		criteria = "FiscalYear = {} AND FiscalQuarter LIKE '{}' AND SourceSystem = {} AND DataSource = {}".format(year, "Q" + str(quarter), systemsource, datasource)
 		if file_path is not '':
 			criteria = criteria + ' AND FullPath = {}'.format(file_path)
 		if file_name is not '':

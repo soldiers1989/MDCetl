@@ -11,6 +11,7 @@ import pandas as pd
 import dns.resolver
 import socket
 import smtplib
+import decimal
 
 
 class Common:
@@ -22,7 +23,9 @@ class Common:
 	url_pattern = '^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$'
 	email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
 	address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
-	suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'inc', 'Inc', 'Incorporated', 'Corp',  'Corp.', 'Corporation', 'Communications', 'Technologies', 'Tech.']
+	suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'inc', 'Inc', 'INC',
+			  'INC.', 'LTD', 'LTD.', 'Incorporated', 'Corp', 'Corp.', 'Corporation',
+			  'Communications', 'Technologies', 'Tech.', 'Technology', 'TECHNOLOGY']
 	stage = ['idea', 'discovery', 'validation', 'efficiency', 'scale']
 	basic_name = ''
 	temp_name = ''
@@ -106,10 +109,16 @@ class Common:
 			for sf in Common.suffix:
 				Common.temp_name = re.sub(sf, '', Common.temp_name)
 			Common.basic_name = re.sub('[^A-Za-z0-9]+', '', Common.temp_name).lower()
-			# print(Common.basic_name)
-			print('#')
+			print('{} *--------------------------------> {}'.format(name, Common.basic_name))
 			return Common.basic_name
 		return {'error': 'No name found'}
+
+	@staticmethod
+	def scientific_to_decimal(number):
+		if number is not None:
+			dec = float(number)
+			print('{} *----> {}'.format(number, str(dec)))
+			return str(dec)
 
 	@staticmethod
 	def get_stage_level(stage):

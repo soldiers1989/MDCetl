@@ -48,30 +48,31 @@ class TargetList(ds.DataSource):
 	def match_communitech_ventures(self):
 		i, j = 0, 0
 		values = []
+		print(os.getcwd())
 		self.common.change_location(enum.PATH.FASTLANE)
 		targetlist = self.db.pandas_read(enum.SQL.sql_target_list.value)
-		communitech = pd.read_excel('Communitech-portfolio-full-year.xlsx')
-		communitech['BasicName'] = communitech.apply(lambda df: self.common.get_basic_name(df['Company Name']), axis=1)
+		communitech = pd.read_excel('Communitech additional companies.xlsx')
+		communitech['BasicName'] = communitech.apply(lambda df: self.common.get_basic_name(df['company']), axis=1)
 		for _, venture in communitech.iterrows():
 			venture['BasicName']
 			df = targetlist[targetlist.Venture_basic_name == venture['BasicName']]
 			val = dict()
 			if len(df) > 0:
 				i = i + 1
-				val['Communitech Company'] = venture['Company Name']
+				val['Communitech Company'] = venture['company']
 				val['Target list Company'] = df['Venture_name'].values[0]
 				values.append(val)
 				print('{} - MATCHED'.format(venture['BasicName']))
 			else:
 				j= j + 1
-				val['Communitech Company'] = venture['Company Name']
+				val['Communitech Company'] = venture['company']
 				val['Target list Company'] = '-'
 				values.append(val)
 				print('XXXXXXXX')
 		df_match = pd.DataFrame.from_dict(values, orient='columns')
 		print(df_match.head())
 		print('{} Matches target lsit and {} does not'.format(i, j))
-		self.file.save_as_csv(df_match, 'Communitech full portfolio Venture Matchings.xlsx', os.getcwd(), 'Communitech Vs Target list')
+		self.file.save_as_csv(df_match, 'Communitech additional companies_Matching.xlsx', os.getcwd(), 'Communitech Additional Vs Target list')
 
 	def match_targetlist_ventures(self):
 		delimiter = ','

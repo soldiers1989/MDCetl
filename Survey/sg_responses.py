@@ -56,7 +56,7 @@ class sg_responses:
         page_cnt = 1
         which_page = 1
         result_pages = []
-        URL = sg_responses.create_response_API_URL(surveyID, api_token, resultsperpage=500, page=which_page)
+        URL = sg_responses.create_response_API_URL(surveyID, api_token, resultsperpage=100, page=which_page)
         for i in range(0, attempts):
             try:
                 attempt_count += 1
@@ -75,7 +75,7 @@ class sg_responses:
                         for i in range(which_page, page_cnt):
                             print("Making call to API for another page")
                             which_page += 1
-                            URL = sg_responses.create_response_API_URL(surveyID, api_token, page=which_page)
+                            URL = sg_responses.create_response_API_URL(surveyID, api_token, resultsperpage=100, page=which_page)
                             resultpage = sg_responses.sg_get_api_output(URL, 10, 3)
                             result_pages.append(resultpage)
 

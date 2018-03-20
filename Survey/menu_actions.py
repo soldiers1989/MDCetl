@@ -299,6 +299,9 @@ class menu_actions():
                 continue
         if survey_id != 'w':
             reports_df, status_df = sg_contact_status.sg_status_df(survey_id, campaign_id, api_token)
+            if type(status_df) != list:
+                db_stats_df = status_df
+                db_stats_df = db_stats_df.drop('primary_RIC', axis=1).drop('venture_id', axis=1).drop('company_name', axis=1)
         else:
             df = sg_contact_status.sg_status_df(survey_id, campaign_id, api_token)
         print("\n", "Report record generated:")
@@ -312,29 +315,11 @@ class menu_actions():
 
             self.df_to_db(reports_df, insert_report_sql, remove_single_quotes=False, clean_numeric_cols=True)
 
-            # statreps_headers, statreps_qmarks, statreps_vals = self.get_sql_params(reports_df)
-            #
-            # statreps_header_str = self.get_header_str(statreps_headers)
-            #
-            # statreps_sql = CM.get_config("config.ini", "sql_queries", "insert_resp_reports")
-            # statreps_sql = statreps_sql.replace("WHAT_HEADERS", statreps_header_str).replace("WHAT_VALUES", statreps_qmarks)
-            # for lst in statreps_vals:
-            #     for i in range(len(lst)):
-            #         element = lst[i]
-            #         try:
-            #             if str(element).lower() == "nan":
-            #                 lst[i] = None
-            #         except AttributeError:
-            #             continue
-            #         except TypeError:
-            #             continue
-            # DB.bulk_insert(statreps_sql, statreps_vals)
-
         # insert resp statuses into DB
         if len(status_df) > 0:
             insert_stat_sql = "insert_resp_stats"
 
-            self.df_to_db(status_df, insert_stat_sql, remove_single_quotes=False, clean_numeric_cols=True)
+            self.df_to_db(db_stats_df, insert_stat_sql, remove_single_quotes=False, clean_numeric_cols=True)
 
             # respstats_headers, respstats_qmarks, respstats_vals = self.get_sql_params(status_df)
             #
@@ -593,6 +578,8 @@ class menu_actions():
             insert_cs_sql = "insert_contacts"
             new_contacts = new_contacts.drop_duplicates()
             self.df_to_db(new_contacts, insert_cs_sql, clean_numeric_cols=True)
+        else:
+            print("\nNo new contacts to write to DB.")
 
         updated_db_contacts = DB.pandas_read(all_contacts_sql)
         updated_db_contacts = updated_db_contacts.apply(pd.to_numeric, errors='ignore')
@@ -651,6 +638,8 @@ class menu_actions():
             insert_cl_sql = "insert_contacts_lists"
             new_cl = new_cl.drop_duplicates()
             self.df_to_db(new_cl, insert_cl_sql, clean_numeric_cols=True)
+        else:
+            print("\nNo new Contacts__Lists entries to write to DB.")
 
         # update Survey_Responses where date_submitted has changed for existing response
         if len(changed_resps) > 0:
@@ -751,20 +740,32 @@ class menu_actions():
                     element = lst[i]
                     try:
                         if str(element).lower() == "nan" or str(element) == "0000-00-00 00:00:00" or str(element) == '':
-                            lst[i] = None
+                            new_val = None
+                            if type(lst) == tuple:
+                                lst = self.replace_tuple_val_at_index(lst, i, new_val)
                         if np.dtype(element) == 'int64':
-                            lst[i] = int(lst[i])
+                            new_val = int(str(lst[i]))
+                            if type(lst) == tuple:
+                                lst = self.replace_tuple_val_at_index(lst, i, new_val)
                     except AttributeError:
                         continue
                     except TypeError:
                         continue
                     except ValueError:
                         continue
+                if len(df_vals) == 1 and type(df_vals[0]) == tuple:
+                    df_vals[0] = lst
 
         DB.bulk_insert(df_sql, df_vals)
 
         if return_vals:
             return df_vals
+
+    @classmethod
+    def replace_tuple_val_at_index(self, tup, ix, val):
+        lst = list(tup)
+        lst[ix] = val
+        return tuple(lst)
 
     @classmethod
     def write_all_survey_components_to_db(self, session_variables, surveys_df, survey_id, api_token):
@@ -813,7 +814,7 @@ class menu_actions():
             df = pd.DataFrame([list(row.values)], columns=list(surveys_not_in_db2))
 
             batch = BatchService()
-            x = batch.create_batch_for_etl(datasource=-1, systemsource=50, year=year, quarter=quarter)
+            x = batch.create_new_batch(datasource=-1, systemsource=50, year=year, quarter=quarter)
             batch_id = x.iloc[-1][0]
 
             # add batchID to end of df

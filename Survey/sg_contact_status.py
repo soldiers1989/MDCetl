@@ -57,7 +57,7 @@ class sg_contact_status:
         # create df for statuses
         json = self.sg_status_json(surveyID, campaignID, api_token)
         resp_statuses = []
-        headers = ["report_id", "first_name", "last_name", "email", "contact_status", "response_status",
+        headers = ["report_id", "venture_id", "company_name", "primary_RIC", "first_name", "last_name", "email", "contact_status", "response_status",
                    "date_last_sent", "invite_link"]
         try:
             x = json["data"]
@@ -72,6 +72,12 @@ class sg_contact_status:
             resp_status = contact["subscriber_status"]
             date_last_sent = contact["date_last_sent"]
             invite_link = contact["invitelink"]
-            resp_statuses.append([report_id, fname, lname, email, contact_status, resp_status, date_last_sent, invite_link])
+            try:
+                primary_RIC = contact["department"]
+                company_name = contact["organization"]
+                venture_id = contact["venture_id"]
+            except KeyError:
+                continue
+            resp_statuses.append([report_id, venture_id, company_name, primary_RIC, fname, lname, email, contact_status, resp_status, date_last_sent, invite_link])
         resp_stat_df = pd.DataFrame(resp_statuses, columns=headers)
         return reports_df, resp_stat_df

@@ -74,7 +74,7 @@ class sg_qsos:
                    "force_numeric", "force_percent", "force_currency", \
                    "min_number", "max_number", "only_whole_num", \
                    "defaulttext", "parent_id", "has_sub_questions", \
-                   "has_options"]
+                   "has_options", "shortname"]
         parent_id = "NULL"
         # get questions
 
@@ -182,12 +182,16 @@ class sg_qsos:
                     subtype = data["properties"]["subtype"]
                 except KeyError:
                     pass
+                try:
+                    shortname = data["shortname"]
+                except KeyError:
+                    pass
                 qs.append([qid, surveyID, clean_q, base_type, \
                            q_type, subtype, comment, descr, req, \
                            soft_req, hidden, piped_from, q_descr, \
                            force_num, force_pct, force_c, min_num, \
                            max_num, only_whole, defaulttext, \
-                           parent_id, has_sub_q, options])
+                           parent_id, has_sub_q, options, shortname])
                 parent_id = "NULL"
 
         final_df = pd.DataFrame(qs, columns=headers)

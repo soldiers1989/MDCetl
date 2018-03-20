@@ -72,7 +72,7 @@ class BatchService:
 		if file_name is not '':
 			criteria = criteria + ' AND FileName = {}'.format(file_name)
 		if worksheet_name is not '':
-			criteria = criteria + ' AND WorkSheetName = {}'.format(worksheet_name)
+			criteria = criteria + ' AND WorkSheet = {}'.format(worksheet_name)
 		sql = self.sql_batch_search.format('CONFIG.Batch', criteria)
 		df = DB.pandas_read(sql)
 		return df

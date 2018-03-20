@@ -201,10 +201,14 @@ def _main_():
                 selection = 0
             if "JLAB" in survey_title:
                 path = "/Users/gcree/Box Sync/MaRS DataCatalyst 2017 CONFIDENTIAL/JLABS Toronto Annual Survey 2017/Response_Status_Reports/"
-                misc.write_to_xl(status_df.drop("invite_link", axis=1), "ResponseStatuses", out_path=path, sheetname="response_statuses")
+                misc.write_to_xl(status_df.drop("invite_link", axis=1), "ResponseStatuses",
+                                 out_path=path,
+                                 sheetname="response_statuses")
             elif "annual" in survey_title.lower() and "2018" in survey_title:
                 path = CM.get_config("config.ini", "paths", "survey2018_response_stats")
-                misc.write_to_xl(status_df, 'ResponseStatuses', out_path=path, sheetname="response_statuses")
+                misc.write_to_xl(status_df, 'ResponseStatuses' + survey_title,
+                                 out_path=path,
+                                 sheetname="response_statuses")
 
         # get resp stats for all campaigns
         elif selection == 19:

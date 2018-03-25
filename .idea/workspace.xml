@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f6c18a1d-94cf-424b-808c-0a71fdc83433" name="Default" comment="AnnSurvey18 package first commit">
-      <change beforePath="" afterPath="$PROJECT_DIR$/AnnSurvey18/results_by_RIC.py" />
+    <list default="true" id="f6c18a1d-94cf-424b-808c-0a71fdc83433" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/Shared/config.ini" afterPath="$PROJECT_DIR$/Shared/config.ini" />
-      <change beforePath="$PROJECT_DIR$/Shared/config_sql.ini" afterPath="$PROJECT_DIR$/Shared/config_sql.ini" />
-      <change beforePath="$PROJECT_DIR$/Shared/db.py" afterPath="$PROJECT_DIR$/Shared/db.py" />
-      <change beforePath="$PROJECT_DIR$/Shared/file_service.py" afterPath="$PROJECT_DIR$/Shared/file_service.py" />
-      <change beforePath="$PROJECT_DIR$/Survey/menu_actions.py" afterPath="$PROJECT_DIR$/Survey/menu_actions.py" />
-      <change beforePath="$PROJECT_DIR$/Survey/sg_qsos.py" afterPath="$PROJECT_DIR$/Survey/sg_qsos.py" />
+      <change beforePath="$PROJECT_DIR$/AnnSurvey18/results_by_RIC.py" afterPath="$PROJECT_DIR$/AnnSurvey18/results_by_RIC.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -44,11 +38,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="results_by_RIC.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="results_by_RIC.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/AnnSurvey18/results_by_RIC.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1125">
-              <caret line="75" column="26" lean-forward="true" selection-start-line="75" selection-start-column="26" selection-end-line="75" selection-end-column="26" />
+            <state relative-caret-position="440">
+              <caret line="79" column="38" lean-forward="true" selection-start-line="79" selection-start-column="38" selection-end-line="79" selection-end-column="38" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
               </folding>
@@ -124,11 +118,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sg_qsos.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="sg_qsos.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Survey/sg_qsos.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="454">
-              <caret line="112" column="61" lean-forward="true" selection-start-line="112" selection-start-column="61" selection-end-line="112" selection-end-column="61" />
+            <state relative-caret-position="529">
+              <caret line="117" column="38" lean-forward="true" selection-start-line="117" selection-start-column="38" selection-end-line="117" selection-end-column="38" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
                 <element signature="e#214#496#0" expanded="false" />
@@ -208,8 +202,8 @@
         <option value="$PROJECT_DIR$/Shared/config_sql.ini" />
         <option value="$PROJECT_DIR$/Survey/menu_actions.py" />
         <option value="$PROJECT_DIR$/Shared/file_service.py" />
-        <option value="$PROJECT_DIR$/AnnSurvey18/results_by_RIC.py" />
         <option value="$PROJECT_DIR$/Survey/sg_qsos.py" />
+        <option value="$PROJECT_DIR$/AnnSurvey18/results_by_RIC.py" />
       </list>
     </option>
   </component>
@@ -511,7 +505,14 @@
       <option name="project" value="LOCAL" />
       <updated>1521556695181</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="AnnSurvey18 package first commit">
+      <created>1522014312042</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1522014312042</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -528,7 +529,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10373881" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32830524" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32830524" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39903265" sideWeight="0.35306555" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32919255" sideWeight="0.49815693" order="2" side_tool="false" content_ui="tabs" />
@@ -536,7 +537,7 @@
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32889965" sideWeight="0.49815693" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32889965" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.46140194" sideWeight="0.64693445" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.46140194" sideWeight="0.64693445" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -622,9 +623,14 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="128" />
+      <option name="time" value="130" />
     </breakpoint-manager>
-    <watches-manager />
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="str(cols[i])[-1]" language="Python" />
+        <watch expression="cols[i]" language="Python" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="breakpointCondition">
@@ -676,6 +682,16 @@
     </expressions>
     <expressions id="watch">
       <expression>
+        <expression-string>cols[i]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>str(cols[i])[-1]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
         <expression-string>os.path.expanduser(&quot;~&quot;)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
@@ -712,16 +728,6 @@
       </expression>
       <expression>
         <expression-string>df[[col_name]]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>df[col_name]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>data[&quot;sub_questions&quot;]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -837,6 +843,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="302">
           <caret line="44" column="23" lean-forward="false" selection-start-line="44" selection-start-column="23" selection-end-line="44" selection-end-column="23" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -947,7 +954,7 @@
         <state relative-caret-position="418">
           <caret line="254" column="86" lean-forward="false" selection-start-line="254" selection-start-column="86" selection-end-line="254" selection-end-column="86" />
           <folding>
-            <element signature="e#0#37#0" expanded="true" />
+            <element signature="e#0#37#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1020,23 +1027,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AnnSurvey18/results_by_RIC.py">
+    <entry file="file://$PROJECT_DIR$/Survey/sg_qsos.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1125">
-          <caret line="75" column="26" lean-forward="true" selection-start-line="75" selection-start-column="26" selection-end-line="75" selection-end-column="26" />
+        <state relative-caret-position="529">
+          <caret line="117" column="38" lean-forward="true" selection-start-line="117" selection-start-column="38" selection-end-line="117" selection-end-column="38" />
           <folding>
-            <element signature="e#0#24#0" expanded="true" />
+            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#214#496#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Survey/sg_qsos.py">
+    <entry file="file://$PROJECT_DIR$/AnnSurvey18/results_by_RIC.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="454">
-          <caret line="112" column="61" lean-forward="true" selection-start-line="112" selection-start-column="61" selection-end-line="112" selection-end-column="61" />
+        <state relative-caret-position="440">
+          <caret line="79" column="38" lean-forward="true" selection-start-line="79" selection-start-column="38" selection-end-line="79" selection-end-column="38" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#214#496#0" expanded="false" />
+            <element signature="e#0#24#0" expanded="true" />
           </folding>
         </state>
       </provider>

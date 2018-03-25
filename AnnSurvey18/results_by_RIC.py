@@ -13,7 +13,7 @@ def write_to_xl(df, filename, out_path, sheetname="Sheet1"):
 
     filename = out_path + filename
     writer = pd.ExcelWriter(filename + ".xlsx", engine='xlsxwriter')
-    df.to_excel(writer, sheet_name=sheetname, index=True)  # send df to writer
+    df.to_excel(writer, sheet_name=sheetname, index=False)  # send df to writer
     # worksheet = writer.sheets[sheetname]  # pull worksheet object
     # for idx, col in enumerate(df):  # loop through all columns
     #     series = df[col]
@@ -67,9 +67,21 @@ def _main_():
     path = user_path + "/Box Sync/Workbench/BAP/Annual Survey FY2018/Results by RIC/"
 
     for ric in split_frames.keys():
-        x = spread(split_frames[ric], 'Company_ID', 'ConcatQ', 'Answer')
+        x = split_frames[ric]
+        x['rid_cid'] = x['resp_id'].astype(str) + '_' + x['Company_ID'].astype(str)
+        x = spread(x, 'rid_cid', 'ConcatQ', 'Answer')
+        x['rid_cid'] = x.index
+        x['_resp_id'], x['_Company_ID'] = x['rid_cid'].str.split('_', 1).str
         x = x.apply(pd.to_numeric, errors='ignore')
-        x.reindex(sorted(x.columns), axis=1)
+        cols = x.columns.tolist()
+        cols = cols[-2:] + cols[:-2]
+        x = x[cols]
+        for i in range(len(cols)):
+            if str(cols[i])[0] == '_':
+                cols[i] = cols[i][1:]
+        x.columns = cols
+        x = x.drop('rid_cid', axis=1)
+        # x.reindex(sorted(x.columns), axis=1)
         filename = "{} Survey Results".format(ric)
         write_to_xl(x, filename, path, 'Results')
 

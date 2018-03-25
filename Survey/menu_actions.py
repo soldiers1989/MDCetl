@@ -321,24 +321,6 @@ class menu_actions():
 
             self.df_to_db(db_stats_df, insert_stat_sql, remove_single_quotes=False, clean_numeric_cols=True)
 
-            # respstats_headers, respstats_qmarks, respstats_vals = self.get_sql_params(status_df)
-            #
-            # respstats_header_str = self.get_header_str(respstats_headers)
-            #
-            # respstats_sql = CM.get_config("config.ini", "sql_queries", "insert_resp_stats")
-            # respstats_sql = respstats_sql.replace("WHAT_HEADERS", respstats_header_str).replace("WHAT_VALUES", respstats_qmarks)
-            # for lst in respstats_vals:
-            #     for i in range(len(lst)):
-            #         element = lst[i]
-            #         try:
-            #             if str(element).lower() == "nan":
-            #                 lst[i] = None
-            #         except AttributeError:
-            #             continue
-            #         except TypeError:
-            #             continue
-            # DB.bulk_insert(respstats_sql, respstats_vals)
-
         return reports_df, status_df
 
     @classmethod

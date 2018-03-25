@@ -176,7 +176,7 @@ class FileService:
 		except Exception as ex:
 			print(ex)
 
-	def save_as_csv(self, df, file_name, path, sheet_name='SheetI'):
+	def save_as_csv(self, df, file_name, path, sheet_name='Sheet1'):
 		try:
 			os.chdir(path)
 			writer = pd.ExcelWriter(file_name)

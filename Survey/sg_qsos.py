@@ -49,10 +49,22 @@ class sg_qsos:
         '''Removes common HTML tags from text.
         str -> str
         '''
-        text = text.replace("<strong>", "").replace("</strong>", "").replace("<span>", "").replace("</span>",
-                                                                                                   "").replace("\xa0",
-                                                                                                               " ").replace(
-            "<b>", "").replace("</b>", "").replace("<br />", "").replace("&amp;", "&").replace("\n ", "").strip()
+        text = text.replace("<strong>", "")\
+            .replace("</strong>", "")\
+            .replace("<span>", "")\
+            .replace("</span>", "")\
+            .replace("\xa0", " ")\
+            .replace("<b>", "")\
+            .replace("</b>", "")\
+            .replace("<br />", "")\
+            .replace("&amp;", "&")\
+            .replace("\n ", "")\
+            .replace("</a>", "")\
+            .replace("<a class=\"tip\" href=\"#\">", " ")\
+            .replace("<div style=\"text-align: justify;\">", "")\
+            .replace("</div>", "")\
+            .replace("<span style=\"font-size:12pt;\">", "")\
+            .strip()
         return text
 
     @classmethod
@@ -84,12 +96,23 @@ class sg_qsos:
                 qid = int(str(surveyID) + str(data["id"]))
                 if qid not in qids:
                     qids.append(qid)
-            if data["base_type"] == "Question" and data["type"] == "GROUP":
-                for subq in data["sub_questions"]:
-                    if subq["base_type"] == "Question":
-                        subqid = int(str(surveyID) + str(subq["id"]))
-                        subqids.append(subqid)
-                        subqid_qid[str(subqid)] = qid
+            try:
+                if (data["base_type"] == "Question" and data["type"] == "GROUP") or len(data["sub_questions"]) > 0:
+                    if type(data["sub_questions"]) == dict:
+                        subq_dict = data["sub_questions"]
+                        for subq in subq_dict:
+                            if subq_dict[subq]["base_type"] == "Question":
+                                subqid = int(str(surveyID) + str(subq_dict[subq]["id"]))
+                                subqids.append(subqid)
+                                subqid_qid[str(subqid)] = qid
+                    else:
+                        for subq in data["sub_questions"]:
+                            if subq["base_type"] == "Question":
+                                subqid = int(str(surveyID) + str(subq["id"]))
+                                subqids.append(subqid)
+                                subqid_qid[str(subqid)] = qid
+            except KeyError:
+                continue
 
         # get questions
         for data in questions["data"]:

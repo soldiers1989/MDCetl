@@ -4,6 +4,7 @@ import json
 import time
 import datetime
 
+
 class sg_contact_status:
 
     @classmethod
@@ -21,7 +22,7 @@ class sg_contact_status:
               + "/surveycampaign/" \
               + str(campaignID) \
               + "/surveycontact"\
-              + "/?resultsperpage=500&" \
+              + "/?resultsperpage=1200&" \
               + api_token
         for i in range(0, attempts):
             try:

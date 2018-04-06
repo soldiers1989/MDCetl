@@ -444,5 +444,5 @@ class Common:
 
 	@staticmethod
 	def get_cert_path():
-		path = os.path.join(os.path.dirname(__file__), 'MaRSDD-Toot.pem')
+		path = os.path.join(os.path.dirname(__file__), 'MaRSDD-Root.pem')
 		return path

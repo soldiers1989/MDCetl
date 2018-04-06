@@ -208,7 +208,7 @@ class Table(Enum):
 
 class SQL(Enum):
 	sql_annual_comapny_data_update = 'UPDATE BAP.AnnualCompanyData SET CompanyID = {} WHERE ID = {}'
-	sql_target_list_update = 'UPDATE SURVEY.Targetlist SET CompanyID = {} WHERE ID = {}'
+	sql_target_list_update = 'UPDATE MDCRaw.SURVEY.Targetlist SET CompanyID = {} WHERE ID = {}'
 	sql_batch_insert = 'INSERT INTO Config.ImportBatch VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 	sql_update = 'UPDATE {} SET {} = {} WHERE {} = {}'
 	sql_get_max_id = 'SELECT MAX({}) AS MaxID FROM {}'
@@ -230,9 +230,10 @@ class SQL(Enum):
 	sql_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\' AND Quarter = \'Q{}\''
 	sql_annual_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\''
 
-	sql_target_list_insert = 'INSERT INTO [SURVEY].[Targetlist] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_target_list_insert = 'INSERT INTO [SURVEY].[Targetlist] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 
 	sql_dim_company_insert = 'INSERT INTO MaRSDataCatalyst.[Reporting].[DimCompany] VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_dim_venture_insert = 'INSERT INTO MDCDW.dbo.DimVenture VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 	sql_dim_company_source_insert = 'INSERT INTO [Reporting].[DimCompanySource] VALUES (?,?,?,?,?,?,?,?,?)'
 
 	'''
@@ -247,14 +248,14 @@ class SQL(Enum):
 	'''
 
 	sql_bap_fact_ric_company_data_source = '''
-				SELECT CompanyID, DataSource, BatchID,'20171231' AS DateID,[Date of Intake] AS IntakeDate,
-				NULL AS [StageLevelID],NULL AS [SizeID], 'NULL' AS Age,[High Potential y/n], NULL AS [DevelopmentID],
-				[Number of advisory service hours provided] AS AdvisoryServiceHours, [Volunteer mentor hours] , GETDATE() AS [Modified Date],
-				GETDATE() AS [CreatedDate], Youth,[Street Address], City, Province, [Postal Code], Website,Stage,
-				'' as AnnualRevenue ,NULL as NumberOfEmployees,[Funding Raised to Date $CAN], NULL AS FundingCurrentQuarter,
-				 Date_of_Incorporation AS [Date of Incorporation],[Industry Sector], [Social Enterprise y/n], [Quarter], [Year]
-				FROM BAP.QuarterlyCompanyData WHERE CompanyID IS NOT NULL AND Year = 2018 AND Quarter = 'Q3'
-				'''
+		SELECT CompanyID, DataSource, BatchID,'20171231' AS DateID,[Date of Intake] AS IntakeDate,
+		NULL AS [StageLevelID],NULL AS [SizeID], 'NULL' AS Age,[High Potential y/n], NULL AS [DevelopmentID],
+		[Number of advisory service hours provided] AS AdvisoryServiceHours, [Volunteer mentor hours] , GETDATE() AS [Modified Date],
+		GETDATE() AS [CreatedDate], Youth,[Street Address], City, Province, [Postal Code], Website,Stage,
+		[AnnualRevenue(CAN)],NumberOfEmployees,[Funding Raised to Date $CAN], NULL AS FundingCurrentQuarter,
+		 Date_of_Incorporation AS [Date of Incorporation],[Industry Sector], [Social Enterprise y/n], [Quarter], [Year]
+		FROM BAP.QuarterlyCompanyData WHERE CompanyID IS NOT NULL AND Year = 2018 AND Quarter = 'Q3' '''
+
 	sql_bap_ric_company_quarterly_data = '''
 				SELECT CompanyID, DataSource, BatchID,'20171231' AS DateID,[Date Of Intake],'INTAKE DATE' AS IntakeDate,
 				NULL AS [StageLevelID],NULL AS [SizeID], 'NULL' AS Age, [High Potential y/n], NULL AS [DevelopmentID], 
@@ -273,6 +274,7 @@ class SQL(Enum):
 	sql_company_aggregate_program_youth = 'SELECT  * FROM BAP.ProgramDataYouth WHERE Year = {} AND Quarter = \'Q{}\''
 
 	sql_postal_code_insert = 'INSERT INTO [dbo].[DimPostalCode] VALUES (?,?,?,?,?,?,?,?)'
+
 
 	sql_bap_fact_ric_company = ''' 
 		SELECT [RICCompanyDataID]
@@ -573,6 +575,119 @@ class SQL(Enum):
 			'''
 
 	sql_target_list = 'SELECT ID,Invite_first_name, Invite_last_name, Venture_name, Venture_basic_name, Email, Datasource,RIC_organization_name FROM SURVEY.Targetlist WHERE Status = 1'
+	sql_mars_target_list = '''SELECT Venture_name, Venture_basic_name, Email, Invite_first_name, Invite_last_name,
+							  RIC_first_name,RIC_last_name, RIC_person_email,RIC_person_title
+							  FROM MDCRaw.SURVEY.Targetlist WHERE DataSource = 7'''
+
+	sql_invest_ottawa_target_list = '''SELECT Venture_name, Venture_basic_name, Email, Invite_first_name, Invite_last_name
+								  	   FROM MDCRaw.SURVEY.Targetlist WHERE DataSource = 16'''
+
+	sql_duplicate_venture_list = '''SELECT ID,Name, BasicName FROM Venture WHERE BasicName IN (SELECT BasicName FROM Venture GROUP BY BasicName HAVING Count(BasicName) > 1) AND BasicName <> '' ORDER BY 2'''
+	sql_duplicate_venture_insert = '''INSERT INTO MDCRaw.CONFIG.DuplicateVenture VALUES (?,?,?,?,?,?,?)'''
+	sql_duplicate_venture_truncate = '''TRUNCATE TABLE MDCRaw.CONFIG.DuplicateVenture'''
+	sql_duplicate_venture_select = '''SELECT CompanyID, DuplicateCompanyID, Name as [Company Name], DuplicaateName as [Duplicate Company Name], BasicName FROM MDCRaw.CONFIG.DuplicateVenture'''
+
+	sql_dw_fact_ric_company_data = '''
+		SELECT
+  		CompanyID ,
+  		DataSourceID,
+  		BatchID ,
+  		DateID,
+  		Convert(varchar,IntakeDate,111) AS IntakeDate,--CAST(IntakeDate AS date) AS Intake,
+  		CAST(AdvisoryServicesHours AS Decimal(18,4)) AS [Advisory],
+  		CAST(VolunteerMentorHours AS Decimal(18,4)) AS [Volunteer],
+  		AnnualRevenue,
+  		NumberEmployees,
+  		FundingToDate,
+  		FundingCurrentQuarter ,
+  		CASE
+  		WHEN Stage LIKE '%Idea%' OR Stage LIKE '%0%'
+  		  THEN 1
+  		WHEN Stage LIKE '%Discovery%' OR Stage LIKE '%1%'
+  		  THEN 2
+  		WHEN Stage LIKE '%Validation%' OR Stage LIKE '%2%'
+  		  THEN 3
+  		WHEN Stage LIKE '%Efficiency%' OR Stage LIKE '%3%'
+  		  THEN 4
+  		WHEN Stage LIKE '%scale%' OR Stage LIKE '%4%'
+  		  THEN 5
+  		WHEN Stage IS NULL OR Stage = '0' OR Stage = ''
+  		  THEN 6
+  		ELSE NULL END                            AS [Stage],
+  		CASE
+  		WHEN IndustrySector LIKE '%Advanced Manufacturing%'
+  		     OR IndustrySector LIKE '%Adv. Materials%'
+  		     OR IndustrySector LIKE '%materials%'
+  		     OR IndustrySector LIKE '%Manufactur%'
+  		  THEN 1
+  		WHEN IndustrySector LIKE '%agricult%'
+  		     OR IndustrySector LIKE '%agro%'
+  		  THEN 2
+  		WHEN IndustrySector LIKE '%Clean%Tech%'
+  		     OR IndustrySector LIKE '%energy%'
+  		     OR IndustrySector LIKE '%recycl%'
+  		     OR IndustrySector LIKE '%water%'
+  		     OR IndustrySector LIKE '%green%energy%'
+  		  THEN 3
+  		WHEN IndustrySector LIKE '%ICT%'
+  		     OR IndustrySector LIKE '%Digital%Media%'
+  		     OR IndustrySector LIKE '%app%'
+  		     OR IndustrySector LIKE '%entertainment%'
+  		     OR IndustrySector LIKE '%hardware%'
+  		     OR IndustrySector LIKE '%software%'
+  		  THEN 4
+  		WHEN IndustrySector LIKE '%Education%'
+  		  THEN 5
+  		WHEN IndustrySector LIKE '%Financial%'
+  		  THEN 6
+  		WHEN IndustrySector LIKE '%Food%' OR IndustrySector LIKE '%Beverage%'
+  		  THEN 7
+  		WHEN IndustrySector LIKE '%Forestry%'
+  		  THEN 8
+  		WHEN IndustrySector LIKE '%Life%Science%'
+  		     OR IndustrySector LIKE '%health%'
+  		     OR IndustrySector LIKE '%wellness%'
+  		     OR IndustrySector LIKE '%medical%'
+  		     OR IndustrySector LIKE '%pharma%'
+  		  THEN 9
+  		WHEN IndustrySector LIKE '%Mining%'
+  		  THEN 10
+  		WHEN IndustrySector LIKE '%Other%'
+  		  THEN 11
+  		WHEN IndustrySector LIKE '%Tourism%' OR IndustrySector LIKE '%culture%'
+  		  THEN 12
+  		WHEN IndustrySector IS NULL
+  		  THEN NULL
+  		ELSE 11 END                              AS IndustrySector,
+  		CASE
+  		WHEN Youth IN ('0', 'n', 'No', '')
+  		  THEN 0
+  		WHEN Youth IN ('1', 'y', 'Yes')
+  		  THEN 1
+  		ELSE NULL END                            AS [Youth],
+  		CASE
+  		WHEN HighPotential IN ('0', 'n', 'No', '')
+  		  THEN 0
+  		WHEN HighPotential IN ('1', 'y', 'Yes', 'High')
+  		  THEN 1
+  		ELSE NULL END                            AS [HighPotential],
+  		CASE
+  		WHEN SocialEnterprise IN ('N', 'No', '')
+  		  THEN 0
+  		WHEN SocialEnterprise IN ('Y', 'Yes')
+  		  THEN 1
+  		ELSE NULL END                            AS [SocialEnterprise],
+  		CONVERT(int,RIGHT(FiscalQuarter,1)) AS [Fiscal Quarter],
+  		CONVERT(int, FiscalYear) AS [Fiscal Year],
+  		CreateDate,
+  		ModifiedDate
+		FROM MDC_DEV.Reporting.FactRICCompanyData
+	'''
+
+	sql_iaf_summary_insert = 'INSERT INTO MDCRaw.IAF.IAFSummary VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+	sql_iaf_summary_basic_name = 'SELECT ID, Venture_Name FROM IAF.IAFSummary'
+	sql_iaf_summary_update = 'UPDATE MDCRaw.IAF.IAFSummary SET BasicName = \'{}\' WHERE ID = {}'
+	sql_iaf_detail_insert = 'INSERT INTO MDCRaw.IAF.IAFDetail VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 
 class Columns(Enum):
 	ric_aggregation_id = 'RICAggregationID'
@@ -642,6 +757,7 @@ class PATH(Enum):
 	ETL = 3
 	MATCH = 4
 	FASTLANE = 5
+	MaRS_FIX = 6
 
 
 class TeamStatus(Enum):
@@ -680,4 +796,5 @@ class FilePath(Enum):
 	path_cbinsight_source = ''
 	path_bap_source = ''
 	path_missing_bap_etl = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q3/for ETL/Missing Data Reports'
+	path_iaf = 'Box Sync/Workbench/IAF/ETL Prep/2017/ETL'
 

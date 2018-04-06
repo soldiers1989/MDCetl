@@ -22,10 +22,10 @@ class Common:
 	url_pattern = '^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$'
 	email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
 	address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
-	suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Inc.', 'inc', 'Inc', 'Incorporated', 'Corp',  'Corp.', 'Corporation', 'Communications', 'Technologies', 'Tech.']
-		# ['Limited', 'Ltd.',  'Ltd', 'ltd','Incorporated', 'Inc.', 'inc', 'Inc', 'INC',
-		# 	  'INC.', 'LTD', 'LTD.', 'Corporation', 'Corp', 'Corp.', 'Solutions',
-		# 	  'Communications', 'Technologies', 'Technology', 'TECHNOLOGY', 'Tech.','Enterprise']
+	suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Incorporated', 'Inc.', 'inc', 'Inc','Corporation', 'Corp',  'Corp.', 'Communications', 'Technologies', 'Technology','Tech.','Industry','Industries','Enterprise']
+	#
+	# Note: Consider 'Systems' and 'Solutions'
+	#
 	stage = ['idea', 'discovery', 'validation', 'efficiency', 'scale']
 	basic_name = ''
 	temp_name = ''
@@ -105,14 +105,19 @@ class Common:
 	@staticmethod
 	def get_basic_name(name):
 		Common.temp_name = name
-		print(name)
+		# print(name)
 		if name is not None and name != '':
 			for sf in Common.suffix:
 				Common.temp_name = re.sub(sf, '', Common.temp_name)
 			Common.basic_name = re.sub('[^A-Za-z0-9]+', '', Common.temp_name).lower()
-			print('{} *--------------------------------> {}'.format(name, Common.basic_name))
+			# print('{} *--------------------------------> {}'.format(name, Common.basic_name))
 			return Common.basic_name
 		return {'error': 'No name found'}
+
+	@staticmethod
+	def generate_basic_name(df):
+		df['BasicName'] = df.apply(lambda dfs: Common.get_basic_name(dfs.Name), axis=1)
+		return df
 
 	@staticmethod
 	def scientific_to_decimal(number):
@@ -279,9 +284,9 @@ class Common:
 			d_source = DataSourceType.NORCAT.value
 		elif 'ric' in file:
 			d_source = DataSourceType.RIC_CENTER.value
-		elif 'ssmic' in file:
+		elif 'ssmic' in file or 'sault' in file:
 			d_source = DataSourceType.SSMIC.value
-		elif 'noic' in file or 'nwoic' in file:
+		elif 'noic' in file or 'nwoic' in file or 'nwo' in file:
 			d_source = DataSourceType.NWOIC.value
 		elif 'alliance' in file:
 			d_source = DataSourceType.TECH_ALLIANCE.value
@@ -336,6 +341,7 @@ class Common:
 		path_etl = Common.get_config('config.ini', 'box_file_path', 'path_bap_etl')
 		path_match = Common.get_config('config.ini', 'box_file_path', 'path_bap_company_matching')
 		path_other = Common.get_config('config.ini', 'box_file_path', 'path_other')
+		path_mars_fix = '/Users/mnadew/Box Sync/Innovation Economy/Projects/Survey FY18 Planning/Templates/RIC target lists completed/RIC target list corrections'
 
 		if loc == PATH.DATA:
 			box_path = os.path.join(os.path.expanduser('~'), path)
@@ -361,6 +367,15 @@ class Common:
 			other_path = os.path.join(os.path.expanduser('~'), path_other)
 			os.chdir(other_path)
 			return other_path
+		elif loc == PATH.MaRS_FIX:
+			mars_fix_path = os.path.join(os.path.expanduser('~'), path_mars_fix)
+			os.chdir(mars_fix_path)
+
+	@staticmethod
+	def change_working_directory(path):
+		new_dir = os.path.join(os.path.expanduser('~'), path)
+		os.chdir(new_dir)
+		return new_dir
 
 	@staticmethod
 	def change_series_type(sr, dtype):
@@ -373,8 +388,8 @@ class Common:
 			os.makedirs(directory_name)
 
 	@staticmethod
-	def generate_basic_name(df):
-		df['BasicName'] = df.apply(lambda dfs: Common.get_basic_name(dfs['Company Name']), axis=1)
+	def generate_basic_name(df, name):
+		df['BasicName'] = df.apply(lambda dfs: Common.get_basic_name(dfs[name]), axis=1)
 		return df
 
 	@staticmethod
@@ -420,3 +435,14 @@ class Common:
 			return False
 		except socket.error:
 			return False
+
+	@staticmethod
+	def convert_float_todate(fl):# Don't use
+		serial = 43111.0
+		seconds = (serial - 25569) * 86400.0
+		return datetime.datetime.utcfromtimestamp(seconds)
+
+	@staticmethod
+	def get_cert_path():
+		path = os.path.join(os.path.dirname(__file__), 'MaRSDD-Toot.pem')
+		return path

@@ -26,4 +26,6 @@ class DataSource:
 			self.cb_sql_insert = self.common.get_config('config_sql.ini', header, item)
 		elif datasource.value == enums.MDCDataSource.OSVP.value:
 			self.osvp_sql_insert = self.common.get_config('config_sql.ini', header, item)
+		elif datasource.value == enums.MDCDataSource.IAF.value:
+			pass
 

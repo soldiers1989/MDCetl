@@ -89,9 +89,11 @@ class FileService:
 					for fl in file_list:
 						self.data_list.append(pd.read_csv(fl))
 					return self.data_list
+
 		elif data_source == DS.OSVP:
 			print('')
 			print('')
+
 		elif data_source == DS.OTHER:
 			if ftype == FT.SPREAD_SHEET:
 				target_list = []
@@ -100,8 +102,7 @@ class FileService:
 				for f in file_list:
 					j += 1
 					print('{}. {}'.format(j, f))
-					tl = pd.read_excel(f,
-									   WS.target_list.value)  # , date_parser=['Date_founded', 'Date_of_incorporation'])
+					tl = pd.read_excel(f, WS.target_list.value)
 
 					tl.insert(5, 'Venture_basic_name', None)
 					datasource = COM.set_datasource(f)
@@ -111,7 +112,10 @@ class FileService:
 					tl.insert(0, 'Path', self.path)
 					tl.insert(0, 'CompanyID', None)
 					tl.insert(0, 'BatchID', 0)
+					tl['OSVP_Status'] = None
+					tl['CII'] = None
 					tl['Year'] = self.year
+					tl['Status'] = 1
 					# tl.columns = self.tl_columns
 					# tl['Date_founded'] = tl['Date_founded'][:10]
 					# tl['Date_of_incorporation'] = tl['Date_of_incorporation'][:10]
@@ -120,6 +124,7 @@ class FileService:
 
 				df_tl = pd.concat(target_list)
 				return df_tl
+
 		elif data_source == DS.IAF:
 			if ftype == FT.SPREAD_SHEET:
 				iaf_list = []
@@ -133,6 +138,8 @@ class FileService:
 							df_summary = list(iaf.items())[i][1]
 						elif i > 0:
 							df = list(iaf.items())[i][1][:-8].T[1:]
+							# print(df[1][0])
+							# print(list(iaf.items())[1][1]['General Info - Firm / Entrepreneur'])
 							iaf_list.append(df)
 					df_iaf = pd.concat(iaf_list)
 					df_iaf = df_iaf.where(pd.notnull(df_iaf), None)
@@ -168,7 +175,7 @@ class FileService:
 		file_list = self.get_source_file()
 		q_company = []
 		i = 0
-		print(os.getcwd())
+
 		for fl in file_list:
 			try:
 				i += 1
@@ -184,7 +191,7 @@ class FileService:
 					print('\tMissing - {}'.format(fl))
 			except Exception as ex:
 				print(ex)
-
+		print('\n\n')
 		bap_company = pd.concat(q_company)
 
 		return bap_company
@@ -216,7 +223,7 @@ class FileService:
 		try:
 			os.chdir(path)
 			writer = pd.ExcelWriter(file_name)
-			df.to_excel(writer, sheet_name, index=False)
+			df.to_excel(writer, sheet_name)
 			writer.save()
 		except Exception as es:
 			print(es)

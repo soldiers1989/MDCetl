@@ -126,7 +126,7 @@ class BapQuarterly:
 		df['High Potential y/n'] = df.apply(lambda dfs: COM.get_yes_no(dfs['High Potential y/n']), axis=1)
 		df['Social Enterprise y/n'] = df.apply(lambda dfs: COM.get_yes_no(dfs['Social Enterprise y/n']), axis=1)
 		df['Youth'] = df.apply(lambda dfs: COM.get_yes_no(dfs['Youth']), axis=1)
-		df['Funding Raised to Date $CAN'] = df.apply(lambda dfs: BapQuarterly.split_funding_range(dfs['Funding Raised to Date $CAN']), axis=1)
+		# df['Funding Raised to Date $CAN'] = df.apply(lambda dfs: BapQuarterly.split_funding_range(dfs['Funding Raised to Date $CAN']), axis=1)
 		return df
 
 	@staticmethod
@@ -140,6 +140,7 @@ class BapQuarterly:
 		# df_ric = df_frc.drop(columns=['ID', 'Incorporate year (YYYY)', 'Incorporation month (MM)'])
 		# BapQuarterly.file.save_as_csv(df_frc, '00 FactRICCompany.xlsx', os.getcwd(), 'FactRICCompany')
 		values_list = COM.df_list(df_frc)
+
 		db.bulk_insert(sql.sql_bap_fact_ric_company_insert.value, values_list)
 
 	@staticmethod
@@ -525,14 +526,15 @@ class BapQuarterly:
 
 	@staticmethod
 	def push_bap_missing_data_to_temp_table():
-		current_path = os.path.join(os.path.expanduser("~"),
-									'/Users/mnadew/Box Sync/Workbench/BAP/BAP_FY18/FY18_Q3/for ETL/Missing Data Reports')
-		os.chdir(current_path)
-		df = pd.read_excel('00 BAP Missing Data Combined.xlsx', 'BAP Missing Data')
-		df.insert(0, 'CompanyID', 0)
-		sql = 'INSERT INTO BAP.BAP_FY18Q3_Missing_Data VALUES (?, ?, ?, ?, ?, ?, ?)'
-		values = COM.df_list(df)
-		db.bulk_insert(sql, values)
+		 current_path = os.path.join(os.path.expanduser("~"), '/Users/mnadew/Box Sync/Workbench/BAP/BAP_FY18/FY18_Q3/for ETL/Missing Data Reports')
+		 os.chdir(current_path)
+		 df = pd.read_excel('00 BAP Missing Data Combined.xlsx', 'BAP Missing Data')
+		 df['CompanyID'] = 0
+		 new_col = ['CompanyID','CompanyName','BasicName','Website','AnnualRevenue','NumberOfEmployees','FundingToDate','DataSource']
+		 dfs = df[new_col]
+		 sql = 'INSERT INTO BAP.BAP_FY18Q3_Missing_Data VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+		 values = COM.df_list(dfs)
+		 db.bulk_insert(sql, values)
 
 
 if __name__ == '__main__':
@@ -550,5 +552,6 @@ if __name__ == '__main__':
 	# BapQuarterly.transfer_fact_ric_aggregation()
 	# BapQuarterly.generate_bap_rolled_up()
 	# BapQuarterly.tech_alliance_intake_date_TEMP()
-    # BapQuarterly.combine_missing_data()
-	BapQuarterly.push_bap_missing_data_to_temp_table()
+	# BapQuarterly.combine_missing_data()
+	# BapQuarterly.push_bap_missing_data_to_temp_table()
+	pass

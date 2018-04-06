@@ -3,6 +3,7 @@ import requests
 import json
 import time
 import datetime
+from Shared.common import Common as common
 
 
 class sg_contact_status:
@@ -27,7 +28,7 @@ class sg_contact_status:
         for i in range(0, attempts):
             try:
                 attempt_count += 1
-                output = requests.get(URL, verify=False)
+                output = requests.get(URL, verify=common.get_cert_path())
                 if output.ok:
                     output = output.json()
                     print("Success. Stored API output in json dict.")

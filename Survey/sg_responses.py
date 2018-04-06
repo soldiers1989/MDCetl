@@ -4,6 +4,7 @@ import json
 import urllib.request as rq
 import urllib
 from time import sleep
+from Shared.common import Common as common
 
 
 class sg_responses:
@@ -30,7 +31,7 @@ class sg_responses:
         for i in range(0, attempts):
             try:
                 attempt_count += 1
-                output = requests.get(URL, verify=False)
+                output = requests.get(URL, verify=common.get_cert_path())
                 if output.ok:
                     output = output.json()
                     print("Success. Stored API output in json dict.")
@@ -60,7 +61,7 @@ class sg_responses:
         for i in range(0, attempts):
             try:
                 attempt_count += 1
-                output = requests.get(URL, verify=False)
+                output = requests.get(URL, verify=common.get_cert_path())
                 if output.ok:
                     output = output.json()
                     result_pages.append(output)

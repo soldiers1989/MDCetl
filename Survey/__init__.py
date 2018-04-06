@@ -20,7 +20,7 @@ pd.set_option('display.width', desired_width)
 
 def _main_():
     ''' PELASE INSTALL CERTIFICATE AND REMOVE THIS, WHERE EVER THE CERTIFICATE IS '''
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    # urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     """Menu-selected actions for SGizmo API
     """
 

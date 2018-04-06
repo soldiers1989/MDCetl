@@ -27,8 +27,7 @@ class sg_survey:
         for i in range(0, attempts):
             try:
                 attempt_count += 1
-                path = common.get_cert_path()
-                output = requests.get(URL, verify=False)#verify=path)
+                output = requests.get(URL, verify=common.get_cert_path())
                 if output.ok:
                     output = output.json()
                     print("Success. Stored API output in json dict.")

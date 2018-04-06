@@ -2,6 +2,7 @@ import pandas as pd
 import requests
 import json
 from time import sleep
+from Shared.common import Common as common
 
 
 class sg_emails:
@@ -20,7 +21,7 @@ class sg_emails:
         for i in range(0, attempts):
             try:
                 attempt_count += 1
-                output = requests.get(URL, verify=False)
+                output = requests.get(URL, verify=common.get_cert_path())
                 if output.ok:
                     output = output.json()
                     print("Success. Stored API output in json dict.")

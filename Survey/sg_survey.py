@@ -4,8 +4,10 @@ import json
 from time import sleep
 from fake_useragent import UserAgent
 from Shared.common import Common as common
+import os
 
 API_TOKEN = "api_token=3918099598ee3da7e79c1add7f4b8ae392b5b543c5fe7f9d88&api_token_secret=A9XYpy0QvtH.o"
+
 
 class sg_survey:
 
@@ -25,10 +27,8 @@ class sg_survey:
         for i in range(0, attempts):
             try:
                 attempt_count += 1
-                # ua = UserAgent()
-                # headers = {"User-Agent": ua.chrome}
-                output = requests.get(URL, verify=False) #, headers=headers)
-                # output = common.get_api_data(URL)
+                path = common.get_cert_path()
+                output = requests.get(URL, verify=False)#verify=path)
                 if output.ok:
                     output = output.json()
                     print("Success. Stored API output in json dict.")

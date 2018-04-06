@@ -2,12 +2,13 @@ from menu_actions import menu_actions
 from Shared.db import DB
 from time import sleep
 import pandas as pd
-from  sg_db_interactions import sg_get_tables
+from sg_db_interactions import sg_get_tables
 from sg_contact_lists import sg_contact_lists
 from sg_misc import misc_funcs as misc
 from Shared.batch import BatchService
 from Shared.common import Common as CM
 import datetime
+import urllib3
 
 
 API_TOKEN = "api_token=3918099598ee3da7e79c1add7f4b8ae392b5b543c5fe7f9d88&api_token_secret=A9XYpy0QvtH.o"
@@ -18,6 +19,8 @@ pd.set_option('display.width', desired_width)
 
 
 def _main_():
+    ''' PELASE INSTALL CERTIFICATE AND REMOVE THIS, WHERE EVER THE CERTIFICATE IS '''
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     """Menu-selected actions for SGizmo API
     """
 
@@ -218,6 +221,7 @@ def _main_():
             reports_list = []
             status_list = []
             for cid in campaigns_df["id"]:
+                print(cid)
                 reports_df, status_df = menu_actions.get_resp_stats(survey_id, API_TOKEN, campaign_id=int(cid))
                 if len(reports_df) > 0:
                     reports_list.append(reports_df)
@@ -239,7 +243,9 @@ def _main_():
             all_resp_stats = all_resp_stats.drop('id_y', axis=1).drop('campaign_id', axis=1).drop('report_id', axis=1)
             all_resp_stats = all_resp_stats.rename(columns={'id_x': "campaign_id"})
 
-            path = CM.get_config("config.ini", "paths", "survey2018_response_stats")
+            path_ini = CM.get_config("config.ini", "paths", "survey2018_response_stats")
+            path = CM.change_working_directory(path_ini)
+            print(path)
             misc.write_to_xl(all_resp_stats, 'ResponseStatuses', out_path=path, sheetname="response_statuses")
 
         # set survey ID

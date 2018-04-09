@@ -198,7 +198,7 @@ class sg_responses:
                         sg_qid = str(resp["survey_data"][key]["id"])
                         if len(sg_qid) == 1:  # add leading zero to 1-digit question_id
                             sg_qid = "0" + sg_qid
-                        rid = int(sg_qid + str(surveyID) + str(resp["id"]))
+                        rid = str(int(sg_qid + str(surveyID) + str(resp["id"])))
                         qid = int(str(surveyID) + str(resp["survey_data"][key]["id"]))
                         answer = resp["survey_data"][key]["answer"]
 
@@ -207,7 +207,7 @@ class sg_responses:
                             for opt_key in answer.keys():
                                 if answer[opt_key]['rank']:
                                     oid = int(str(qid) + str(opt_key))
-                                    rid = int(str(sg_qid) + str(surveyID) + str(resp["id"] + str(opt_key)))
+                                    rid = str(int(str(sg_qid) + str(surveyID) + str(resp["id"] + str(opt_key))))
                                     rank_answer = answer[opt_key]['rank']
                                     resps.append([rid, qid, oid, survey_resp_id, rank_answer])
                                     oid = "NULL"
@@ -220,7 +220,7 @@ class sg_responses:
                             sg_qid = str(resp["survey_data"][key]["id"])
                             if len(sg_qid) == 1:  # add leading zero to 1-digit question_id
                                 sg_qid = "0" + sg_qid
-                            rid = int(sg_qid + str(surveyID) + str(resp["id"]) + str(resp["survey_data"][key]["options"][key2]["id"]))
+                            rid = str(int(sg_qid + str(surveyID) + str(resp["id"]) + str(resp["survey_data"][key]["options"][key2]["id"])))
                             qid = int(str(surveyID) + str(resp["survey_data"][key]["id"]))
                             oid = int(str(qid) + str(resp["survey_data"][key]["options"][key2]["id"]))
                             answer = resp["survey_data"][key]["options"][key2]["answer"]
@@ -243,7 +243,7 @@ class sg_responses:
                             sg_qid = str(resp["survey_data"][key]["subquestions"][key3]["id"])
                             if len(sg_qid) == 1:  # add leading zero to 1-digit question_id
                                 sg_qid = "0" + sg_qid
-                            rid = int(sg_qid + str(surveyID) + str(resp["id"]))
+                            rid = str(int(sg_qid + str(surveyID) + str(resp["id"])))
                             qid = int(str(surveyID) + str(resp["survey_data"][key]["subquestions"][key3]["id"]))
                             answer = resp["survey_data"][key]["subquestions"][key3]["answer"]
                             resps.append([rid, qid, oid, survey_resp_id, answer])
@@ -251,8 +251,8 @@ class sg_responses:
                             # UNTESTED: GET OPTIONS OF SUBQUESTIONS
                             try:
                                 for key4 in resp["survey_data"][key]["subquestions"][key3]["options"]:
-                                    rid = int(str(surveyID) + str(resp["id"]) + str(
-                                        resp["survey_data"][key]["subquestions"][key3]["options"][key4]["id"]))
+                                    rid = str(int(str(surveyID) + str(resp["id"]) + str(
+                                        resp["survey_data"][key]["subquestions"][key3]["options"][key4]["id"])))
                                     qid = int(str(surveyID) + str(resp["survey_data"][key]["subquestions"][key3]["id"]))
                                     oid = int(str(qid) + str(
                                         resp["survey_data"][key]["subquestions"][key3]["options"][key4]["id"]))

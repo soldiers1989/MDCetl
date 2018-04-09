@@ -23,7 +23,7 @@ class sg_contact_status:
               + "/surveycampaign/" \
               + str(campaignID) \
               + "/surveycontact"\
-              + "/?resultsperpage=1200&" \
+              + "/?resultsperpage=1500&" \
               + api_token
         for i in range(0, attempts):
             try:

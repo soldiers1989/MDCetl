@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f6c18a1d-94cf-424b-808c-0a71fdc83433" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/MDCetl.iml" afterPath="$PROJECT_DIR$/.idea/MDCetl.iml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/AnnSurvey18/results_by_RIC.py" afterPath="$PROJECT_DIR$/Survey/results_by_RIC.py" />
+      <change beforePath="$PROJECT_DIR$/Survey/__init__.py" afterPath="$PROJECT_DIR$/Survey/__init__.py" />
       <change beforePath="$PROJECT_DIR$/Survey/sg_contact_status.py" afterPath="$PROJECT_DIR$/Survey/sg_contact_status.py" />
       <change beforePath="$PROJECT_DIR$/Survey/sg_responses.py" afterPath="$PROJECT_DIR$/Survey/sg_responses.py" />
     </list>
@@ -40,10 +43,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="results_by_RIC.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/AnnSurvey18/results_by_RIC.py">
+        <entry file="file://$PROJECT_DIR$/Survey/results_by_RIC.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="341">
-              <caret line="57" column="0" lean-forward="false" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
+            <state relative-caret-position="411">
+              <caret line="86" column="49" lean-forward="true" selection-start-line="86" selection-start-column="49" selection-end-line="86" selection-end-column="49" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
               </folding>
@@ -51,68 +54,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="config.ini" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Shared/config.ini">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-535">
-              <caret line="21" column="48" lean-forward="false" selection-start-line="21" selection-start-column="48" selection-end-line="21" selection-end-column="48" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Survey/__init__.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1005">
-              <caret line="260" column="86" lean-forward="false" selection-start-line="260" selection-start-column="86" selection-end-line="260" selection-end-column="86" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="sg_responses.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Survey/sg_responses.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="223">
-              <caret line="262" column="44" lean-forward="true" selection-start-line="262" selection-start-column="44" selection-end-line="262" selection-end-column="44" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="file_service.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Shared/file_service.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3270">
-              <caret line="227" column="0" lean-forward="false" selection-start-line="227" selection-start-column="0" selection-end-line="227" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="config_sql.ini" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Shared/config_sql.ini">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="740">
-              <caret line="96" column="0" lean-forward="false" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="menu_actions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Survey/menu_actions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="350">
-              <caret line="300" column="60" lean-forward="false" selection-start-line="300" selection-start-column="60" selection-end-line="300" selection-end-column="60" />
+            <state relative-caret-position="156">
+              <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
-                <element signature="e#616#620#0" expanded="false" />
-                <element signature="e#690#841#0" expanded="false" />
                 <element signature="e#899#2141#0" expanded="false" />
-                <element signature="e#2236#2495#0" expanded="false" />
-                <element signature="e#2605#4289#0" expanded="false" />
                 <element signature="e#4413#6884#0" expanded="false" />
                 <element signature="e#7016#8565#0" expanded="false" />
                 <element signature="e#8648#8777#0" expanded="false" />
@@ -132,9 +81,18 @@
                 <element signature="e#29655#31123#0" expanded="false" />
                 <element signature="e#31206#31269#0" expanded="false" />
                 <element signature="e#32283#32573#0" expanded="false" />
-                <element signature="e#32648#33893#0" expanded="false" />
                 <element signature="e#33969#34799#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Survey/__init__.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="5745">
+              <caret line="393" column="0" lean-forward="false" selection-start-line="393" selection-start-column="0" selection-end-line="393" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -142,18 +100,38 @@
       <file leaf-file-name="sg_contact_status.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Survey/sg_contact_status.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
-              <caret line="23" column="33" lean-forward="true" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
+            <state relative-caret-position="-1644">
+              <caret line="49" column="53" lean-forward="false" selection-start-line="49" selection-start-column="53" selection-end-line="49" selection-end-column="53" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sg_misc.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Survey/sg_misc.py">
+      <file leaf-file-name="sg_db_interactions.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Survey/sg_db_interactions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="9" column="3" lean-forward="false" selection-start-line="9" selection-start-column="3" selection-end-line="25" selection-end-column="21" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sg_contact_lists.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Survey/sg_contact_lists.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="360">
+              <caret line="31" column="0" lean-forward="true" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sg_campaign.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Survey/sg_campaign.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="21" column="41" lean-forward="false" selection-start-line="21" selection-start-column="41" selection-end-line="21" selection-end-column="41" />
               <folding />
             </state>
           </provider>
@@ -162,11 +140,29 @@
       <file leaf-file-name="sg_qsos.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Survey/sg_qsos.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1635">
-              <caret line="118" column="38" lean-forward="false" selection-start-line="118" selection-start-column="38" selection-end-line="118" selection-end-column="38" />
-              <folding>
-                <element signature="e#0#19#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="144">
+              <caret line="33" column="41" lean-forward="false" selection-start-line="33" selection-start-column="41" selection-end-line="33" selection-end-column="41" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sg_survey.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Survey/sg_survey.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="277">
+              <caret line="30" column="29" lean-forward="false" selection-start-line="30" selection-start-column="29" selection-end-line="30" selection-end-column="29" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sg_responses.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Survey/sg_responses.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="368">
+              <caret line="59" column="88" lean-forward="false" selection-start-line="59" selection-start-column="88" selection-end-line="59" selection-end-column="88" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -230,20 +226,24 @@
         <option value="$PROJECT_DIR$/CBInsights/cbinsights.py" />
         <option value="$PROJECT_DIR$/Shared/enums.py" />
         <option value="$PROJECT_DIR$/Survey/sg_db_interactions.py" />
-        <option value="$PROJECT_DIR$/Survey/sg_contact_lists.py" />
         <option value="$PROJECT_DIR$/Shared/batch.py" />
-        <option value="$PROJECT_DIR$/Survey/__init__.py" />
         <option value="$PROJECT_DIR$/Shared/config.ini" />
         <option value="$PROJECT_DIR$/Shared/db.py" />
         <option value="$PROJECT_DIR$/AnnSurvey18/queries.ini" />
         <option value="$PROJECT_DIR$/Shared/common.py" />
-        <option value="$PROJECT_DIR$/Shared/config_sql.ini" />
         <option value="$PROJECT_DIR$/Survey/menu_actions.py" />
         <option value="$PROJECT_DIR$/Shared/file_service.py" />
-        <option value="$PROJECT_DIR$/Survey/sg_qsos.py" />
+        <option value="$PROJECT_DIR$/Survey/__init__.py" />
         <option value="$PROJECT_DIR$/AnnSurvey18/results_by_RIC.py" />
-        <option value="$PROJECT_DIR$/Survey/sg_responses.py" />
+        <option value="$PROJECT_DIR$/Shared/config_sql.ini" />
+        <option value="$PROJECT_DIR$/Survey/sg_survey.py" />
+        <option value="$PROJECT_DIR$/Survey/sg_qsos.py" />
+        <option value="$PROJECT_DIR$/Survey/sg_emails.py" />
+        <option value="$PROJECT_DIR$/Survey/sg_contact_lists.py" />
         <option value="$PROJECT_DIR$/Survey/sg_contact_status.py" />
+        <option value="$PROJECT_DIR$/Survey/sg_campaign.py" />
+        <option value="$PROJECT_DIR$/Survey/sg_responses.py" />
+        <option value="$PROJECT_DIR$/Survey/results_by_RIC.py" />
       </list>
     </option>
   </component>
@@ -274,19 +274,12 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
               <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
-              <item name="AnnSurvey18" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
@@ -306,19 +299,29 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
-      <console-settings is-module-sdk="true">
+      <console-settings module-name="MDCetl" is-module-sdk="true" working-directory="$PROJECT_DIR$/Survey">
         <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="MDCetl" />
+        <option name="myWorkingDirectory" value="$PROJECT_DIR$/Survey" />
       </console-settings>
     </option>
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Survey" />
+      <recent name="$PROJECT_DIR$/CVCA" />
+      <recent name="$PROJECT_DIR$/Shared" />
+      <recent name="$PROJECT_DIR$/DataCheck" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/BAP" />
       <recent name="$PROJECT_DIR$/Shared" />
@@ -326,149 +329,6 @@
       <recent name="$PROJECT_DIR$/OSVP" />
       <recent name="$PROJECT_DIR$/Survey" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/CVCA" />
-      <recent name="$PROJECT_DIR$/Shared" />
-      <recent name="$PROJECT_DIR$/DataCheck" />
-    </key>
-  </component>
-  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
-    <UpdatedFiles>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Updated from server" />
-        <option name="myStatusName" value="Changed on server" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="CHANGED_ON_SERVER" />
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated" />
-          <option name="myStatusName" value="Changed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UPDATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/BAP/FactRICCompany_related.sql</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/BAP/bap.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/CrunchBase/crunchbase.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/IAF/iaf.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/MISC/datawarehouse.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/MISC/fast_lane.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/MISC/mdcgraphics.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Shared/common.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Shared/config.ini</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Shared/datasource.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Shared/enums.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Shared/file_service.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Survey/__init__.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Survey/menu_actions.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Survey/sg_campaign.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Survey/sg_contact_lists.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Survey/sg_contact_status.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Survey/sg_emails.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Survey/sg_qsos.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Survey/sg_responses.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Survey/sg_survey.py</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Created" />
-          <option name="myStatusName" value="Created" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CREATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/BAP/FactRICCompanyRollUp.sql</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/MISC/BD_Scripts/BD_Scripts_other.sql</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/MISC/BD_Scripts/FactEmployment.sql</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/MISC/BD_Scripts/FactFunding.sql</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/MISC/BD_Scripts/FactRevenue.sql</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/MISC/BD_Scripts/FactSatisfaction.sql</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Shared/MaRSDD-Root.pem</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/Shared/venture_dedupe.py</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Deleted" />
-          <option name="myStatusName" value="Deleted" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="true" />
-          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Restored" />
-          <option name="myStatusName" value="Will be restored" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="RESTORED" />
-        </FILE-GROUP>
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Modified" />
-        <option name="myStatusName" value="Modified" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MODIFIED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Skipped" />
-        <option name="myStatusName" value="Skipped" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SKIPPED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with conflicts" />
-        <option name="myStatusName" value="Will be merged with conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_CONFLICTS" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with tree conflicts" />
-        <option name="myStatusName" value="Merged with tree conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with property conflicts" />
-        <option name="myStatusName" value="Will be merged with property conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged" />
-        <option name="myStatusName" value="Will be merged" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Not in repository" />
-        <option name="myStatusName" value="Not in repository" />
-        <option name="mySupportsDeletion" value="true" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="UNKNOWN" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally added" />
-        <option name="myStatusName" value="Locally added" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_ADDED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally removed" />
-        <option name="myStatusName" value="Locally removed" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_REMOVED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Switched" />
-        <option name="myStatusName" value="Switched" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SWITCHED" />
-      </FILE-GROUP>
-    </UpdatedFiles>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -482,7 +342,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.__init__">
+  <component name="RunManager" selected="Python.results_by_RIC">
     <configuration name="__init__" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -565,12 +425,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/AnnSurvey18" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Survey" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="MDCetl" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/AnnSurvey18/results_by_RIC.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Survey/results_by_RIC.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -603,8 +463,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.__init__" />
-        <item index="1" class="java.lang.String" itemvalue="Python.results_by_RIC" />
+        <item index="0" class="java.lang.String" itemvalue="Python.results_by_RIC" />
+        <item index="1" class="java.lang.String" itemvalue="Python.__init__" />
         <item index="2" class="java.lang.String" itemvalue="Python.fast_lane" />
         <item index="3" class="java.lang.String" itemvalue="Python.iaf" />
         <item index="4" class="java.lang.String" itemvalue="Python.bap" />
@@ -702,7 +562,14 @@
       <option name="project" value="LOCAL" />
       <updated>1522016882588</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="fixed long int error">
+      <created>1523289862443</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1523289862443</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -721,13 +588,13 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15587151" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32830524" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39903265" sideWeight="0.35306555" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24134871" sideWeight="0.49815693" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22853687" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32889965" sideWeight="0.49815693" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24134871" sideWeight="0.49815693" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32889965" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.46051463" sideWeight="0.64693445" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.46051463" sideWeight="0.64693445" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -781,7 +648,8 @@
     <MESSAGE value="reduced responses request size" />
     <MESSAGE value="AnnSurvey18 package first commit" />
     <MESSAGE value="results by RIC script updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="results by RIC script updated" />
+    <MESSAGE value="fixed long int error" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed long int error" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -806,30 +674,13 @@
           <line>9</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <condition expression="campaignID == 3770286" language="Python" />
-          <url>file://$PROJECT_DIR$/Survey/sg_contact_status.py</url>
-          <line>64</line>
-          <option name="timeStamp" value="132" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <condition expression="campaignID == 3770286" language="Python" />
-          <url>file://$PROJECT_DIR$/Survey/sg_contact_status.py</url>
-          <line>27</line>
-          <option name="timeStamp" value="133" />
-        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="134" />
+      <option name="time" value="152" />
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="PythonConfigurationType">
-        <watch expression="str(cols[i])[-1]" language="Python" />
-        <watch expression="cols[i]" language="Python" />
-      </configuration>
-    </watches-manager>
+    <watches-manager />
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="breakpointCondition">
@@ -881,6 +732,26 @@
     </expressions>
     <expressions id="watch">
       <expression>
+        <expression-string>dfs[1]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(dfs)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(json)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(pages)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
         <expression-string>cols[i]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
@@ -910,26 +781,6 @@
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
-      <expression>
-        <expression-string>os.chdir(path)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>frame_dict[key]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>df[[col_name]].unique()</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>df[[col_name]]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
     </expressions>
     <expressions id="evaluateExpression">
       <expression>
@@ -945,17 +796,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/OSVP/osvp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="7" column="83" lean-forward="false" selection-start-line="7" selection-start-column="83" selection-end-line="7" selection-end-column="83" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="uml://DATABASE/2fd9d0a1-3d1e-4415-9adb-054fecc1f85f.DATABASE:master" />
-    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/2fd9d0a1-3d1e-4415-9adb-054fecc1f85f/console_1.sql" />
-    <entry file="uml://AlchemyModelDependency/#MDCetl" />
-    <entry file="uml://Python/#/Users/mnadew/Box Sync/mnadew/IE/MDCetl/Shared/batch.py" />
     <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/2fd9d0a1-3d1e-4415-9adb-054fecc1f85f/console_2.sql" />
     <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/xml/etree/ElementTree.py" />
     <entry file="file://$PROJECT_DIR$/IAF/iaf.py">
@@ -1043,13 +883,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Survey/sg_contact_lists.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="123">
-          <caret line="238" column="50" lean-forward="true" selection-start-line="238" selection-start-column="50" selection-end-line="238" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda/lib/python3.6/codecs.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4620">
@@ -1061,13 +894,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="158">
           <caret line="51" column="37" lean-forward="false" selection-start-line="51" selection-start-column="37" selection-end-line="51" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Survey/sg_survey.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="471">
-          <caret line="61" column="0" lean-forward="false" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -1087,17 +913,52 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/AnnSurvey18/__init__.py" />
     <entry file="file://$PROJECT_DIR$/AnnSurvey18/queries.ini" />
-    <entry file="file://$PROJECT_DIR$/Shared/common.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="531">
-          <caret line="173" column="26" lean-forward="true" selection-start-line="173" selection-start-column="26" selection-end-line="173" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Shared/db.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-130">
           <caret line="36" column="0" lean-forward="false" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/file_service.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3270">
+          <caret line="227" column="0" lean-forward="false" selection-start-line="227" selection-start-column="0" selection-end-line="227" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/config.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-535">
+          <caret line="21" column="48" lean-forward="false" selection-start-line="21" selection-start-column="48" selection-end-line="21" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/common.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="478">
+          <caret line="447" column="0" lean-forward="false" selection-start-line="447" selection-start-column="0" selection-end-line="447" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/MaRSDD-Root.pem">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/reshape/concat.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="271" column="0" lean-forward="false" selection-start-line="271" selection-start-column="0" selection-end-line="271" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/config_sql.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="475">
+          <caret line="94" column="2226" lean-forward="true" selection-start-line="94" selection-start-column="2226" selection-end-line="94" selection-end-column="2226" />
         </state>
       </provider>
     </entry>
@@ -1109,61 +970,47 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/file_service.py">
+    <entry file="file://$PROJECT_DIR$/Survey/sg_emails.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3270">
-          <caret line="227" column="0" lean-forward="false" selection-start-line="227" selection-start-column="0" selection-end-line="227" selection-end-column="0" />
+        <state relative-caret-position="345">
+          <caret line="23" column="41" lean-forward="false" selection-start-line="23" selection-start-column="41" selection-end-line="23" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#19#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Survey/sg_survey.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="277">
+          <caret line="30" column="29" lean-forward="false" selection-start-line="30" selection-start-column="29" selection-end-line="30" selection-end-column="29" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Survey/sg_qsos.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1635">
-          <caret line="118" column="38" lean-forward="false" selection-start-line="118" selection-start-column="38" selection-end-line="118" selection-end-column="38" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AnnSurvey18/results_by_RIC.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="341">
-          <caret line="57" column="0" lean-forward="false" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/config.ini">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-535">
-          <caret line="21" column="48" lean-forward="false" selection-start-line="21" selection-start-column="48" selection-end-line="21" selection-end-column="48" />
+        <state relative-caret-position="144">
+          <caret line="33" column="41" lean-forward="false" selection-start-line="33" selection-start-column="41" selection-end-line="33" selection-end-column="41" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/config_sql.ini">
+    <entry file="file://$PROJECT_DIR$/Survey/sg_db_interactions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="740">
-          <caret line="96" column="0" lean-forward="false" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Survey/menu_actions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="350">
-          <caret line="300" column="60" lean-forward="false" selection-start-line="300" selection-start-column="60" selection-end-line="300" selection-end-column="60" />
+        <state relative-caret-position="156">
+          <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
           <folding>
             <element signature="e#0#22#0" expanded="true" />
-            <element signature="e#616#620#0" expanded="false" />
-            <element signature="e#690#841#0" expanded="false" />
             <element signature="e#899#2141#0" expanded="false" />
-            <element signature="e#2236#2495#0" expanded="false" />
-            <element signature="e#2605#4289#0" expanded="false" />
             <element signature="e#4413#6884#0" expanded="false" />
             <element signature="e#7016#8565#0" expanded="false" />
             <element signature="e#8648#8777#0" expanded="false" />
@@ -1183,32 +1030,57 @@
             <element signature="e#29655#31123#0" expanded="false" />
             <element signature="e#31206#31269#0" expanded="false" />
             <element signature="e#32283#32573#0" expanded="false" />
-            <element signature="e#32648#33893#0" expanded="false" />
             <element signature="e#33969#34799#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Survey/__init__.py">
+    <entry file="file://$PROJECT_DIR$/Survey/sg_campaign.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1005">
-          <caret line="260" column="86" lean-forward="false" selection-start-line="260" selection-start-column="86" selection-end-line="260" selection-end-column="86" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Survey/sg_contact_status.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="23" column="33" lean-forward="true" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
+        <state relative-caret-position="255">
+          <caret line="21" column="41" lean-forward="false" selection-start-line="21" selection-start-column="41" selection-end-line="21" selection-end-column="41" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Survey/sg_responses.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="262" column="44" lean-forward="true" selection-start-line="262" selection-start-column="44" selection-end-line="262" selection-end-column="44" />
+        <state relative-caret-position="368">
+          <caret line="59" column="88" lean-forward="false" selection-start-line="59" selection-start-column="88" selection-end-line="59" selection-end-column="88" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Survey/results_by_RIC.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="411">
+          <caret line="86" column="49" lean-forward="true" selection-start-line="86" selection-start-column="49" selection-end-line="86" selection-end-column="49" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Survey/sg_contact_status.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1644">
+          <caret line="49" column="53" lean-forward="false" selection-start-line="49" selection-start-column="53" selection-end-line="49" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Survey/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5745">
+          <caret line="393" column="0" lean-forward="false" selection-start-line="393" selection-start-column="0" selection-end-line="393" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Survey/sg_contact_lists.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="31" column="0" lean-forward="true" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
           <folding />
         </state>
       </provider>

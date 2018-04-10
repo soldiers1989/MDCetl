@@ -220,6 +220,7 @@ def _main_():
             campaigns_df = campaigns_df[['id', 'campaign_name', 'link_type', 'campaign_status']]
             reports_list = []
             status_list = []
+            campaigns_df = campaigns_df[campaigns_df['campaign_status'] != 'Deleted']
             for cid in campaigns_df["id"]:
                 print(cid)
                 reports_df, status_df = menu_actions.get_resp_stats(survey_id, API_TOKEN, campaign_id=int(cid))

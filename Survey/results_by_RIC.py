@@ -61,6 +61,7 @@ def _main_():
 
     sql = CM.get_config("config_sql.ini", "ann_survey_18", "survey_res_by_ric")
     all_results = DB.pandas_read(sql)
+
     all_results['ConcatQ'] = all_results[['Cap/Rev/Emp', 'Question']].apply(lambda x: ' - '.join(x), axis=1)
     split_frames = partition_by(all_results, "RIC_Program")
     user_path = os.path.expanduser("~")
@@ -84,6 +85,7 @@ def _main_():
         # x.reindex(sorted(x.columns), axis=1)
         filename = "{} Survey Results".format(ric)
         write_to_xl(x, filename, path, 'Results')
+        print("Wrote {} to path: \t{}".format(filename, path))
 
 if __name__ == '__main__':
     _main_()

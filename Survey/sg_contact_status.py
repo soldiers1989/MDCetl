@@ -15,24 +15,77 @@ class sg_contact_status:
         return s[:-3]
 
     @classmethod
-    def sg_status_json(self, surveyID, campaignID, api_token, attempts=10, wait_sec=3):
+    def sg_status_json(self, surveyID, campaignID, api_token, attempts=5, wait_sec=3):
 
         attempt_count = 0
+        which_page = 1
+        pg_cnt = 1
         URL = "https://restapica.surveygizmo.com/v5/survey/" \
               + str(surveyID) \
               + "/surveycampaign/" \
               + str(campaignID) \
               + "/surveycontact"\
-              + "/?resultsperpage=1500&" \
+              + "/?resultsperpage=300&" \
+              + "page=" + str(pg_cnt) + "&"\
               + api_token
+        pages = []
+
         for i in range(0, attempts):
             try:
                 attempt_count += 1
                 output = requests.get(URL, verify=common.get_cert_path())
                 if output.ok:
                     output = output.json()
+                    pages.append(output)
+                    pg_cnt = output["total_pages"]
                     print("Success. Stored API output in json dict.")
+
+                    if pg_cnt > 1:
+                        for i in range(which_page, pg_cnt):
+                            which_page += 1
+                            last_page = which_page - 1
+                            replace_this = "page=" + str(last_page) + "&"
+                            with_this = "page=" + str(which_page) + "&"
+                            URL = URL.replace(replace_this, with_this)
+                            output = requests.get(URL, verify=common.get_cert_path())
+                            if output.ok:
+                                output = output.json()
+                            pages.append(output)
+
+                    print("Success. All results stored in dict(s).")
+                    if len(pages) == 1:
+                        print("Output: Single dict")
+                        return output
+                    elif len(pages) > 1:
+                        print("Output: List of dicts")
+                        return pages
+
                     return output
+
+                # if output.ok:
+                #     output = output.json()
+                #     result_pages.append(output)
+                #     print("Success. Stored API output in json dict.")
+                #     resultsperpage = int(output["results_per_page"])
+                #     totalresults = int(output["total_count"])
+                #     if totalresults > resultsperpage:
+                #         print("total exceeds results_per_page")
+                #     page_cnt = output["total_pages"]
+                #     print("Final page count will be", page_cnt)
+                #     if page_cnt > 1:
+                #         for i in range(which_page, page_cnt):
+                #             print("Making call to API for another page")
+                #             which_page += 1
+                #             URL = sg_responses.create_response_API_URL(surveyID, api_token, resultsperpage=100, page=which_page)
+                #             resultpage = sg_responses.sg_get_api_output(URL, 10, 3)
+                #             result_pages.append(resultpage)
+
+
+
+
+
+
+
             except KeyboardInterrupt:
                 pass
             except:
@@ -61,10 +114,58 @@ class sg_contact_status:
         resp_statuses = []
         headers = ["report_id", "venture_id", "company_name", "primary_RIC", "first_name", "last_name", "email", "contact_status", "response_status",
                    "date_last_sent", "invite_link"]
+
+        # try:
+        #     x = json["data"]
+        # except KeyError:
+        #     return [], []
+        # except TypeError:
+        #     pass
+        if json is None:
+            return [], []
+
+        dfs = []
+        if len(json) > 1 and type(json) == list:
+            for j in json:
+                df = self.stats_json_to_df(j, report_id)
+                dfs.append(df)
+            resp_stat_df = pd.concat(dfs)
+            dfs = []
+        else:
+            resp_stat_df = self.stats_json_to_df(json, report_id)
+
+        # for contact in json["data"]:
+        #     fname = contact["first_name"]
+        #     lname = contact["last_name"]
+        #     email = contact["email_address"]
+        #     contact_status = contact["status"]
+        #     resp_status = contact["subscriber_status"]
+        #     date_last_sent = contact["date_last_sent"]
+        #     invite_link = contact["invitelink"]
+        #     try:
+        #         primary_RIC = contact["department"]
+        #         company_name = contact["organization"]
+        #         venture_id = contact["venture_id"]
+        #     except KeyError:
+        #         continue
+        #     resp_statuses.append([report_id, venture_id, company_name, primary_RIC, fname, lname, email, contact_status, resp_status, date_last_sent, invite_link])
+        # resp_stat_df = pd.DataFrame(resp_statuses, columns=headers)
+        return reports_df, resp_stat_df
+
+    @classmethod
+    def stats_json_to_df(self, json, report_id):
+
+        resp_statuses = []
+        headers = ["report_id", "venture_id", "company_name", "primary_RIC", "first_name", "last_name", "email",
+                   "contact_status", "response_status",
+                   "date_last_sent", "invite_link"]
+
         try:
             x = json["data"]
         except KeyError:
-            return [], []
+            return
+        except TypeError:
+            return
 
         for contact in json["data"]:
             fname = contact["first_name"]
@@ -80,6 +181,10 @@ class sg_contact_status:
                 venture_id = contact["venture_id"]
             except KeyError:
                 continue
-            resp_statuses.append([report_id, venture_id, company_name, primary_RIC, fname, lname, email, contact_status, resp_status, date_last_sent, invite_link])
-        resp_stat_df = pd.DataFrame(resp_statuses, columns=headers)
-        return reports_df, resp_stat_df
+            resp_statuses.append(
+                [report_id, venture_id, company_name, primary_RIC, fname, lname, email, contact_status, resp_status,
+                 date_last_sent, invite_link])
+
+        df = pd.DataFrame(resp_statuses, columns=headers)
+
+        return df

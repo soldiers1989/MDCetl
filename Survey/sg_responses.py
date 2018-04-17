@@ -60,7 +60,7 @@ class sg_responses:
         URL = sg_responses.create_response_API_URL(surveyID, api_token, resultsperpage=200, page=which_page)
         for i in range(0, attempts):
             try:
-                attempt_count += 1
+
                 output = requests.get(URL, verify=common.get_cert_path())
                 if output.ok:
                     output = output.json()
@@ -76,7 +76,7 @@ class sg_responses:
                         for i in range(which_page, page_cnt):
                             print("Making call to API for another page")
                             which_page += 1
-                            URL = sg_responses.create_response_API_URL(surveyID, api_token, resultsperpage=100, page=which_page)
+                            URL = sg_responses.create_response_API_URL(surveyID, api_token, resultsperpage=200, page=which_page)
                             resultpage = sg_responses.sg_get_api_output(URL, 10, 3)
                             result_pages.append(resultpage)
 
@@ -90,6 +90,7 @@ class sg_responses:
             except KeyboardInterrupt:
                 pass
             except:
+                attempt_count += 1
                 if attempt_count >= attempts:
                     print("All attempts failed")
                     return

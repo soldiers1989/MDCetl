@@ -43,7 +43,7 @@ def spread(df, index, columns, values):
 
 def _main_():
     print("Getting SQL query")
-    sql = CM.get_config("config_sql.ini", "ann_survey_18", "survey_res_by_ric")
+    sql = CM.get_config("config_sql.ini", "ann_survey_18", "caprevjob_by_ric")
     print("SQL: {}".format(sql))
     print("Executing SQL to get dataframe of results")
     all_results = DB.pandas_read(sql)

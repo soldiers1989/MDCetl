@@ -24,7 +24,15 @@ class CBInsights(ds.DataSource):
 		self.db.bulk_insert(self.cb_sql_insert, values)
 		print(self.data.head())
 
+	def cs_venture_matching(self):
+		self.data = self.db.pandas_read(self.enum.SQL.sql_cbinsights_select.value)
+		for _, cb in self.data.iterrows():
+			sql_update = self.enum.SQL.sql_cbinsights_update.value.format(self.common.get_basic_name(cb.CompanyName), cb.ID)
+			self.db.execute(sql_update)
+			print(cb.CompanyName)
+
 
 if __name__ == '__main__':
 	cb = CBInsights()
-	cb.push_cbinsights_to_db()
+	# cb.push_cbinsights_to_db()
+	cb.cs_venture_matching()

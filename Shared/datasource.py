@@ -1,6 +1,7 @@
 import pandas as pd
 from Shared import db, enums, common, file_service, batch
 import datetime
+import configparser
 
 
 class DataSource:
@@ -9,6 +10,9 @@ class DataSource:
 
 	def __init__(self, header, item, datasource:enums.MDCDataSource):
 		pd.set_option('display.width', self.desired_width)
+		config = configparser.ConfigParser()
+		config.read('config.ini')
+		# conf = config.sections()
 		self.common = common.Common
 		_y, _q = self.common.fiscal_year_quarter(datetime.datetime.utcnow())
 		self.year = _y
@@ -27,5 +31,7 @@ class DataSource:
 		elif datasource.value == enums.MDCDataSource.OSVP.value:
 			self.osvp_sql_insert = self.common.get_config('config_sql.ini', header, item)
 		elif datasource.value == enums.MDCDataSource.IAF.value:
-			pass
+			self.name = 'IAF'
+		elif datasource.value == enums.MDCDataSource.TDW.value:
+			print('-----------Think data works-------------')
 

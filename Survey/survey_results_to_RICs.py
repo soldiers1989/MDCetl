@@ -66,6 +66,26 @@ def path_xl(user_path, path_extension, sep="/", filename='file.xlsx'):
     return path
 
 
+def replacements(row):
+    """Replace values with other values based on business logic.
+    """
+    r = {'5002132717': {'1': "Active", '2': "Ceased operations", '3': "Acquired"},
+         '5002132768': {'99': 'n/a'},
+         '5002132769': {'99': 'n/a'},
+         '5002132770': {'99': 'n/a'},
+         '5002132771': {'99': 'n/a'},
+         '5002132772': {'99': 'n/a'},
+         '5002132773': {'99': 'n/a'}
+         }
+    qid = str(round(row['QuestionID']))
+    ans = str(row['Answer'])
+    if qid in list(r.keys()):
+        if ans in list(r[qid].keys()):
+            return r[qid][ans]
+    else:
+        return ans
+
+
 def _main_():
     # make the damn ric dict: ricname: datasourceID (except CII & OSVP, number is not datasourceid)
     rics = {
@@ -84,7 +104,6 @@ def _main_():
         'Haltech': {'db_name': 'Haltech', 'code': 8},
         'Spark Centre': {'db_name': 'Spark Centre', 'code': 10},
         'NORCAT': {'db_name': 'NORCAT', 'code': 1},
-        'Communitech': {'db_name': 'Communitech', 'code': 4},
         'VentureLAB': {'db_name': 'ventureLAB', 'code': 11},
         'Innovate Niagara': {'db_name': 'Innovate Niagara', 'code': 17},
         'Launch Lab': {'db_name': 'Launch Lab', 'code': 13}
@@ -153,6 +172,8 @@ def _main_():
     print("Reading ans from DB into df")
     ans_sql = CM.get_config("config_sql.ini", "ann_survey_18", "survey_results_by_ric")
     ans = DB.pandas_read(ans_sql)
+    ans.dropna(subset=['Answer'], inplace=True)
+    ans['Answer'] = ans.apply(replacements, axis=1)
 
     # for each RIC
     print("\nPer RIC df datasheet creation:")
@@ -185,9 +206,10 @@ def _main_():
         ric_datasheet['rid_cid'] = ric_datasheet['resp_id'].astype(str) + '-' + ric_datasheet['Company_ID'].astype(str)
         ric_datasheet = ric_datasheet[['rid_cid', 'col_title', 'Answer']]
         ric_datasheet = ric_datasheet.pivot(index='rid_cid', columns='col_title', values='Answer')
-
         # ric_datasheet = pd.pivot_table(ric_datasheet, values='Answer', columns='col_title', index='rid_cid')
+
         ric_datasheet.reset_index(inplace=True)
+
         try:
             ric_datasheet['resp_id'], ric_datasheet['Company_ID'] = ric_datasheet['rid_cid'].str.split('-', 1).str
             ric_datasheet.drop('rid_cid', axis=1, inplace=True)

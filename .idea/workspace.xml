@@ -3,8 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="f6c18a1d-94cf-424b-808c-0a71fdc83433" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Shared/config_sql.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Shared/config_sql.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Survey/CapRevJob_by_RIC.py" beforeDir="false" afterPath="$PROJECT_DIR$/Survey/CapRevJob_by_RIC.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Survey/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Survey/survey_etl_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Survey/qs_metadata.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Survey/qs_metadata.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/Survey/qs_metadata.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Survey/survey_results_to_RICs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Survey/survey_results_to_RICs.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,11 +18,11 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/MDCetl$iaf.coverage" NAME="iaf Coverage Results" MODIFIED="1517667595615" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/IAF" />
     <SUITE FILE_PATH="coverage/MDCetl$match.coverage" NAME="match Coverage Results" MODIFIED="1517785437584" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Shared" />
-    <SUITE FILE_PATH="coverage/MDCetl$survey_results_to_RICs.coverage" NAME="survey_results_to_RICs Coverage Results" MODIFIED="1523995871510" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
+    <SUITE FILE_PATH="coverage/MDCetl$survey_results_to_RICs.coverage" NAME="survey_results_to_RICs Coverage Results" MODIFIED="1524151132770" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
     <SUITE FILE_PATH="coverage/MDCetl$Validate.coverage" NAME="Validate Coverage Results" MODIFIED="1518452236171" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/BAP" />
-    <SUITE FILE_PATH="coverage/MDCetl$__init__.coverage" NAME="__init__ Coverage Results" MODIFIED="1523973244314" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
-    <SUITE FILE_PATH="coverage/MDCetl$results_by_RIC.coverage" NAME="results_by_RIC Coverage Results" MODIFIED="1523977264220" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
-    <SUITE FILE_PATH="coverage/MDCetl$q_metadata.coverage" NAME="q_metadata Coverage Results" MODIFIED="1523643917852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
+    <SUITE FILE_PATH="coverage/MDCetl$__init__.coverage" NAME="__init__ Coverage Results" MODIFIED="1524146000839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
+    <SUITE FILE_PATH="coverage/MDCetl$results_by_RIC.coverage" NAME="results_by_RIC Coverage Results" MODIFIED="1524146407482" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
+    <SUITE FILE_PATH="coverage/MDCetl$q_metadata.coverage" NAME="q_metadata Coverage Results" MODIFIED="1524147582325" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
     <SUITE FILE_PATH="coverage/MDCetl$bap.coverage" NAME="bap Coverage Results" MODIFIED="1518448785345" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/BAP" />
     <SUITE FILE_PATH="coverage/MDCetl$fast_lane.coverage" NAME="fast_lane Coverage Results" MODIFIED="1518640591574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MISC" />
   </component>
@@ -66,8 +68,8 @@
       <file leaf-file-name="CapRevJob_by_RIC.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Survey/CapRevJob_by_RIC.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="780">
-              <caret line="57" column="34" selection-start-line="57" selection-start-column="34" selection-end-line="57" selection-end-column="34" />
+            <state relative-caret-position="170">
+              <caret line="51" column="75" selection-start-line="51" selection-start-column="70" selection-end-line="51" selection-end-column="75" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
               </folding>
@@ -78,8 +80,8 @@
       <file leaf-file-name="survey_results_to_RICs.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Survey/survey_results_to_RICs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="625">
-              <caret line="150" column="21" lean-forward="true" selection-start-line="150" selection-start-column="21" selection-end-line="150" selection-end-column="21" />
+            <state relative-caret-position="260">
+              <caret line="180" lean-forward="true" selection-start-line="180" selection-end-line="180" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
               </folding>
@@ -87,20 +89,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="config.ini" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Shared/config.ini">
+      <file leaf-file-name="frame.py" pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/frame.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="105" selection-start-line="2" selection-start-column="105" selection-end-line="2" selection-end-column="121" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="console.sql" pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/d936f066-4ba8-4d7f-9501-9e297b2c9721/console.sql">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1" selection-start-line="1" selection-end-line="1" />
+            <state relative-caret-position="209">
+              <caret line="4909" selection-start-line="4909" selection-end-line="4909" />
             </state>
           </provider>
         </entry>
@@ -108,8 +101,8 @@
       <file leaf-file-name="q_metadata.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Survey/q_metadata.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="18" column="36" selection-start-line="18" selection-start-column="36" selection-end-line="18" selection-end-column="36" />
+            <state relative-caret-position="390">
+              <caret line="26" column="32" lean-forward="true" selection-start-line="26" selection-start-column="32" selection-end-line="26" selection-end-column="32" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -117,20 +110,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Survey/__init__.py">
+      <file leaf-file-name="survey_etl_main.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Survey/survey_etl_main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3585">
-              <caret line="249" column="22" selection-start-line="249" selection-start-column="22" selection-end-line="249" selection-end-column="22" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="sg_misc.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Survey/sg_misc.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="9" column="8" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
+            <state relative-caret-position="388">
+              <caret line="354" column="28" lean-forward="true" selection-start-line="354" selection-start-column="28" selection-end-line="354" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -138,8 +122,8 @@
       <file leaf-file-name="menu_actions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Survey/menu_actions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3825">
-              <caret line="620" column="36" selection-start-line="620" selection-start-column="33" selection-end-line="620" selection-end-column="36" />
+            <state relative-caret-position="165">
+              <caret line="646" column="71" lean-forward="true" selection-start-line="646" selection-start-column="71" selection-end-line="646" selection-end-column="71" />
               <folding>
                 <element signature="e#899#2141#0" />
                 <element signature="e#2236#2495#0" />
@@ -210,8 +194,8 @@
       <find>errors</find>
       <find>df</find>
       <find>dup</find>
-      <find>apply</find>
       <find>drop</find>
+      <find>apply</find>
     </findStrings>
     <replaceStrings>
       <replace>SURVEY.</replace>
@@ -358,7 +342,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Survey/__init__.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Survey/survey_etl_main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -467,9 +451,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.survey_results_to_RICs" />
+        <item itemvalue="Python.q_metadata" />
         <item itemvalue="Python.results_by_RIC" />
         <item itemvalue="Python.__init__" />
-        <item itemvalue="Python.q_metadata" />
         <item itemvalue="Python.fast_lane" />
       </list>
     </recent_temporary>
@@ -583,7 +567,14 @@
       <option name="project" value="LOCAL" />
       <updated>1523974065997</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="question metadata files added">
+      <created>1524058206512</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1524058206512</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -602,17 +593,17 @@
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32830524" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.35306555" side_tool="true" weight="0.39903265" />
       <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49815693" weight="0.31377777" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.22853687" />
       <window_info anchor="bottom" id="Python Console" order="7" sideWeight="0.49815693" weight="0.32889965" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49815693" weight="0.31377777" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32889965" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15015975" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1517572" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" weight="0.32960597" />
-      <window_info anchor="right" id="SciView" order="3" weight="0.3035144" />
+      <window_info active="true" anchor="right" id="SciView" order="3" visible="true" weight="0.3035144" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.64693445" visible="true" weight="0.46044445" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.64693445" weight="0.46044445" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -623,28 +614,28 @@
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="8" weight="0.32977778" />
     </layout>
     <layout-to-restore>
-      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49815693" weight="0.31377777" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1485623" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32830524" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.22853687" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49815693" weight="0.31377777" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Python Console" order="8" sideWeight="0.49815693" weight="0.32889965" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.64693445" visible="true" weight="0.46044445" />
       <window_info anchor="right" id="Database" order="4" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.32889965" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.35306555" side_tool="true" weight="0.39903265" />
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.22853687" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="right" id="SciView" order="3" visible="true" weight="0.16506922" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="13" weight="0.32977778" />
-      <window_info anchor="bottom" id="Python Console" order="8" sideWeight="0.49815693" weight="0.32889965" />
+      <window_info id="Favorites" order="2" side_tool="true" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -694,7 +685,8 @@
     <MESSAGE value="fixed long int error" />
     <MESSAGE value="re-added certificate verification" />
     <MESSAGE value="apr17 commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="apr17 commit" />
+    <MESSAGE value="question metadata files added" />
+    <option name="LAST_COMMIT_MESSAGE" value="question metadata files added" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -723,16 +715,27 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="209" />
+      <option name="time" value="217" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="len(ric_datasheet)" language="Python" />
+        <watch expression="ans[ans['QuestionID'] == 5002132769]" language="Python" />
+        <watch expression="ric_survey_results[ric_survey_results['qid'] == 5002132769]" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="breakpointCondition">
+      <expression>
+        <expression-string>qid == '5002132768'</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>qid ==</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>ric == 'MaRS Discovery District'</expression-string>
         <language-id>Python</language-id>
@@ -773,13 +776,48 @@
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
+    </expressions>
+    <expressions id="watch">
       <expression>
-        <expression-string>df == None</expression-string>
+        <expression-string>ric_survey_results[ric_survey_results['qid'] == 5002132769]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
-    </expressions>
-    <expressions id="watch">
+      <expression>
+        <expression-string>ans[ans['QuestionID'] == 5002132769]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>ans[ans['QuestionID'] == 5002132768]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>ans[ans['QuestionID'] == 5002132717]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>ans[ans['QuestionID'] == ]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>ans[ans['QuestionID'].isna()]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>row[4]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>ric_data_dicts[&quot;Innovate Niagara&quot;]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>len(ric_datasheet)</expression-string>
         <language-id>Python</language-id>
@@ -787,46 +825,6 @@
       </expression>
       <expression>
         <expression-string>len(ric_data_sheet)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>t</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>t = t.sort_values(by=['rid_cid', 'col_title'], ascending=[True, True])</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>t = ric_datasheet[ric_datasheet.duplicated(subset=['rid_cid', 'col_title'])]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>len(ric_survey_results)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>ans[ans['Company_ID'] == 49402].sort_values(by='Question')</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>ans[ans['Company_ID'] == 49402].sort_values(by='col_title')</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>t = t.sort_values(by='rid_cid')</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>ric_datasheet[ric_datasheet.duplicated(subset=['rid_cid', 'col_title'])]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -845,14 +843,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/CrunchBase/crunchbase.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda/envs/etl/lib/python3.6/calendar.py" />
     <entry file="file://$PROJECT_DIR$/Shared/datasource.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -1018,44 +1008,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Survey/menu_actions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3825">
-          <caret line="620" column="36" selection-start-line="620" selection-start-column="33" selection-end-line="620" selection-end-column="36" />
-          <folding>
-            <element signature="e#899#2141#0" />
-            <element signature="e#2236#2495#0" />
-            <element signature="e#2605#4289#0" />
-            <element signature="e#4413#6884#0" />
-            <element signature="e#7016#8565#0" />
-            <element signature="e#8648#8777#0" />
-            <element signature="e#8887#9261#0" />
-            <element signature="e#9336#9819#0" />
-            <element signature="e#9893#10252#0" />
-            <element signature="e#10926#12712#0" />
-            <element signature="e#12813#13430#0" />
-            <element signature="e#13512#13986#0" />
-            <element signature="e#14070#14758#0" />
-            <element signature="e#14842#15553#0" />
-            <element signature="e#15628#16109#0" />
-            <element signature="e#17753#17922#0" />
-            <element signature="e#17991#18253#0" />
-            <element signature="e#18341#18345#0" />
-            <element signature="e#31206#31269#0" />
-            <element signature="e#32283#32573#0" />
-            <element signature="e#32648#33893#0" />
-            <element signature="e#33969#34799#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" selection-start-line="17" selection-end-line="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/internals.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="194">
@@ -1067,13 +1019,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
           <caret line="3613" selection-start-line="3613" selection-end-line="3613" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/frame.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="4358" selection-start-line="4358" selection-end-line="4358" />
         </state>
       </provider>
     </entry>
@@ -1105,30 +1050,41 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Survey/CapRevJob_by_RIC.py">
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/d936f066-4ba8-4d7f-9501-9e297b2c9721/console.sql">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="780">
-          <caret line="57" column="34" selection-start-line="57" selection-start-column="34" selection-end-line="57" selection-end-column="34" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="15">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Survey/q_metadata.py">
+    <entry file="file://$PROJECT_DIR$/Survey/menu_actions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="18" column="36" selection-start-line="18" selection-start-column="36" selection-end-line="18" selection-end-column="36" />
+        <state relative-caret-position="165">
+          <caret line="646" column="71" lean-forward="true" selection-start-line="646" selection-start-column="71" selection-end-line="646" selection-end-column="71" />
           <folding>
-            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#899#2141#0" />
+            <element signature="e#2236#2495#0" />
+            <element signature="e#2605#4289#0" />
+            <element signature="e#4413#6884#0" />
+            <element signature="e#7016#8565#0" />
+            <element signature="e#8648#8777#0" />
+            <element signature="e#8887#9261#0" />
+            <element signature="e#9336#9819#0" />
+            <element signature="e#9893#10252#0" />
+            <element signature="e#10926#12712#0" />
+            <element signature="e#12813#13430#0" />
+            <element signature="e#13512#13986#0" />
+            <element signature="e#14070#14758#0" />
+            <element signature="e#14842#15553#0" />
+            <element signature="e#15628#16109#0" />
+            <element signature="e#17753#17922#0" />
+            <element signature="e#17991#18253#0" />
+            <element signature="e#18341#18345#0" />
+            <element signature="e#31206#31269#0" />
+            <element signature="e#32283#32573#0" />
+            <element signature="e#32648#33893#0" />
+            <element signature="e#33969#34799#0" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Survey/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3585">
-          <caret line="249" column="22" selection-start-line="249" selection-start-column="22" selection-end-line="249" selection-end-column="22" />
         </state>
       </provider>
     </entry>
@@ -1139,24 +1095,72 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/d936f066-4ba8-4d7f-9501-9e297b2c9721/console.sql">
+    <entry file="file://$PROJECT_DIR$/Shared/config.ini">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        <state relative-caret-position="-903">
+          <caret line="2" column="105" selection-start-line="2" selection-start-column="105" selection-end-line="2" selection-end-column="121" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/config.ini">
+    <entry file="file://$PROJECT_DIR$/Survey/survey_etl_main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="105" selection-start-line="2" selection-start-column="105" selection-end-line="2" selection-end-column="121" />
+        <state relative-caret-position="388">
+          <caret line="354" column="28" lean-forward="true" selection-start-line="354" selection-start-column="28" selection-end-line="354" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="12" lean-forward="true" selection-start-line="13" selection-start-column="12" selection-end-line="13" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/xlsxwriter/worksheet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="56" selection-start-line="56" selection-end-line="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/series.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="2496" selection-start-line="2496" selection-end-line="2496" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Survey/CapRevJob_by_RIC.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="51" column="75" selection-start-line="51" selection-start-column="70" selection-end-line="51" selection-end-column="75" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Survey/q_metadata.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="26" column="32" lean-forward="true" selection-start-line="26" selection-start-column="32" selection-end-line="26" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/frame.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="4909" selection-start-line="4909" selection-end-line="4909" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Survey/survey_results_to_RICs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="625">
-          <caret line="150" column="21" lean-forward="true" selection-start-line="150" selection-start-column="21" selection-end-line="150" selection-end-column="21" />
+        <state relative-caret-position="260">
+          <caret line="180" lean-forward="true" selection-start-line="180" selection-end-line="180" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
           </folding>

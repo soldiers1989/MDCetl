@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f6c18a1d-94cf-424b-808c-0a71fdc83433" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Survey/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Survey/survey_etl_main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Survey/qs_metadata.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Survey/qs_metadata.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/Survey/qs_metadata.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Survey/survey_results_to_RICs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Survey/survey_results_to_RICs.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,7 +15,7 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/MDCetl$iaf.coverage" NAME="iaf Coverage Results" MODIFIED="1517667595615" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/IAF" />
     <SUITE FILE_PATH="coverage/MDCetl$match.coverage" NAME="match Coverage Results" MODIFIED="1517785437584" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Shared" />
-    <SUITE FILE_PATH="coverage/MDCetl$survey_results_to_RICs.coverage" NAME="survey_results_to_RICs Coverage Results" MODIFIED="1524151132770" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
+    <SUITE FILE_PATH="coverage/MDCetl$survey_results_to_RICs.coverage" NAME="survey_results_to_RICs Coverage Results" MODIFIED="1524162699959" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
     <SUITE FILE_PATH="coverage/MDCetl$Validate.coverage" NAME="Validate Coverage Results" MODIFIED="1518452236171" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/BAP" />
     <SUITE FILE_PATH="coverage/MDCetl$__init__.coverage" NAME="__init__ Coverage Results" MODIFIED="1524146000839" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
     <SUITE FILE_PATH="coverage/MDCetl$results_by_RIC.coverage" NAME="results_by_RIC Coverage Results" MODIFIED="1524146407482" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
@@ -80,8 +77,8 @@
       <file leaf-file-name="survey_results_to_RICs.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Survey/survey_results_to_RICs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="180" lean-forward="true" selection-start-line="180" selection-end-line="180" />
+            <state relative-caret-position="337">
+              <caret line="83" column="35" lean-forward="true" selection-start-line="83" selection-start-column="35" selection-end-line="83" selection-end-column="35" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
               </folding>
@@ -102,7 +99,7 @@
         <entry file="file://$PROJECT_DIR$/Survey/q_metadata.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="390">
-              <caret line="26" column="32" lean-forward="true" selection-start-line="26" selection-start-column="32" selection-end-line="26" selection-end-column="32" />
+              <caret line="26" column="32" selection-start-line="26" selection-start-column="32" selection-end-line="26" selection-end-column="32" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -114,7 +111,7 @@
         <entry file="file://$PROJECT_DIR$/Survey/survey_etl_main.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="388">
-              <caret line="354" column="28" lean-forward="true" selection-start-line="354" selection-start-column="28" selection-end-line="354" selection-end-column="28" />
+              <caret line="354" column="28" selection-start-line="354" selection-start-column="28" selection-end-line="354" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -123,7 +120,7 @@
         <entry file="file://$PROJECT_DIR$/Survey/menu_actions.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="165">
-              <caret line="646" column="71" lean-forward="true" selection-start-line="646" selection-start-column="71" selection-end-line="646" selection-end-column="71" />
+              <caret line="646" column="71" selection-start-line="646" selection-start-column="71" selection-end-line="646" selection-end-column="71" />
               <folding>
                 <element signature="e#899#2141#0" />
                 <element signature="e#2236#2495#0" />
@@ -574,7 +571,14 @@
       <option name="project" value="LOCAL" />
       <updated>1524058206512</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="answer cleaning func">
+      <created>1524152594312</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1524152594312</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -600,9 +604,9 @@
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1517572" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" weight="0.32960597" />
-      <window_info active="true" anchor="right" id="SciView" order="3" visible="true" weight="0.3035144" />
+      <window_info anchor="right" id="SciView" order="3" weight="0.3035144" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.64693445" visible="true" weight="0.46044445" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" sideWeight="0.64693445" visible="true" weight="0.46044445" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -686,14 +690,15 @@
     <MESSAGE value="re-added certificate verification" />
     <MESSAGE value="apr17 commit" />
     <MESSAGE value="question metadata files added" />
-    <option name="LAST_COMMIT_MESSAGE" value="question metadata files added" />
+    <MESSAGE value="answer cleaning func" />
+    <option name="LAST_COMMIT_MESSAGE" value="answer cleaning func" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/CrunchBase/crunchbase.py</url>
-          <line>256</line>
+          <line>357</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -703,7 +708,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Shared/datasource.py</url>
-          <line>11</line>
+          <line>15</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -727,47 +732,47 @@
   <component name="debuggerHistoryManager">
     <expressions id="breakpointCondition">
       <expression>
-        <expression-string>qid == '5002132768'</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>qid ==</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ric == 'MaRS Discovery District'</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>key == 'addedby'</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>campaignID == 3770286</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>str(resp[&quot;survey_data&quot;][key][&quot;id&quot;]) == '96'</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>str(question['id']) == '96'</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>len(df) &gt; 1</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>len(df) &gt; 0</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -779,27 +784,27 @@
     </expressions>
     <expressions id="watch">
       <expression>
-        <expression-string>ric_survey_results[ric_survey_results['qid'] == 5002132769]</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ans[ans['QuestionID'] == 5002132769]</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ans[ans['QuestionID'] == 5002132768]</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ans[ans['QuestionID'] == 5002132717]</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ans[ans['QuestionID'] == ]</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -814,7 +819,7 @@
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ric_data_dicts[&quot;Innovate Niagara&quot;]</expression-string>
+        <expression-string />
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -1060,7 +1065,7 @@
     <entry file="file://$PROJECT_DIR$/Survey/menu_actions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
-          <caret line="646" column="71" lean-forward="true" selection-start-line="646" selection-start-column="71" selection-end-line="646" selection-end-column="71" />
+          <caret line="646" column="71" selection-start-line="646" selection-start-column="71" selection-end-line="646" selection-end-column="71" />
           <folding>
             <element signature="e#899#2141#0" />
             <element signature="e#2236#2495#0" />
@@ -1105,7 +1110,7 @@
     <entry file="file://$PROJECT_DIR$/Survey/survey_etl_main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="388">
-          <caret line="354" column="28" lean-forward="true" selection-start-line="354" selection-start-column="28" selection-end-line="354" selection-end-column="28" />
+          <caret line="354" column="28" selection-start-line="354" selection-start-column="28" selection-end-line="354" selection-end-column="28" />
         </state>
       </provider>
     </entry>
@@ -1143,7 +1148,7 @@
     <entry file="file://$PROJECT_DIR$/Survey/q_metadata.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="390">
-          <caret line="26" column="32" lean-forward="true" selection-start-line="26" selection-start-column="32" selection-end-line="26" selection-end-column="32" />
+          <caret line="26" column="32" selection-start-line="26" selection-start-column="32" selection-end-line="26" selection-end-column="32" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
@@ -1159,8 +1164,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Survey/survey_results_to_RICs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="180" lean-forward="true" selection-start-line="180" selection-end-line="180" />
+        <state relative-caret-position="337">
+          <caret line="83" column="35" lean-forward="true" selection-start-line="83" selection-start-column="35" selection-end-line="83" selection-end-column="35" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
           </folding>

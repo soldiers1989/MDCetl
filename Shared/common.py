@@ -14,20 +14,20 @@ import smtplib
 
 class Common:
 
-	user_response_yes = ['y', 'yes']
-	user_response_yesno = ['y', 'yes', 'n', 'no']
-	Provinces = ['ON', 'QC', 'NS', 'NB', 'MB', 'BC', 'PE', 'SK', 'AB', 'NL']
-	pc_pattern = '[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z]\s*[0-9][ABCEGHJ-NPRSTV-Z][0-9]'
-	url_pattern = '^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$'
-	email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
-	address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
-	suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Incorporated', 'Inc.', 'inc', 'Inc','Corporation', 'Corp.', 'Corp', 'Communications', 'Technologies', 'Technology','Tech.','Industry','Industries','Enterprise']
-	#
-	# Note: Consider 'Systems' and 'Solutions'
-	#
-	stage = ['idea', 'discovery', 'validation', 'efficiency', 'scale']
-	basic_name = ''
-	temp_name = ''
+    user_response_yes = ['y', 'yes']
+    user_response_yesno = ['y', 'yes', 'n', 'no']
+    Provinces = ['ON', 'QC', 'NS', 'NB', 'MB', 'BC', 'PE', 'SK', 'AB', 'NL']
+    pc_pattern = '[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z]\s*[0-9][ABCEGHJ-NPRSTV-Z][0-9]'
+    url_pattern = '^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$'
+    email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
+    address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
+    suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Incorporated', 'Inc.', 'inc', 'Inc','Corporation', 'Corp.', 'Corp', 'Communications', 'Technologies', 'Technology','Tech.','Industry','Industries','Enterprise']
+    #
+    # Note: Consider 'Systems' and 'Solutions'
+    #
+    stage = ['idea', 'discovery', 'validation', 'efficiency', 'scale']
+    basic_name = ''
+    temp_name = ''
 
     @staticmethod
     def progress(char, index, total):
@@ -101,165 +101,165 @@ class Common:
         except ValueError:
             return False
 
-	@staticmethod
-	def convert_yes_no(val):
-		value = val.lower() if val is not None else ''
-		if value == 'yes':
-			return 1
-		elif value == 'no':
-			return 0
-		else:
-			return None
+    @staticmethod
+    def convert_yes_no(val):
+        value = val.lower() if val is not None else ''
+        if value == 'yes':
+            return 1
+        elif value == 'no':
+            return 0
+        else:
+            return None
 
-	@staticmethod
-	def get_basic_name(name):
-		Common.temp_name = name
-		if name is not None and name != '':
-			for sf in Common.suffix:
-				Common.temp_name = re.sub(sf, '', Common.temp_name)
-			Common.basic_name = re.sub('[^A-Za-z0-9]+', '', Common.temp_name).lower()
-			return Common.basic_name
-		return {'error': 'No name found'}
+    @staticmethod
+    def get_basic_name(name):
+        Common.temp_name = name
+        if name is not None and name != '':
+            for sf in Common.suffix:
+                Common.temp_name = re.sub(sf, '', Common.temp_name)
+            Common.basic_name = re.sub('[^A-Za-z0-9]+', '', Common.temp_name).lower()
+            return Common.basic_name
+        return {'error': 'No name found'}
 
     @staticmethod
     def generate_basic_name(df):
         df['BasicName'] = df.apply(lambda dfs: Common.get_basic_name(dfs.Name), axis=1)
         return df
 
-	@staticmethod
-	def get_cvca_deal_types(deal_types):
-		delas_sector = None
-		deal = deal_types.lower() if deal_types is not None else ''
-		deal = deal.replace("- ", "")
-		try:
-			if deal == '':
-				deals_sector = None
-			elif 'bridge' in deal:
-				deals_sector = dt.Bridge_VC.value
-			elif 'early' in deal:
-				deals_sector = dt.Early_Stage_VC.value
-			elif 'exits vc' in deal:
-				deals_sector = dt.Exits_VC.value
-			elif 'later stage' in deal:
-				deals_sector = dt.Later_Stage_VC.value
-			elif 'other vc' in deal:
-				deals_sector = dt.Other_VC.value
-			elif 'pe add on' in deal:
-				deals_sector = dt.PE_Add_on.value
-			elif 'pe buyout' in deal:
-				deals_sector = dt.PE_Buyout.value
-			elif 'pe debt' in deal:
-				deals_sector = dt.PE_Debt.value
-			elif 'pe follow on' in deal:
-				deals_sector = dt.PE_Follow_on.value
-			elif 'pe growth' in deal:
-				deals_sector = dt.PE_Growth.value
-			elif 'pe infrastructure' in deal:
-				deals_sector = dt.PE_Infrastructure.value
-			elif 'pe private placement' in deal:
-				deals_sector = dt.PE_Private_Placement.value
-			elif 'pe privatization' in deal:
-				deals_sector = dt.PE_Privatization.value
-			elif 'pe recap' in deal:
-				deals_sector = dt.PE_Recap.value
-			elif 'pe secondary buyout' in deal:
-				deals_sector = dt.PE_Secondary_Buyout.value
-			elif 'pe secondary sale' in deal:
-				deals_sector = dt.PE_Secondary_Sale.value
-			elif 'pipe' in deal:
-				deals_sector = dt.PIPE.value
-			elif 'seed vc' in deal:
-				deals_sector = dt.Seed_VC.value
-			elif 'venture debt vc' in deal:
-				deals_sector = dt.Venture_Debt_VC.value
-			elif 'exits pe' in deal:
-				deals_sector = dt.Exits_PE.value
-			elif 'pe-backed ipo/rto' in deal:
-				deals_sector = dt.PE_backed_IPO_RTO.value
-			elif 'vc-backed ipo/rto' in deal:
-				deals_sector = dt.VC_backed_IPO_RTO.value
-			else:
-				deals_sector = None
-			return deals_sector
-		except Exception as ex:
-			print(ex)
+    @staticmethod
+    def get_cvca_deal_types(deal_types):
+        delas_sector = None
+        deal = deal_types.lower() if deal_types is not None else ''
+        deal = deal.replace("- ", "")
+        try:
+            if deal == '':
+                deals_sector = None
+            elif 'bridge' in deal:
+                deals_sector = dt.Bridge_VC.value
+            elif 'early' in deal:
+                deals_sector = dt.Early_Stage_VC.value
+            elif 'exits vc' in deal:
+                deals_sector = dt.Exits_VC.value
+            elif 'later stage' in deal:
+                deals_sector = dt.Later_Stage_VC.value
+            elif 'other vc' in deal:
+                deals_sector = dt.Other_VC.value
+            elif 'pe add on' in deal:
+                deals_sector = dt.PE_Add_on.value
+            elif 'pe buyout' in deal:
+                deals_sector = dt.PE_Buyout.value
+            elif 'pe debt' in deal:
+                deals_sector = dt.PE_Debt.value
+            elif 'pe follow on' in deal:
+                deals_sector = dt.PE_Follow_on.value
+            elif 'pe growth' in deal:
+                deals_sector = dt.PE_Growth.value
+            elif 'pe infrastructure' in deal:
+                deals_sector = dt.PE_Infrastructure.value
+            elif 'pe private placement' in deal:
+                deals_sector = dt.PE_Private_Placement.value
+            elif 'pe privatization' in deal:
+                deals_sector = dt.PE_Privatization.value
+            elif 'pe recap' in deal:
+                deals_sector = dt.PE_Recap.value
+            elif 'pe secondary buyout' in deal:
+                deals_sector = dt.PE_Secondary_Buyout.value
+            elif 'pe secondary sale' in deal:
+                deals_sector = dt.PE_Secondary_Sale.value
+            elif 'pipe' in deal:
+                deals_sector = dt.PIPE.value
+            elif 'seed vc' in deal:
+                deals_sector = dt.Seed_VC.value
+            elif 'venture debt vc' in deal:
+                deals_sector = dt.Venture_Debt_VC.value
+            elif 'exits pe' in deal:
+                deals_sector = dt.Exits_PE.value
+            elif 'pe-backed ipo/rto' in deal:
+                deals_sector = dt.PE_backed_IPO_RTO.value
+            elif 'vc-backed ipo/rto' in deal:
+                deals_sector = dt.VC_backed_IPO_RTO.value
+            else:
+                deals_sector = None
+            return deals_sector
+        except Exception as ex:
+            print(ex)
 
-	@staticmethod
-	def convert_province_to_id(province):
-		current_province = None
-		pro = province.lower() if province is not None else ''
-		if pro == 'alberta':
-			current_province = 1
-		elif pro == 'british columbia':
-			current_province = 2
-		elif pro == 'manitoba':
-			current_province = 3
-		elif pro == 'new brunswick':
-			current_province = 4
-		elif pro == 'Newfoundland and Labrador':
-			current_province = 5
-		elif pro == 'Northwest Territories':
-			current_province = 6
-		elif pro == 'Nova Scotia':
-			current_province = 7
-		elif pro == 'Nunavut':
-			current_province = 8
-		elif pro == 'Ontario':
-			current_province = 9
-		elif pro == 'Prince Edward Island':
-			current_province = 10
-		elif pro == 'Quebec':
-			current_province = 11
-		elif pro == 'Saskatchewan':
-			current_province = 12
-		elif pro == 'Saskatchewan':
-			current_province = 13
-		else:
-			current_province = None
+    @staticmethod
+    def convert_province_to_id(province):
+        current_province = None
+        pro = province.lower() if province is not None else ''
+        if pro == 'alberta':
+            current_province = 1
+        elif pro == 'british columbia':
+            current_province = 2
+        elif pro == 'manitoba':
+            current_province = 3
+        elif pro == 'new brunswick':
+            current_province = 4
+        elif pro == 'Newfoundland and Labrador':
+            current_province = 5
+        elif pro == 'Northwest Territories':
+            current_province = 6
+        elif pro == 'Nova Scotia':
+            current_province = 7
+        elif pro == 'Nunavut':
+            current_province = 8
+        elif pro == 'Ontario':
+            current_province = 9
+        elif pro == 'Prince Edward Island':
+            current_province = 10
+        elif pro == 'Quebec':
+            current_province = 11
+        elif pro == 'Saskatchewan':
+            current_province = 12
+        elif pro == 'Saskatchewan':
+            current_province = 13
+        else:
+            current_province = None
 
-		return current_province
+        return current_province
 
-	@staticmethod
-	def convert_province_to_num(province):
-		current_province = None
-		pro = province.lower() if province is not None else ''
-		if 'alberta' in pro:
-			current_province = 1
-		elif 'british' in pro or 'bc' in pro:
-			current_province = 2
-		elif 'manitoba' in pro:
-			current_province = 3
-		elif 'brunswick' in pro:
-			current_province = 4
-		elif 'newfoundland' in pro:
-			current_province = 5
-		elif 'northwest' in pro:
-			current_province = 6
-		elif 'scotia' in pro:
-			current_province = 7
-		elif 'nunavut' in pro:
-			current_province = 8
-		elif 'ontario' in pro:
-			current_province = 9
-		elif 'prince' in pro or 'pei' in pro or 'island' in pro:
-			current_province = 10
-		elif 'quebec' in pro or 'québec' in pro:
-			current_province = 11
-		elif 'saskatchewan' in pro:
-			current_province = 12
-		elif 'yukon' in pro:
-			current_province = 13
-		else:
-			current_province = None
+    @staticmethod
+    def convert_province_to_num(province):
+        current_province = None
+        pro = province.lower() if province is not None else ''
+        if 'alberta' in pro:
+            current_province = 1
+        elif 'british' in pro or 'bc' in pro:
+            current_province = 2
+        elif 'manitoba' in pro:
+            current_province = 3
+        elif 'brunswick' in pro:
+            current_province = 4
+        elif 'newfoundland' in pro:
+            current_province = 5
+        elif 'northwest' in pro:
+            current_province = 6
+        elif 'scotia' in pro:
+            current_province = 7
+        elif 'nunavut' in pro:
+            current_province = 8
+        elif 'ontario' in pro:
+            current_province = 9
+        elif 'prince' in pro or 'pei' in pro or 'island' in pro:
+            current_province = 10
+        elif 'quebec' in pro or 'québec' in pro:
+            current_province = 11
+        elif 'saskatchewan' in pro:
+            current_province = 12
+        elif 'yukon' in pro:
+            current_province = 13
+        else:
+            current_province = None
 
-		return current_province
+        return current_province
 
-	@staticmethod
-	def scientific_to_decimal(number):
-		if number is not None:
-			dec = float(number)
-			print('{} *----> {}'.format(number, str(dec)))
-			return str(dec)
+    @staticmethod
+    def scientific_to_decimal(number):
+        if number is not None:
+            dec = float(number)
+            print('{} *----> {}'.format(number, str(dec)))
+            return str(dec)
 
     @staticmethod
     def get_stage_level(stage):
@@ -376,21 +376,21 @@ class Common:
     # 		seed = df.values[0][0]
     # 	return seed
 
-	@staticmethod
-	def sql_friendly(strs):
-		lst = []
-		for i, c in enumerate(strs):
-			if c == '\'':
-				lst.append(i)
-		for i in range(len(lst)):
-			p = lst[i]
-			value = strs[:p] + '\'' + strs[p:]
-			strs = value
-			lst = [x + 1 for x in lst]
-		return strs
-	@staticmethod
-	def sql_compliant(strs):
-		return str(strs).replace("'", "\''")
+    @staticmethod
+    def sql_friendly(strs):
+        lst = []
+        for i, c in enumerate(strs):
+            if c == '\'':
+                lst.append(i)
+        for i in range(len(lst)):
+            p = lst[i]
+            value = strs[:p] + '\'' + strs[p:]
+            strs = value
+            lst = [x + 1 for x in lst]
+        return strs
+    @staticmethod
+    def sql_compliant(strs):
+        return str(strs).replace("'", "\''")
 
     @staticmethod
     def set_datasource(file):
@@ -435,14 +435,14 @@ class Common:
 
         return d_source
 
-	@staticmethod
-	def df_list(dataframe):
-		try:
-			df = dataframe.where(pd.notnull(dataframe), '')
-			values = df.values.tolist()
-			return values
-		except ValueError:
-			return None
+    @staticmethod
+    def df_list(dataframe):
+        try:
+            df = dataframe.where(pd.notnull(dataframe), '')
+            values = df.values.tolist()
+            return values
+        except ValueError:
+            return None
 
     @staticmethod
     def get_api_data_old(url, user_key, attempts=5):

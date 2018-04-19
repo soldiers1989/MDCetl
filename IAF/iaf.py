@@ -8,33 +8,25 @@ class IAF(ds.DataSource):
 
 	def __init__(self):
 		super().__init__('box_file_path', 'path_iaf', enum.DataSourceType.IAF)
-		self.iaf_columns = ['Date_supplied','Firm_name','Entrepreneur_name', 'Sector', 'Number_of_Employees', 'Board_observer_rights','New_non_spin_off_or_existing_firm',
-							'Angel', 'VC', 'Amount_of_other_dilutive_financing',
-							'Term_loan','IRAP', 'FedDev','SR&ED', 'OCE', 'Other',
-							'Number_of_Business_Plans_Developed', 'Number_of_prototypes_developed','Number_of_new_patents_applied_For', 'Number_of_New_Patents_Received', 'Other_non_patent_IP',
-							'Number_of_finance_accounting','Number_of_marketing_sales', 'Number_of_technical_scientific', 'CEO_COO', 'Customer_service_support', 'Others',
-
-							'Current_year_estimated_sales','Quarterly Revenue', 'Revenue_year_to_date', 'Net_working_capital', 'Burn_rate',
+		self.iaf_columns = ['Date_supplied','Firm_name','Entrepreneur_name', 'Sector', 'Number_of_employees', 'Board_observer_rights','New_non_spin_off_or_existing_firm',
+							'Angel', 'VC', 'Amount_of_other_dilutive_financing','Total_investment_leverage','Follow_on_closed_cumulative',
+							'Term_loan','IRAP', 'FedDev','SRED', 'OCE', 'Non_Dilutive_Other','Total_non_dilutive','Non_dilutive_cumulative',
+							'Number_of_business_plans_developed', 'Number_of_prototypes_developed','Number_of_new_patents_applied_for', 'Number_of_new_patents_reviewed', 'Other_non_patent_IP',
+							'Number_of_finance_accounting','Number_of_marketing_sales', 'Number_of_technical_scientific', 'CEO_COO', 'Customer_service_support', 'Talent_Attracted_Others','Total_talent_attracted',
+							'Current_year_estimated_sales','Quarterly_Revenue', 'Revenue_year_to_date', 'Networking_capital', 'Burn_rate',
 							'Annual_revenue_growth', 'Revenue_out_side_of_canada','R_and_D_expenditure','EBITDA',
-							'Number_of_new_products_marketed', 'Number_of_new_services_marketed', 'Number_of_new_processes_commercialized',
-							'Number_of_new_international_exported_products_services']
+							'Number_of_new_products_marketed', 'Number_of_new_service_marketed', 'Number_of_new_processes_commercialized',
+							'Number_of_new_international_exported_products_services', 'CompanyID']
 
-		self.iaf_cols = ['CompanyID','Date_supplied', 'Entrepreneur_name', 'Sector', 'Number_of_Employees',
-							'Board_observer_rights', 'New_non_spin_off_or_existing_firm',
-							'Angel', 'VC', 'Amount_of_other_dilutive_financing',
-							'Term_loan', 'IRAP', 'FedDev', 'SR&ED', 'OCE', 'Other',
-							'Number_of_Business_Plans_Developed', 'Number_of_prototypes_developed',
-							'Number_of_new_patents_applied_For', 'Number_of_New_Patents_Received',
-							'Other_non_patent_IP',
-							'Number_of_finance_accounting', 'Number_of_marketing_sales',
-							'Number_of_technical_scientific', 'CEO_COO', 'Customer_service_support', 'Others',
-
-							'Current_year_estimated_sales', 'Quarterly Revenue', 'Revenue_year_to_date',
-							'Net_working_capital', 'Burn_rate',
-							'Annual_revenue_growth', 'Revenue_out_side_of_canada', 'R_and_D_expenditure', 'EBITDA',
-							'Number_of_new_products_marketed', 'Number_of_new_services_marketed',
-							'Number_of_new_processes_commercialized',
-							'Number_of_new_international_exported_products_services', 'Firm_name']
+		self.iaf_cols = ['CompanyID', 'Firm_name', 'Date_supplied', 'Entrepreneur_name', 'Sector', 'Number_of_employees', 'Board_observer_rights',
+						 'New_non_spin_off_or_existing_firm', 'Angel', 'VC', 'Amount_of_other_dilutive_financing', 'Total_investment_leverage',
+						 'Follow_on_closed_cumulative', 'Term_loan', 'IRAP', 'FedDev', 'SRED', 'OCE', 'Non_Dilutive_Other', 'Total_non_dilutive',
+						 'Non_dilutive_cumulative', 'Number_of_business_plans_developed', 'Number_of_prototypes_developed',
+						 'Number_of_new_patents_applied_for', 'Number_of_new_patents_reviewed', 'Other_non_patent_IP', 'Number_of_finance_accounting',
+						 'Number_of_marketing_sales', 'Number_of_technical_scientific', 'CEO_COO', 'Customer_service_support', 'Talent_Attracted_Others',
+						 'Total_talent_attracted', 'Current_year_estimated_sales', 'Quarterly_Revenue', 'Revenue_year_to_date', 'Networking_capital',
+						 'Burn_rate', 'Annual_revenue_growth', 'Revenue_out_side_of_canada', 'R_and_D_expenditure', 'EBITDA', 'Number_of_new_products_marketed',
+						 'Number_of_new_service_marketed', 'Number_of_new_processes_commercialized', 'Number_of_new_international_exported_products_services']
 
 		self.summary_columns = ['Company_name','Sector','Prime','Investment_manager', 'Closing_date', 'Committed', 'Disbursed', 'Net_working_capital',
 								'Burn_rate', 'Runway_monthly', 'Current_number_of_employees',
@@ -58,11 +50,14 @@ class IAF(ds.DataSource):
 
 	def read_iaf_per_company_files(self):
 		self.data, _ = self.file.read_source_file(enum.FileType.SPREAD_SHEET, enum.MDCDataSource.IAF, enum.Combine.FOR_NONE.value)
-
-		self.data= self.data.drop(columns=[9,10,11,12,16,17,18,25,26,27,28,34,35,42,43,44])
+		self.data.reset_index()
+		self.file.save_as_csv(self.data, 'IAF_2017_ORIGINAL.xlsx', os.getcwd() + '/ETL/QA', 'IAF Companies - 2017')
+		self.data= self.data.drop(columns= [7,8,9,10,16,25,26,32,33,41,42]) #[9,10,11,12,16,17,18,25,26,27,28,34,35,42,43,44])
+		self.data['CompanyID'] = None
 		print(self.data.columns)
-		self.data.columns = self.iaf_columns
-		self.file.save_as_csv(self.data, 'DETAILS_FOR_ETL_2017.xlsx', os.getcwd() + '/ETL', 'IAF Summary 2017')
+		self.data.columns = list(self.iaf_columns)
+		self.data = self.data[list(self.iaf_cols)]
+		self.file.save_as_csv(self.data, 'IAF_2017_PROCESSED.xlsx', os.getcwd(), 'IAF Companies - 2017')
 
 	def push_iaf_summary_db(self):
 		self.common.change_working_directory(self.enum.FilePath.path_iaf.value)
@@ -100,6 +95,6 @@ if __name__ == '__main__':
 	# iaf.read_iaf_summary_files()
 	# iaf.push_iaf_summary_db()
 	# iaf.generate_iaf_company_basic_name()
-	# iaf.read_iaf_per_company_files()
+	iaf.read_iaf_per_company_files()
 	# iaf.push_iaf_detail_db()
-	iaf.getpath()
+	# iaf.getpath()

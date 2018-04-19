@@ -1,103 +1,75 @@
-import tweepy
+import Shared.datasource as ds
+import Shared.enums as enum
 import pandas as pd
-import time
-import jsonpickle
 import os
 
 
-class EthiopixTweet:
+class CVCA(ds.DataSource):
+    def __init__(self):
+        super().__init__('box_file_path', 'path_cvca', enum.DataSourceType.CVCA)
 
-	def __init__(self):
-		self.ts_all = []
-		self.ts = []
-		self.col = None
-		self.file_name = '{}_tweet_{}.txt'
-		self.api_key = '4zdeH8Fkvh9nhBYXHm0RLFVET'
-		self.api_secret = 'LCFHgwBfmFRd9mte4gijeKPA27EeXpeghfISiGYjBrsUlUY7HY'
-		self.access_token = '33517809-kMvs9vGLyh021P4nqMpPkKJWyFeQ6lVDddxqOg1Er'
-		self.access_token_secret = 'a4hKveAobzeVAAlXOKrUUuRbv95llNl6XI3DxtfFGG8JU'
-		self.auth_token = tweepy.OAuthHandler(self.api_key, self.api_secret)
-		self.auth_token.set_access_token(self.access_token, self.access_token_secret)
-		self.api_token = tweepy.API(self.auth_token, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+        self.cvca_columns_db = ['CompanyID','investeefirm_name', 'Disclosure', 'deal_province_country', 'Province',
+                        'deal_investors', 'AnnounceDate', 'deal_close_date', 'deal_status', 'deal_sector_name',
+                        'Deal', 'deal_amount', 'deal_currency', 'deal_exrate', 'Year']
 
-		self.auth = tweepy.AppAuthHandler(self.api_key, self.api_secret)
-		self.api = tweepy.API(self.auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+        self.cvca_exit_db = ['CompanyID', 'investeefirm_name', 'deal_title', 'Disclosure', 'deal_province_country',
+                             'Province', 'deal_close_date', 'deal_status', 'deal_sector_name',
+                             'Deal', 'TotalTotal (Cdn$ mil)', 'Year']
 
-		self.searchQuery = ''
-		self.maxTweets = 10000000
-		self.tweetsPerQry = 100
-		self.sinceID = None
-		self.maxID = -1
-		self.topics = ['Ethiopian Reporter', 'Addis Fortune', 'Capitaleth', 'Ethiopia News Agency', 'Tigrai Online',
-		               'Oromia Media Network', 'VOA Amharic', 'DW (Amharic)']
+    def read_cvca_file(self):
+        self.common.change_working_directory(self.enum.FilePath.path_cvca.value)
+        cvls = pd.read_excel('2017 VC and PE data extract_MaRS Data Catalyst.xlsx', sheet_name=None)
+        for i in range(len(list(cvls.items()))):
+            if i == 0:
+                df_deals = list(cvls.items())[i][1]
+                df_deals = df_deals.drop('TotalTotal (Cdn$ mil)', axis=1)
+                df_deals['Deal'] = df_deals.apply(lambda dfs: self.common.get_cvca_deal_types(dfs.deal_type_name), axis=1)
+                df_deals['Disclosure'] = df_deals.apply(lambda dfs: self.common.convert_yes_no(dfs.deal_disclosure), axis=1)
+                df_deals['Province'] = df_deals.apply(lambda dfs: self.common.convert_province_to_num(dfs.deal_province_name), axis=1)
+                df_deals['CompanyID'] = None
+                df_deals['Year'] = 2017
+                print(df_deals.head())
+                df_deals = df_deals.drop(['deal_type_name', 'deal_disclosure'], axis=1)
+                df_deals = df_deals[self.cvca_columns_db]
+                print(df_deals.head())
+                values = self.common.df_list(df_deals)
+                self.db.bulk_insert(enum.SQL.sql_cvca_deals.value, values)
+                print('CVCA Moved to database.')
+            elif i == 1:
+                df_exits = list(cvls.items())[i][1]
+                df_exits['CompanyID'] = None
+                df_exits['Deal'] = df_exits.apply(lambda dfs: self.common.get_cvca_deal_types(dfs.deal_type_name), axis=1)
+                df_exits['Disclosure'] = df_exits.apply(lambda dfs: self.common.convert_yes_no(dfs.deal_disclosure), axis=1)
+                df_exits['Province'] = df_exits.apply(lambda dfs: self.common.convert_province_to_num(dfs.deal_province_name), axis=1)
+                df_exits['Year'] = 2017
+                print(df_exits.head())
+                df_exits = df_exits.drop(['deal_province_name', 'deal_disclosure', 'deal_type_name'], axis=1)
+                df_exits = df_exits[self.cvca_exit_db]
+                print(df_exits.head())
+                print(list(df_exits.columns))
+                values = self.common.df_list(df_exits)
+                self.db.bulk_insert(enum.SQL.sql_cvca_exits.value, values)
+                print('All done...?')
+            else:
+                print('No more sheet to process.')
 
-	def save_csv(self, lst, col, file_name):
-		df = pd.DataFrame(lst, columns=col)
-		df.to_csv(file_name)
+    def cvca_venture_basic_name(self):
+        self.data = self.db.pandas_read(self.enum.SQL.sql_cvca_select.value)
+        for _, cb in self.data.iterrows():
+            sql_update = self.enum.SQL.sql_cvca_update.value.format(self.common.get_basic_name(cb.CompanyName), cb.ID)
+            # print(sql_update)
+            self.db.execute(sql_update)
+            print(cb.CompanyName)
 
-	def get_tweet_first(self):
-		# self.ts.append(tweet._json)
-		# if len(self.ts) == 100:
-		# 	print('Saving first 100...')
-		# 	self.save_csv(self.ts, tweet._json.keys(), self.file_name.format(int(time.time())))
-		# 	print('Saving at {}'.format(int(time.time())))
-		# 	self.ts_all = self.ts_all + self.ts
-		# 	self.ts = []
-		tweets = self.api_token.search('Ethiopia')
-		for t in tweets:
-			self.ts.append(t._json)
-			col = t._json.keys()
-		df = pd.DataFrame(self.ts, columns=col)
-		print(df.head())
-		df.to_csv('ethiopic_tweeter.csv')
-
-	def get_tweet_second(self):
-		tweets = tweepy.Cursor(self.api_token.search, q='EPRDF', include_entities=True).items()
-
-		# x = tweets.next()
-		for t in tweets:
-			self.ts.append(t._json)
-			if len(self.ts) == 200:
-				print('Saving first 100...')
-				self.save_csv(self.ts, t._json.keys(), self.file_name.format(int(time.time())))
-
-	def get_tweet_third(self):
-		if not self.api:
-			print('Authentication Issue occured')
-		else:
-			os.chdir('All Tweets')
-			for topic in self.topics:
-				tweetCount = 0
-				self.sinceID = None
-				self.maxID = -1
-				self.searchQuery = topic
-				file_name = self.file_name.format(self.searchQuery, int(time.time()))
-				with open(file_name, 'w') as file:
-					while tweetCount < self.maxTweets:
-						try:
-							if self.maxID <= 0:
-								if not self.sinceID:
-									tweets = self.api.search(q=self.searchQuery, count=self.tweetsPerQry)
-								else:
-									tweets = self.api.search(q=self.searchQuery, count=self.tweetsPerQry, since_id=self.sinceID)
-							else:
-								if not self.sinceID:
-									tweets = self.api.search(q=self.searchQuery, count=self.tweetsPerQry, max_id=str(self.maxID - 1))
-								else:
-									tweets = self.api.search(q=self.searchQuery, count=self.tweetsPerQry, max_id=str(self.maxID - 1), since_id=self.sinceID)
-							if not tweets:
-								print('------ALL Tweets downloaded completely-----')
-								break
-							for tweet in tweets:
-								file.write(jsonpickle.encode(tweet._json, unpicklable=False) + '\n')
-								tweetCount += len(tweets)
-								print('Download {} tweets'.format(tweetCount))
-								self.maxID = tweets[-1].id
-						except tweepy.TweepError as e:
-							print('Exceptions: ' + str(e))
-							break
+    def get_basic_name(self):
+        self.db.update_basic_name(self.enum.SQL.sql_cvca_basic_company.value,
+                                  'ID',
+                                  'CompanyName',
+                                  self.enum.SQL.sql_cvca_basic_company_update.value)
 
 
 if __name__ == '__main__':
-	twe = EthiopixTweet()
-	twe.get_tweet_third()
+    cv = CVCA()
+    # cv.read_cvca_file()
+    # cv.cvca_venture_basic_name()
+    cv.get_basic_name()

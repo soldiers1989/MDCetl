@@ -216,10 +216,10 @@ class SQL(Enum):
 		# 'SELECT [Company Name] as Name, [Former / Alternate Names], [Street Address], City, Province, [Postal Code],Website FROM BAP.QuarterlyCompanyData'
 	# sql_dim_company_insert = 'INSERT INTO[Reporting].[DimCompany] VALUES({},\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',{},\'{}\',\'{}\')'
 	# sql_dim_company_source_insert = 'INSERT INTO[Reporting].[DimCompanySource] VALUES({}, {},\'{}\',\'{}\',{},{},\'{}\',\'{}\',\'{}\''
-	sql_dim_company_source_update = 'UPDATE[Reporting].[DimCompanySource] SET CompanyID = {} WHERE Name = \'{}\''
+	sql_dim_company_source_update = 'UPDATE [Reporting].[DimCompanySource] SET CompanyID = {} WHERE Name = \'{}\''
 	sql_dim_company = 'SELECT CompanyID, [CompanyName] FROM {} WHERE CompanyName IS NOT NULL'
 	sql_dim_company_source = 'SELECT CompanyID, [Name] as [CompanyName] FROM {} WHERE[Name] IS NOT NULL'
-	sql_update_company_source ='UPDATE[Config].[CompanyDataRaw] SET CompanyID = {} WHERE ID = {}'
+	sql_update_company_source ='UPDATE [Config].[CompanyDataRaw] SET CompanyID = {} WHERE ID = {}'
 
 	sql_batch_update = 'Update {} SET BatchId = {} WHERE SourceSystem = {} AND DataSource = {}'
 	sql_batch_select = 'SELECT DISTINCT DataSourceId, BatchID FROM Config.ImportBatch WHERE Year = {} AND Quarter = \'Q{}\' AND SourceSystemID = {}'
@@ -270,8 +270,8 @@ class SQL(Enum):
 	sql_bap_fact_ric_aggregation_insert = 'INSERT INTO [Reporting].[FactRICAggregation] VALUES (?,?,?,?,?,?,?,?)'
 	sql_bap_fra_insert = 'INSERT INTO [Reporting].[FactRICAggregation] VALUES {}'
 
-	sql_company_aggregate_program = 'SELECT  * FROM BAP.ProgramData WHERE Year = {} AND Quarter = \'Q{}\''
-	sql_company_aggregate_program_youth = 'SELECT  * FROM BAP.ProgramDataYouth WHERE Year = {} AND Quarter = \'Q{}\''
+	sql_company_aggregate_program = 'SELECT * FROM BAP.ProgramData WHERE Year = {} AND Quarter = \'Q{}\''
+	sql_company_aggregate_program_youth = 'SELECT * FROM BAP.ProgramDataYouth WHERE Year = {} AND Quarter = \'Q{}\''
 
 	sql_postal_code_insert = 'INSERT INTO [dbo].[DimPostalCode] VALUES (?,?,?,?,?,?,?,?)'
 
@@ -587,6 +587,8 @@ class SQL(Enum):
 	sql_duplicate_venture_truncate = '''TRUNCATE TABLE MDCRaw.CONFIG.DuplicateVenture'''
 	sql_duplicate_venture_select = '''SELECT CompanyID, DuplicateCompanyID, Name as [Company Name], DuplicaateName as [Duplicate Company Name], BasicName FROM MDCRaw.CONFIG.DuplicateVenture'''
 
+	sql_update_venture_duplicates = ''' UPDATE MDCRaw.dbo.Venture SET Duplicate = {} WHERE ID = {}'''
+
 	sql_dw_fact_ric_company_data = '''
 		SELECT
   		CompanyID ,
@@ -689,6 +691,75 @@ class SQL(Enum):
 	sql_iaf_summary_update = 'UPDATE MDCRaw.IAF.IAFSummary SET BasicName = \'{}\' WHERE ID = {}'
 	sql_iaf_detail_insert = 'INSERT INTO MDCRaw.IAF.IAFDetail VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 
+	sql_cvca_deals = 'INSERT INTO MDCRaw.CVCA.VCPEDeals VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_cvca_exits = 'INSERT INTO MDCRaw.CVCA.Exits VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
+
+	sql_dbo_duplicate_venture_update = '''UPDATE MDCRaw.CONFIG.DuplicateVenture SET Verified = 1 WHERE CompanyID = {}'''
+
+	sql_cbinsights_select = '''SELECT ID, CompanyName FROM MDCRaw.CBINSIGHTS.Funding'''
+	sql_cbinsights_update = '''UPDATE MDCRaw.CBINSIGHTS.Funding SET BasicName = \'{}\' WHERE Id = {}'''
+
+	sql_cvca_select = '''SELECT ID, CompanyName FROM MDCRaw.CVCA.VCPEDeals'''
+	sql_cvca_update = '''UPDATE MDCRaw.CVCA.VCPEDeals SET BasicName = \'{}\' WHERE ID = {}'''
+
+	sql_orgs_summary_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[OrganizationsSummary] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_people_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[People] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_category_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Category] VALUES (?,?,?,?,?,?,?,?,?)'''
+	sql_location_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Location] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+
+	sql_orgs_summary = '''SELECT api_url, fetched, uuid FROM MDCRaw.Crunchbase.OrganizationsSummary WHERE [permalink] LIKE \'wattpad\''''
+
+	sql_orgnization_insert = '''INSERT INTO MDCRaw.CRUNCHBASE.Organization VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_org_short_insert = 'INSERT INTO MDCRaw.CRUNCHBASE.Organization VALUES {}'
+
+	           # ([org_uuid], [company_id], [permalink],[api_path],[web_path],[api_url],[name],[BasicName],[also_known_as],[short_description],[description],[profile_image_url],
+	           # [primary_role],[role_company],[role_investor],[role_group],[role_school],[investor_type],[founded_on],[founded_on_trust_code],
+	           # [is_closed],[closed_on],[closed_on_trust_code],[num_employees_min],[num_employees_max],[stock_exchange],[stock_symbol],
+	           # [total_funding_usd],[number_of_investments],[homepage_url],[contact_email],[phone_number],[created_at],[updated_at],[fetched])
+
+
+	sql_orgs_summary_update = '''UPDATE [CRUNCHBASE].[OrganizationsSummary] SET data_fetched = 1 WHERE uuid = \'{}\''''
+	sql_orgs_detail_update = '''UPDATE [CRUNCHBASE].[Organization] SET data_fetched = 1 WHERE org_uuid = \'{}\''''
+
+	sql_orgs_summary_select = 'SELECT uuid, api_url, name, fetched FROM MDCRaw.CRUNCHBASE.OrganizationsSummary'
+	sql_acquired_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Acquired_by] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_acquiree_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Acquiree] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_acquisition_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Acquisition] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_org_category_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Org_Category] VALUES (?,?,?,?,?,?,?)'''
+	sql_founders_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Founders] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_funding_rounds_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Funding_Rounds] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_funds_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Funds] VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_image_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Image] VALUES (?,?,?,?,?,?,?,?,?,?)'''
+	sql_investments_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Investments] VALUES (?,?,?,?,?,?,?,?,?,?)'''
+	sql_investors_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Investments] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_ipo_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[IPO] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_job_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Job] VALUES (?,?,?,?,?,?,?,?,?,?)'''
+	sql_news_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[News] VALUES (?,?,?,?,?,?,?,?,?)'''
+	sql_offices_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Offices] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_partners_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Partners] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_sub_organization_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[SubOrganization] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_team_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Team] VALUES (?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_websites_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Websites] VALUES (?,?,?,?,?,?,?)'''
+	sql_person_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Person] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_invested_in_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Person] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+
+	sql_org_detail_exists = '''SELECT * FROM MDCRaw.CRUNCHBASE.Organization WHERE org_uuid LIKE \'{}\''''
+	sql_funding_exists = '''SELECT * FROM MDCRaw.CRUNCHBASE.Funding_Rounds WHERE fun_uuid LIKE \'{}\''''
+	sql_offices_exists = '''SELECT * FROM MDCRaw.CRUNCHBASE.Offices WHERE office_uuid LIKE \'{}\''''
+	sql_org_category_exists = '''SELECT * FROM MDCRaw.CRUNCHBASE.Org_Category WHERE category_uuid LIKE \'{}\''''
+
+	sql_tdw_companies_insert = '''INSERT INTO MDCRaw.TDW.Companies VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_tdw_companies_single_insert = '''INSERT INTO MDCRaw.TDW.Companies VALUES {}'''
+
+	sql_tdw_basic_company = '''SELECT DISTINCT ID, legal_name FROM MDCRaw.TDW.Companies WHERE BasicName = '' '''
+	sql_tdw_basic_company_update = '''UPDATE MDCRaw.TDW.Companies SET BasicName = \'{}\' WHERE ID = {}'''
+	sql_cb_basic_company = '''SELECT org_uuid, name FROM MDCRaw.CRUNCHBASE.Organization WHERE BasicName = '' '''
+	sql_cb_basic_company_update = '''UPDATE MDCRaw.CRUNCHBASE.Organization SET BasicName = \'{}\' WHERE org_uuid = \'{}\''''
+	sql_cvca_basic_company = '''SELECT ID, CompanyName FROM MDCRaw.CVCA.Exits WHERE BasicName = '' '''
+	sql_cvca_basic_company_update = '''UPDATE MDCRaw.CVCA.Exits SET BasicName = \'{}\' WHERE ID = {}'''
+
+
+
 class Columns(Enum):
 	ric_aggregation_id = 'RICAggregationID'
 	clmn_fact_ric_rolled_up = ['DataSourceID', 'CompanyID', 'MinDate', 'CurrentDate', 'VolunteerYTD', 'AdvisoryHoursYTD',
@@ -698,7 +769,7 @@ class Columns(Enum):
 							   'IntakeDate', 'FundingCurrentQuarter']
 
 
-class VAR(Enum):
+class CBDict(Enum):
 	data = 'data'
 	properties = 'properties'
 	items = 'items'
@@ -797,4 +868,43 @@ class FilePath(Enum):
 	path_bap_source = ''
 	path_missing_bap_etl = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q3/for ETL/Missing Data Reports'
 	path_iaf = 'Box Sync/Workbench/IAF/ETL Prep/2017/ETL'
+	path_cvca = 'Box Sync/Workbench/CVCA/ETL/2017'
+	path_venture_dedupe = 'Box Sync/Workbench/Venture_Dedupe'
+	path_namara = 'Box Sync/Workbench/Think Data Works/Namara'
+
+
+class DealType(Enum):
+	Bridge_VC = 1
+	Early_Stage_VC = 2
+	Exits_VC = 3
+	Later_Stage_VC = 4
+	Other_VC = 5
+	PE_Add_on = 6
+	PE_Buyout = 7
+	PE_Debt = 8
+	PE_Follow_on = 9
+	PE_Growth = 10
+	PE_Infrastructure = 11
+	PE_Private_Placemen = 12
+	PE_Privatization = 13
+	PE_Recap = 14
+	PE_Secondary_Buyout = 15
+	PE_Secondary_Sale = 16
+	PIPE = 17
+	Seed_VC = 18
+	Venture_Debt_VC  = 19
+	Exits_PE = 20
+	PE_backed_IPO_RTO = 21
+	VC_backed_IPO_RTO = 22
+
+
+class Province(Enum):
+	pass
+
+
+class APIUrl(Enum):
+	Crunchbase = ''
+	CVCA = ''
+	TDW = 'https://api.namara.io/v0/data_sets/162cb2bb-54b5-45d9-a61e-b2cbb80758bf/data/en-5?geometry_format=wkt&api_key=295a4ce3b8a56f1150e941b79b2a990033f3248eb9b5551ef58db0fc3b029988&organization_id=58b5dfbb6bf6b80009000229&project_id=58b5dfcd2ce34d000a000237'
+
 

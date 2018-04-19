@@ -28,6 +28,7 @@ class DB:
 			cursor.commit()
 		except Exception as ex:
 			print('Executing SC Exception: {}'.format(ex))
+			# print(sql)
 
 	@staticmethod
 	def pandas_read(sql):
@@ -48,7 +49,7 @@ class DB:
 			cursor.commit()
 			print('Bulk Insert SUCCESSFUL !')
 		except Exception as ex:
-			print('Bulk Insert Exception: {}'.format(ex))
+			print('Bulk Insert Exception: {}\n{}'.format(ex, sql))
 
 	@staticmethod
 	def save_data_chunk(df, sql_insert, chunk_size=1000):
@@ -58,6 +59,9 @@ class DB:
 		while i < total_size:
 			print('From {} to {}'.format(i, j))
 			df_insert = df.iloc[i:j]
+			# df_insert['name'] = df_insert.apply(lambda dfs: Common.sql_compliant(dfs['name']), axis=1)
+			# df_insert['short_description'] = df_insert.apply(lambda dfs: Common.sql_compliant(dfs.short_description), axis=1)
+			# print(df_insert.head())
 			values = Common.df_list(df_insert)
 			DB.bulk_insert(sql_insert, values)
 			i, j = i + chunk_size, j + chunk_size
@@ -72,5 +76,14 @@ class DB:
 		if len(df) > 0:
 			seed = df.values[0][0]
 		return seed
+
+	@staticmethod
+	def update_basic_name(select, key, venture_name, update):
+		data = DB.pandas_read(select)
+		for _, r in data.iterrows():
+			print(r['{}'.format(venture_name)])
+			basic_name = Common.get_basic_name(r['{}'.format(venture_name)])
+			sql_update = update.format(basic_name, Common.sql_compliant(r['{}'.format(key)]))
+			DB.execute(sql_update)
 
 

@@ -251,11 +251,29 @@ class CompanyService:
 				db.execute(sql.sql_annual_comapny_data_update.value.format(new_com_id, c.ID))
 		print('{} exists and {} doesn not exist'.format(i, j))
 
+	def update_tdw_basic_company(self):
+		df = db.pandas_read(sql.sql_tdw_basic_company.value)
+		for _, r in df.iterrows():
+			basic_name = CM.get_basic_name(r.legal_name)
+			sql_update = sql.sql_tdw_basic_company_update.value.format(basic_name, CM.sql_compliant(r.legal_name))
+			print(sql_update)
+			db.execute(sql_update)
+
+	def update_cb_basic_company(self):
+		df = db.pandas_read(sql.sql_cb_basic_company.value)
+		for _, r in df.iterrows():
+			basic_name = CM.get_basic_name(r['name'])
+			sql_update = sql.sql_cb_basic_company_update.value.format(basic_name, CM.sql_compliant(r['org_uuid']))
+			print(sql_update)
+			db.execute(sql_update)
+
 
 if __name__ == '__main__':
 	com = CompanyService()
 	# com.update_raw_company()
-	com.move_annual_company_data()
+	# com.move_annual_company_data()
+	# com.update_tdw_basic_company()
+	com.update_cb_basic_company()
 
 
 

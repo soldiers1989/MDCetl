@@ -18,7 +18,7 @@ class IAF(ds.DataSource):
 							'Number_of_new_products_marketed', 'Number_of_new_service_marketed', 'Number_of_new_processes_commercialized',
 							'Number_of_new_international_exported_products_services', 'CompanyID']
 
-		self.iaf_cols = ['CompanyID', 'Firm_name', 'Date_supplied', 'Entrepreneur_name', 'Sector', 'Number_of_employees', 'Board_observer_rights',
+		self.iaf_cols = ['Batch','CompanyID', 'Firm_name', 'Date_supplied', 'Entrepreneur_name', 'Sector', 'Number_of_employees', 'Board_observer_rights',
 						 'New_non_spin_off_or_existing_firm', 'Angel', 'VC', 'Amount_of_other_dilutive_financing', 'Total_investment_leverage',
 						 'Follow_on_closed_cumulative', 'Term_loan', 'IRAP', 'FedDev', 'SRED', 'OCE', 'Non_Dilutive_Other', 'Total_non_dilutive',
 						 'Non_dilutive_cumulative', 'Number_of_business_plans_developed', 'Number_of_prototypes_developed',
@@ -80,7 +80,8 @@ class IAF(ds.DataSource):
 
 	def push_iaf_detail_db(self):
 		self.common.change_working_directory(self.enum.FilePath.path_iaf.value)
-		dfiafdetail = pd.read_excel('DETAILS_FOR_ETL_2017.xlsx')
+		dfiafdetail = pd.read_excel('IAF_2017_PROCESSED.xlsx')
+		dfiafdetail['Batch'] = 3861
 		dfiafdetail['CompanyID'] = None
 		dfiafdetail = dfiafdetail[self.iaf_cols]
 		values = self.common.df_list(dfiafdetail)
@@ -95,6 +96,7 @@ if __name__ == '__main__':
 	# iaf.read_iaf_summary_files()
 	# iaf.push_iaf_summary_db()
 	# iaf.generate_iaf_company_basic_name()
-	iaf.read_iaf_per_company_files()
+	# iaf.read_iaf_per_company_files()
 	# iaf.push_iaf_detail_db()
 	# iaf.getpath()
+	iaf.push_iaf_detail_db()

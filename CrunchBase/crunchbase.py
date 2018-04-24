@@ -179,24 +179,31 @@ class Crunchbase(ds.DataSource):
 		if orgs.ok:
 
 			self.org_uuid = orgs.json()[CBDict.data.value][CBDict.uuid.value]
-			# save Oraganization detail
-			self.save_organization_detail(self.org_uuid, orgs.json()[CBDict.data.value][CBDict.properties.value])
+			if self.db.entity_exists('MDCRaw.CRUNCHBASE.Organization', 'org_uuid', self.org_uuid):
+				self.save_organization_detail(self.org_uuid, orgs.json()[CBDict.data.value][CBDict.properties.value])
+				rs_json = orgs.json()[CBDict.data.value][CBDict.relationships.value]
+				self.save_funding_rounds(rs_json['funding_rounds'], self.org_uuid)
+				self.save_relational_entity(rs_json[self.enum.CBDict.headquarters.value], self.org_uuid,
+											self.enum.SQL.sql_offices_exists.value, self.enum.SQL.sql_offices_insert.value,
+											self.office_col)
+				self.save_relational_entity(rs_json['categories'], self.org_uuid,
+											self.enum.SQL.sql_org_category_exists.value,
+											self.enum.SQL.sql_org_category_insert.value, self.category_col)
 
-			rs_json = orgs.json()[CBDict.data.value][CBDict.relationships.value]
 			# save all the related entities
 			# self.save_teams(rs_json['featured_team'], self.org_uuid, TeamStatus.Featured.value)
 			# self.save_teams(rs_json['current_team'], self.org_uuid, TeamStatus.Current.value)
 			# self.save_teams(rs_json['past_team'], self.org_uuid, TeamStatus.Past.value)
 			# self.save_teams(rs_json['board_members_and_advisors'], self.org_uuid, TeamStatus.Board.value)
 
-			self.save_funding_rounds(rs_json['funding_rounds'], self.org_uuid)
+
 			# self.save_investments_invested_in(rs_json['investments'])
 
 			# self.save_relational_entity(rs_json['sub_organizations'], self.org_uuid, self.sql_sub_organization_insert)
-			self.save_relational_entity(rs_json[self.enum.CBDict.headquarters.value], self.org_uuid, self.enum.SQL.sql_offices_exists.value, self.enum.SQL.sql_offices_insert.value, self.office_col)
+
 			# if rs_json[self.enum.CBDict.offices.value][self.enum.CBDict.items] is not None:
 			# 	self.save_relational_entity(rs_json[self.enum.CBDict.offices.value], self.org_uuid, self.enum.SQL.sql_offices_exists, self.sql_offices_insert, self.office_col)
-			self.save_relational_entity(rs_json['categories'], self.org_uuid, self.enum.SQL.sql_org_category_exists.value, self.enum.SQL.sql_org_category_insert.value, self.category_col)
+
 			# self.save_relational_entity(rs_json['founders'], self.org_uuid, self.sql_founders_insert)
 			# self.save_relational_entity(rs_json['acquisitions'], self.org_uuid, self.sql_acquisition_insert)
 			# self.save_relational_entity(rs_json['acquired_by'], self.org_uuid, self.sql_acquired_insert)
@@ -206,7 +213,9 @@ class Crunchbase(ds.DataSource):
 			# self.save_relational_entity(rs_json['images'], self.org_uuid, self.sql_image_insert)
 			# self.save_relational_entity(rs_json['news'], self.org_uuid, self.sql_news_insert)
 
-			db.execute(self.orgs_summary_update.format(self.org_uuid))
+				db.execute(self.orgs_summary_update.format(self.org_uuid))
+			else:
+				print('organization already exists.')
 
 	def save_organization_detail(self, uuid, json_properties):
 

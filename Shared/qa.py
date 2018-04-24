@@ -26,13 +26,13 @@ class BapQA:
 
 		warnings.filterwarnings("ignore")
 
-		self.quarter = 'Q3'
+		self.quarter = 'Q4'
 		self.year = '2018'
 		self.youth = 'Youth'
 		self.all_youth = 'ALL incl. youth'
 
 		self.month_names = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december']
-		self.no_value = ['na', 'n/a', '', '0', '0000-00-00']
+		self.no_value = ['na', 'n/a', '','0000-00-00', '*****']
 
 	def proper_stage(self, stg):
 		stage = ['discovery', 'efficiency', 'idea', 'scale', 'validation']
@@ -106,12 +106,12 @@ class BapQA:
 				self.rics_sheet_header(quarterly_company_sheet)
 				self.qa_quarterly_company_data_sheet(quarterly_company_sheet)
 				print('\tAnnual Company Data')
-				if 'haltec' in fl.lower() or 'communitec' in fl.lower():
+				if 'haltec' in fl.lower() or 'communitech' in fl.lower():
 					annual_company_sheet = wb.get_sheet_by_name(WS.bap_company_annual.value)
 					self.qa_annual_company_data_sheet(annual_company_sheet)
 
-				Common.change_location(p.QA)
-				wb.save('{}_QA.xlsx'.format(fl[:-5]))
+				# Common.change_location(p.QA)
+				wb.save('00_{}_QA.xlsx'.format(fl[:-5]))
 				print('\t\t[{}_QA] IS SAVED.'.format(fl[:-5]))
 			except BaseException as ex:
 				print(ex)
@@ -197,55 +197,58 @@ class BapQA:
 									c.fill = self.okay
 								else:
 									c.fill = self.amber
-							if c.column in ['W', 'AB', 'AC', 'AD', 'AF', 'AH', 'O', 'P', 'Q', 'R', 'S']:
+							if c.column in ['AD', 'AF', 'AH','M', 'Q', 'R', 'S','T', 'U', 'Y', 'Z', 'AI', 'AJ']:
 								if isinstance(c.value, float) or isinstance(c.value, int):
 									c.fill = self.okay
 								else:
 									c.fill = self.amber
-							if c.column == 'M':
+							if c.column == 'O':
+								if isinstance(c.value, str):
+									if str(c.value).lower() in self.no_value:
+										c.fill = self.amber
+								elif isinstance(parser.parse(str(c.value)), datetime.date) or c.value.lower() in self.month_names:
+									c.fill = self.okay
+								elif isinstance(int(c.value), int) and (int(c.value) > 0 and int(c.value) < 13):
+									c.fill = self.okay
+								elif isinstance(int(c.value), int) and int(c.value) == 0:
+									c.fill = self.amber
+								else:
+									c.fill = self.amber
+							if c.column == 'P':
 								if str(c.value).lower() in self.no_value:
 									c.fill = self.amber
-								elif isinstance(parser.parse(str(c.value)), datetime.date) or isinstance(int(c.value), int) or c.value.lower() in self.month_names:
+								elif isinstance(parser.parse(str(c.value)), datetime.date) or (isinstance(int(c.value), int) and int(c.value) > 1000):
+									c.fill = self.okay
+								elif isinstance(int(c.value), int) and int(c.value) == 0:
+									c.fill = self.amber
+								else:
+									c.fill = self.amber
+							if c.column in ['N', 'V', 'AB', 'AA', 'AC']:
+								if str(c.value) == '*****':
+									c.fill = self.amber
+								elif self.yes_no(c.value):
 									c.fill = self.okay
 								else:
 									c.fill = self.amber
-							if c.column == 'N':
-								if str(c.value).lower() in self.no_value:
-									c.fill = self.amber
-								elif isinstance(parser.parse(str(c.value)), datetime.date) or isinstance(int(c.value), int):
-									c.fill = self.okay
-								else:
-									c.fill = self.amber
-							if c.column in ['T', 'Y', 'Z']:
-								if self.yes_no(c.value):
-									c.fill = self.okay
-								else:
-									c.fill = self.amber
-							if c.column == 'U':
+							if c.column == 'W':
 								if str(c.value).lower() in self.no_value:
 									c.fill = self.amber
 								elif isinstance(parser.parse(str(c.value)), datetime.datetime):
 									c.fill = self.okay
 								else:
 									c.fill = self.amber
-							if c.column == 'AI':
-								c.value = self.quarter
-								c.fill = self.okay
-								# if str(c.value) == self.quarter:
-								# 	c.fill = self.okay
-								# 	c.value = self.quarter
-								# else:
-								# 	c.fill = self.amber
-							if c.column == 'AJ':
-								c.value = self.year
-								c.fill = self.okay
-								# if str(c.value) == self.year:
-								# 	c.fill = self.okay
-								# 	c.value = self.year
-								# else:
-								# 	c.fill = self.amber
+							if c.column == 'AK':
+								if str(c.value) == self.quarter:
+									c.fill = self.okay
+								else:
+									c.fill = self.amber
+							if c.column == 'AL':
+								if str(c.value) == self.year:
+									c.fill = self.okay
+								else:
+									c.fill = self.amber
 				except Exception as ex:
-					c.value = '*****'
+					c.fill = self.amber
 					print('{} | {} | {} | {}'.format(c.column, c.row, c.value, ex))
 
 	def qa_annual_company_data_sheet(self, sheet):
@@ -279,7 +282,7 @@ class BapQA:
 
 	def sheet_columns(self, sheet, ric, sheet_name):
 		lst = []
-		print(ric.upper())
+		print('{} - {}'.format(ric.upper(), sheet_name))
 		for rw in sheet.rows:
 			for i in range(len(rw)):
 				if rw[i].row == 1:

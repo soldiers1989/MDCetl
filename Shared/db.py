@@ -26,9 +26,10 @@ class DB:
 			cursor = con.cursor()
 			cursor.execute(sql)
 			cursor.commit()
+			print('Executed sucessfully.')
 		except Exception as ex:
 			print('Executing SC Exception: {}'.format(ex))
-			# print(sql)
+			print(sql)
 
 	@staticmethod
 	def pandas_read(sql):
@@ -85,5 +86,13 @@ class DB:
 			basic_name = Common.get_basic_name(r['{}'.format(venture_name)])
 			sql_update = update.format(basic_name, Common.sql_compliant(r['{}'.format(key)]))
 			DB.execute(sql_update)
+
+	@staticmethod
+	def entity_exists(table, column, value):
+		df = DB.execute(sq.sql_entity_exists.value.format(table, column, value))
+		if len(df) > 0:
+			return True
+		else:
+			return False
 
 

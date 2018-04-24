@@ -58,6 +58,10 @@ class FileService:
 						prg_youth = pd.read_excel(fl, WS.bap_program_youth.value)
 						prg_youth.columns = self.program_youth_columns
 						com = pd.read_excel(fl, WS.bap_company.value)
+						com['Date_of_Incorporation'] = None
+						if fl == 'BAP FY 2018 Q4 Submitted Apr13-SPARK CENTRE_BAP_qtrly_perCompany_QTR 4.xlsx':
+							com['Annual Revenue $CAN'] = None
+							com['Number of Employees'] = None
 						com.columns = self.quarterly_company_columns
 						if ds in [DST.COMMUNI_TECH.value, DST.HAL_TECH.value]:
 							com_a = pd.read_excel(fl, WS.bap_company_annual.value)
@@ -75,7 +79,7 @@ class FileService:
 				bap_program = pd.concat(l_program)
 				bap_program_youth = pd.concat(l_program_youth)
 				bap_company = pd.concat(l_company)
-				if combine_for == Combine.FOR_ETL:
+				if combine_for == Combine.FOR_ETL or combine_for == Combine.FOR_QA:
 					bap_company_annual = pd.concat(l_company_annual)
 					return bap_program, bap_program_youth, bap_company, bap_company_annual
 				else:

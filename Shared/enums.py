@@ -207,6 +207,7 @@ class Table(Enum):
 
 
 class SQL(Enum):
+	sql_entity_exists = '''SELECT * FROM {} WHERE {} = \'{}\' '''
 	sql_annual_comapny_data_update = 'UPDATE BAP.AnnualCompanyData SET CompanyID = {} WHERE ID = {}'
 	sql_target_list_update = 'UPDATE MDCRaw.SURVEY.Targetlist SET CompanyID = {} WHERE ID = {}'
 	sql_batch_insert = 'INSERT INTO Config.ImportBatch VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
@@ -329,7 +330,7 @@ class SQL(Enum):
 	sql_bap_distict_company = '''SELECT DISTINCT CompanyID FROM Reporting.FactRICCompanyData WHERE BatchID IN {}'''
 	sql_industry_list_table = 'SELECT [Industry_Sector],[Lvl2IndustryName] FROM [RICSurveyFlat].[RICSurvey2016Industry]'
 
-	sql_columns = 'SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE Table_Schema = \'{}\''
+	sql_columns = 'SELECT * FROM MaRSDataCatalyst.INFORMATION_SCHEMA.COLUMNS WHERE Table_Schema = \'{}\' ORDER BY ORDINAL_POSITION'
 	
 	sql_rollup_select = '''
 								SELECT DISTINCT 
@@ -689,7 +690,7 @@ class SQL(Enum):
 	sql_iaf_summary_insert = 'INSERT INTO MDCRaw.IAF.IAFSummary VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 	sql_iaf_summary_basic_name = 'SELECT ID, Venture_Name FROM IAF.IAFSummary'
 	sql_iaf_summary_update = 'UPDATE MDCRaw.IAF.IAFSummary SET BasicName = \'{}\' WHERE ID = {}'
-	sql_iaf_detail_insert = 'INSERT INTO MDCRaw.IAF.IAFDetail VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_iaf_detail_insert = 'INSERT INTO MDCRaw.IAF.IAFDetail VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 
 	sql_cvca_deals = 'INSERT INTO MDCRaw.CVCA.VCPEDeals VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 	sql_cvca_exits = 'INSERT INTO MDCRaw.CVCA.Exits VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
@@ -751,6 +752,9 @@ class SQL(Enum):
 	sql_tdw_companies_insert = '''INSERT INTO MDCRaw.TDW.Companies VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
 	sql_tdw_companies_single_insert = '''INSERT INTO MDCRaw.TDW.Companies VALUES {}'''
 
+	sql_venture_insert = '''INSERT INTO MDCRaw.dbo.Venture VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_venture_insert_short = '''INSERT INTO MDCRaw.dbo.Venture VALUES {}'''
+
 	sql_tdw_basic_company = '''SELECT DISTINCT ID, legal_name FROM MDCRaw.TDW.Companies WHERE BasicName = '' '''
 	sql_tdw_basic_company_update = '''UPDATE MDCRaw.TDW.Companies SET BasicName = \'{}\' WHERE ID = {}'''
 	sql_cb_basic_company = '''SELECT org_uuid, name FROM MDCRaw.CRUNCHBASE.Organization WHERE BasicName = '' '''
@@ -758,6 +762,11 @@ class SQL(Enum):
 	sql_cvca_basic_company = '''SELECT ID, CompanyName FROM MDCRaw.CVCA.Exits WHERE BasicName = '' '''
 	sql_cvca_basic_company_update = '''UPDATE MDCRaw.CVCA.Exits SET BasicName = \'{}\' WHERE ID = {}'''
 
+	sql_cvca_exits_new_ventures = '''SELECT E.CompanyName, E.BasicName, E.Batch FROM CVCA.Exits E LEFT JOIN dbo.Venture V ON E.BasicName = V.BasicName WHERE V.Name IS NULL'''
+	sql_iaf_new_ventures = '''SELECT E.Venture_Name, E.BasicName, E.Batch FROM IAF.IAFSummary E LEFT JOIN dbo.Venture V ON E.BasicName = V.BasicName WHERE V.Name IS NULL'''
+	sql_cvca_deals_new_ventures = '''SELECT E.CompanyName, E.BasicName, E.Batch FROM CVCA.VCPEDeals E LEFT JOIN dbo.Venture V ON E.BasicName = V.BasicName WHERE V.Name IS NULL'''
+	sql_cb_new_ventures = '''SELECT E.name, E.BasicName, E.Batch FROM CRUNCHBASE.Organization E LEFT JOIN dbo.Venture V ON E.BasicName = V.BasicName WHERE V.Name IS NULL'''
+	sql_cvca_type_update = '''UPDATE MDCRaw.CVCA.VCPEDeals SET Type = {} WHERE ID = {}'''
 
 
 class Columns(Enum):

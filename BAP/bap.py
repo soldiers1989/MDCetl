@@ -27,7 +27,7 @@ class BapQuarterly:
 	bap_path_etl = COM.get_config('config.ini', 'box_file_path', 'path_bap_etl')
 	file = FileService(bap_path_source)
 	qa = BapQA()
-	season = '18_Q3'
+	season = '18_Q4'
 	company = CompanyService()
 
 	@staticmethod
@@ -41,10 +41,13 @@ class BapQuarterly:
 	@staticmethod
 	def combine_rics_bap_quarterly(combine_for):
 		program, program_youth, company_quarterly, company_annually = BapQuarterly.file.read_source_file(FileType.SPREAD_SHEET.value, DS.BAP, combine_for, current_path=BapQuarterly.bap_path_etl)
-		file_name = '{}'.format(FN.bap_combined.value.format(str(BapQuarterly.year)[-2:], BapQuarterly.quarter))
+		file_name = '{}'.format(FN.bap_combined.value.format('18','4'))#(str(BapQuarterly.year)[-2:], BapQuarterly.quarter))
 		if combine_for == Combine.FOR_QA:
 			file_name = 'QA_' + file_name
-		print('Save spreadsheet file named: {}'.format(file_name))
+		else:
+			file_name = 'ETL_' + file_name
+
+		print('\nSave spreadsheet file named: {}'.format(file_name))
 
 		save_location = COM.change_location(pth.COMBINED)
 		print(str(save_location))
@@ -540,7 +543,7 @@ class BapQuarterly:
 if __name__ == '__main__':
 	# BapQuarterly.qa.check_columns_completeness()
 	# BapQuarterly.combine_rics_bap_quarterly(Combine.FOR_QA)
-	# BapQuarterly.combine_rics_bap_quarterly(Combine.FOR_ETL)
+	BapQuarterly.combine_rics_bap_quarterly(Combine.FOR_ETL)
 	# BapQuarterly.qa_bap_spread_sheet_by_ric()
 	# BapQuarterly.qa_bap_ric_combined(True)
 	# BapQuarterly.file.read_source_file('', '')
@@ -554,4 +557,3 @@ if __name__ == '__main__':
 	# BapQuarterly.tech_alliance_intake_date_TEMP()
 	# BapQuarterly.combine_missing_data()
 	# BapQuarterly.push_bap_missing_data_to_temp_table()
-	pass

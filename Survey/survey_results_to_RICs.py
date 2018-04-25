@@ -204,10 +204,11 @@ def _main_():
     # capture correct order for columns for use later in formatting pivoted datasheets
     col_title_order = pd.Series(qsos.q_num.values, index=qsos.col_title).to_dict()
 
-    # read answers from DB
-    print("Reading ans from DB into df")
+    # read answers from DB, clean ans
+    print("Reading answers from DB into ans df")
     ans_sql = CM.get_config("config_sql.ini", "ann_survey_18", "survey_results_by_ric")
     ans = DB.pandas_read(ans_sql)
+    print("Cleaning ans df")
     ans.dropna(subset=['Answer'], inplace=True)
     ans['Answer'] = ans.apply(replacements, axis=1)
 

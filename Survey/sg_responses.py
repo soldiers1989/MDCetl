@@ -203,7 +203,7 @@ class sg_responses:
                         qid = int(str(surveyID) + str(resp["survey_data"][key]["id"]))
                         answer = resp["survey_data"][key]["answer"]
 
-                        # account for drag & drop answer dicts
+                        # account for drag & drop (rank) answer dicts
                         if type(answer) == dict and resp['survey_data'][key]['type'] == 'RANK':
                             for opt_key in answer.keys():
                                 if answer[opt_key]['rank']:

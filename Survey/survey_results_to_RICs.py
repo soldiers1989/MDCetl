@@ -118,6 +118,8 @@ def replacements(row):
     if qid in list(r.keys()):
         if ans in list(r[qid].keys()):
             return r[qid][ans]
+        else:
+            return ans
     else:
         return ans
 
@@ -211,6 +213,7 @@ def _main_():
     print("Cleaning ans df")
     ans.dropna(subset=['Answer'], inplace=True)
     ans['Answer'] = ans.apply(replacements, axis=1)
+    ans['page_pipe'] = ans['page_pipe'].fillna('')
 
     # for each RIC
     print("\nPer RIC df datasheet creation:")
@@ -239,7 +242,8 @@ def _main_():
 
         # ric_survey_results.dropna(subset=['Answer'])
         print("Pivot into datasheet for {}".format(ric))
-        ric_datasheet = ric_survey_results[['resp_id', 'Company_ID', 'col_title', 'Answer']].drop_duplicates()
+        ric_datasheet = ric_survey_results[['resp_id', 'Company_ID', 'col_title', 'Answer', 'page_pipe']].drop_duplicates()
+        ric_datasheet['col_title'] = ric_datasheet['col_title'] + ' ' + ric_datasheet['page_pipe'].astype(str)
         ric_datasheet['rid_cid'] = ric_datasheet['resp_id'].astype(str) + '-' + ric_datasheet['Company_ID'].astype(str)
         ric_datasheet = ric_datasheet[['rid_cid', 'col_title', 'Answer']]
         ric_datasheet = ric_datasheet.pivot(index='rid_cid', columns='col_title', values='Answer')
@@ -258,7 +262,10 @@ def _main_():
             q_cols = cols[:-2]
             ordered_q_cols = []
             for q in q_cols:
-                ordered_q_cols.append([col_title_order[q], q])
+                if q[-2:] == '.0':
+                    ordered_q_cols.append([col_title_order[q[:-8]], q])
+                else:
+                    ordered_q_cols.append([col_title_order[q.strip()], q])
             ordered_q_cols.sort()
             for i in range(len(ordered_q_cols)):
                 ordered_q_cols[i] = ordered_q_cols[i][1]

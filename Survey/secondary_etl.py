@@ -4,6 +4,9 @@ import os
 import pandas as pd
 import requests
 from Shared.common import Common as CM
+from Survey.sg_misc import misc_funcs as misc
+from Shared.db import DB
+import numpy as np
 
 API_TOKEN = "api_token=3918099598ee3da7e79c1add7f4b8ae392b5b543c5fe7f9d88&api_token_secret=A9XYpy0QvtH.o"
 survey_id = 50021327
@@ -13,11 +16,33 @@ def pretty_dict(d):
     print(json.dumps(d, indent=1))
 
 
-class Process:
+class Answer:
+
+    def __init__(self, qid, srid, answer, surveyid, oid='', page_pipe=''):
+        self.AID = str(qid) + str(surveyid) + str(srid) + str(oid) + str(page_pipe)
+        self.QID = str(surveyid) + str(qid)
+        if oid != '':
+            self.OID = self.QID + str(oid)
+        else:
+            self.OID = oid
+        self.SRID = str(surveyid) + str(srid)
+        self.Answer = str(answer)
+        self.page_pipe = str(page_pipe)
+        self.SurveyID = str(surveyid)
+
+    @staticmethod
+    def cols():
+        x = ['id', 'question_id', 'option_id', 'survey_response_id', 'answer', 'page_pipe']
+        return x
+
+    def record(self):
+        return [self.AID, self.QID, self.OID, self.SRID, self.Answer, self.page_pipe]
+
+
+class API:
 
     def __init__(self, api_token, domain, version, obj, obj_id, subobj1, params=''):
-        if not params:
-            self.params = {'page': 1, 'resultsperpage': 200}
+
         self.api_token = api_token
         self.domain = domain
         self.version = version
@@ -25,38 +50,6 @@ class Process:
         self.obj_id = obj_id
         self.subobj1 = subobj1
         self.params = params
-
-
-class Answer(Process):
-
-    def __init__(self, qid, srid, answer, surveyid, api_token, domain, version, obj, obj_id, subobj1, oid='',
-                 page_pipe=''):
-        super().__init__(api_token, domain, version, obj, obj_id, subobj1)
-        self.AID = str(qid) + str(surveyid) + str(srid) + str(oid) + str(page_pipe)
-        self.QID = str(qid)
-        self.OID = str(oid)
-        self.SRID = str(srid)
-        self.Answer = str(answer)
-        self.page_pipe = str(page_pipe)
-        self.SurveyID = str(surveyid)
-
-    def lst(self):
-        lst = [self.AID, self.QID, self.OID, self.SRID, self.Answer, self.page_pipe]
-        return lst
-
-    @staticmethod
-    def cols():
-        x = ['id', 'question_id', 'option_id', 'survey_response_id', 'answer', 'page_pipe']
-        return x
-
-    def to_df(self):
-
-
-
-class API(Process):
-
-    def __init__(self, api_token, domain, version, obj, obj_id, subobj1, params=''):
-        super().__init__(api_token, domain, version, obj, obj_id, subobj1, params)
 
     @staticmethod
     def get_cert_path():
@@ -81,7 +74,7 @@ class API(Process):
     def set_params(self, param_key, new_val):
         self.params[str(param_key)] = new_val
 
-    def get_data(self, test=True):
+    def get_data(self, test=False):
         all_results = []
         output = self.call(self.make_url())
         pagenum = int(output['page'])
@@ -93,18 +86,19 @@ class API(Process):
             all_results.extend(output['data'])
             # TEMPORARY
             if test:
-                if pagenum > 1:
+                if pagenum > 0:
                     break
             # TEMPORARY ^
         return all_results
 
 
-class Json():
+class Json:
 
     keep_qids = CM.get_config('config.ini', 'secondary_etl', 'sg_del_qids')
 
-    def __init__(self, json):
+    def __init__(self, json, surveyid):
         self.json = json
+        self.surveyid = surveyid
 
     def filter_out(self):
         keeps = self.get_full_keys('question')
@@ -136,18 +130,76 @@ class Json():
                 full_keys.append(key)
         return full_keys
 
-    # TODO: replace this with metadata shelve read
-    # del_qids = '5002132769,5002132770,5002132771,5002132772,5002132773,5002132774,5002132775,5002132776,5002132777,5002132778,5002132779,50021327326,50021327326,50021327327,50021327283'
+    def to_df(self):
+        data = self.filter_out()
+        all_ans = []
+        for resp in data:
+            srid = resp['id']
+            for key in list(resp.keys())[11:]:
+                qid = Json.extract_id(key[:18])
+                page_pipe = Json.extract_id(key[15:])
+                answer_str = str(resp[key])
+                ans = Answer(qid=qid, srid=srid, answer=answer_str, surveyid=self.surveyid, page_pipe=page_pipe)
+                answer = ans.record()
+                all_ans.append(answer)
+        all_ans = pd.DataFrame(all_ans, columns=Answer.cols())
+        return all_ans
 
-    # get del_vals
 
-    # get rep_vals
+class DBInteractions:
 
-    # delete del_vals from DB
-    # write rep_vals to DB
-    # check for completeness (read DB rep_vals and c.f. current rep_vals)
-    # rollback (if necessary)
-    # error processing (rollback)
+    def __init__(self, data):
+        self.data = data
+
+    def clean_df(self):
+        df = self.data
+        df = df.where(df != '', None)
+        self.data = df
+
+    @staticmethod
+    def store_df(df, filename):
+        path = '/Users/gcree/Box Sync/Workbench/BAP/Annual Survey FY2018/DEV - Results to RICs/'
+        misc.write_to_xl(df, filename, out_path=path)
+
+    def load(self):
+        df = self.data
+        DBInteractions.store_df(df, '_NEW_PIPE_ANS')
+        sql = CM.get_config('config.ini', 'sql_queries', 'insert_as')
+        sql = sql.replace('WHAT_HEADERS', 'id, question_id, option_id, survey_response_id, answer, page_pipe')
+        sql = sql.replace('WHAT_VALUES', '?,?,?,?,?,?')
+
+        insert_vals = []
+
+        for index, row in df.iterrows():
+            vals = []
+            for header in df.columns:
+                vals.append(row[header])
+            if len(df) == 1:
+                t = tuple(vals)
+                insert_vals.append(t)
+            else:
+                insert_vals.append(vals)
+
+        DB.bulk_insert(sql, insert_vals, dev=False)
+
+    @staticmethod
+    def delete_old_ans():
+        # delete old ans using answer ids
+        #   store old ans in xl file
+        old_ans_sql = CM.get_config('config.ini', 'secondary_etl', 'old_ans')
+        old_ans_df = DB.pandas_read(old_ans_sql)
+        # DBInteractions.store_df(old_ans_df, '_OLD_PIPE_ANS')
+        #   run sql to delete old ans
+        del_old_ans_sql = CM.get_config('config.ini', 'secondary_etl', 'del_old_ans')
+        DB.execute(del_old_ans_sql)
+
+    def etl(self):
+        # clean
+        self.clean_df()
+        # delete old ans
+        DBInteractions.delete_old_ans()
+        # load
+        self.load()
 
 
 if __name__ == '__main__':
@@ -161,9 +213,8 @@ if __name__ == '__main__':
               "filter[field][0]=status&filter[operator][0]=!=&filter[value][0]": 'deleted',
               'page': 1}
     api = API(API_TOKEN, domain, v, survey, surveyid, resp, params)
-    data = api.get_data()
-    j = Json(data)
-    filtered_jsons = j.filter_out()
-    ans = Answer()
-
-    # TODO: WHEN DONE W/ TESTING, REMOVE PAGENUM LOOP LIMITER IN API.GET_DATA() METHOD
+    data = api.get_data(test=False)
+    j = Json(data, surveyid)
+    all_ans = j.to_df()
+    db_interactions = DBInteractions(all_ans)
+    db_interactions.etl()

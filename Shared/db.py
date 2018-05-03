@@ -10,9 +10,12 @@ class DB:
 		pass
 
 	@staticmethod
-	def connect():
+	def connect(dev=False):
+		conn = 'conn'
+		if dev:
+			conn = 'devconn'
 		try:
-			con_str = Common.get_config('config.ini', 'db_connect', 'conn')
+			con_str = Common.get_config('config.ini', 'db_connect', conn)
 			conn = pyodbc.connect(con_str)
 			return conn
 		except Exception as ex:
@@ -42,8 +45,8 @@ class DB:
 			return None
 
 	@staticmethod
-	def bulk_insert(sql, values):
-		con = DB.connect()
+	def bulk_insert(sql, values, dev=False):
+		con = DB.connect(dev=dev)
 		cursor = con.cursor()
 		try:
 			cursor.executemany(sql, values)

@@ -9,8 +9,9 @@ class misc_funcs():
     @classmethod
     def write_to_xl(self, df, filename, out_path, sheetname="Sheet1"):
 
-        now = datetime.datetime.now()
-        timestamp = now.strftime("%b-%d-%Y-%I%M%p")
+        # now = datetime.datetime.now()
+        # timestamp = now.strftime("%b-%d-%Y-%I%M%p")
+        timestamp = ''
         filename = out_path + filename + "-" + timestamp
 
         writer = pd.ExcelWriter(filename + ".xlsx", engine='xlsxwriter')

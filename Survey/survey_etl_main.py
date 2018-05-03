@@ -248,6 +248,11 @@ def _main_():
             path = CM.change_working_directory(path_ini)
             print(path)
             misc.write_to_xl(all_resp_stats, 'ResponseStatuses', out_path=path, sheetname="response_statuses")
+            stat_table = 'MDCReport.Fact_Response_Status'
+            print('Truncating and writing to ' + stat_table)
+
+
+
 
         # set survey ID
         elif selection == 17:

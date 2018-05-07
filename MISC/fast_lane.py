@@ -16,15 +16,45 @@ class TargetList(ds.DataSource):
 	def __init__(self):
 		super().__init__('box_file_path', 'path_other', enum.DataSourceType.DATA_CATALYST)
 
+		self.column = [ 'BatchID', 'CompanyID', 'Path', 'FileName', 'WorkSheet', 'DataSource', 'Email', 'Invite_First_Name',
+						'Invite_Last_Name', 'Venture_Name', 'Venture_basic_name', 'Previous_Venture_Name', 'Date_left_RIC',
+						'Number_Of_Founders', 'Number_Of_Youth_Founders', 'Number_Of_Canadian_Born_Founders', 'Number_Of_Female_Founders',
+						'Founder_Experience', 'Date_Of_Incorporation', 'Date_founded', 'Industry_Sector', 'Social_Impact', 'Primary_RIC',
+						'RIC_organization_name', 'RIC_first_Name', 'RIC_last_Name', 'RIC_person_Title', 'RIC_person_Email', 'OSVP_Status', 'CII', 'Year', 'Status']
+
+	def update_targetlist_basic_name(self):
+		self.data = self.db.pandas_read(self.enum.SQL.sql_target_list_basic_name.value)
+		for _, r in self.data.iterrows():
+			basicname = self.common.update_cb_basic_name(r.Venture_name)
+			basicname = self.common.sql_compliant(basicname)
+			self.db.execute(self.enum.SQL.sql_target_list_basic_name_update.value.format(basicname, r.ID))
+			# print(self.enum.SQL.sql_venture_basic_name_update.value.format(basicname, r.ID))
+			print('{}\t\t\t\t\t\t\t\t---->\t\t\t\t\t\t\t\t{}'.format(r.Venture_name, basicname))
+
 	def read_misc_file(self):
 		self.data = self.file.read_source_file(enum.FileType.SPREAD_SHEET, enum.MDCDataSource.OTHER, enum.Combine.FOR_NONE.value, current_path='/Users/mnadew/Box Sync/Innovation Economy/Projects/Survey FY18 Planning/Templates/RIC target lists completed/ETL/01 MaRS Updated')
 
 	def push_data_to_db(self):
-		self.read_misc_file()
-		self.data['Venture_basic_name'] = self.data.apply(lambda df: self.common.get_basic_name(df.Venture_Name), axis=1)
-		# self.data['CompanyID'] = None
+		# self.read_misc_file()
+		path = 'Box Sync/Innovation Economy/Projects/Survey FY18 Planning/Templates/RIC target lists completed/ETL/01 MaRS Updated'
+		self.common.change_working_directory(path)
+		self.data = pd.read_excel('MaRS 21 target list 20180424.xlsx', sheet_name='Mars21')
+		self.data['Venture_basic_name'] = self.data.apply(lambda df: self.common.update_cb_basic_name(df.Venture_Name), axis=1)
+		self.data['CompanyID'] = None
+		self.data['BatchID'] = 4330
+		self.data['Status'] = 1
+		self.data['Path'] = path
+		self.data['FileName'] = 'MaRS 21 target list 20180424.xlsx'
+		self.data['WorkSheet'] = 'Mars21'
+		self.data['DataSource'] = 7
+		self.data['OSVP_Status'] = None
+		self.data['Primary_RIC'] = None
+		self.data['CII'] = None
+		self.data['Year'] = 2018
+		# self.data.drop(columns=['Sector', 'Stage'])
+		print(list(self.data.columns))
+		self.data = self.data[self.column]
 		print(os.getcwd())
-		# self.file.save_as_csv(self.data, '00 Annual Survey Target List.xlsx', os.getcwd(), 'Target List')
 		values = self.common.df_list(self.data)
 		self.db.bulk_insert(self.enum.SQL.sql_target_list_insert.value, values=values)
 		print('Target list uploaded.')
@@ -57,7 +87,7 @@ class TargetList(ds.DataSource):
 		self.common.change_location(enum.PATH.FASTLANE)
 		targetlist = self.db.pandas_read(enum.SQL.sql_target_list.value)
 		communitech = pd.read_excel('Communitech additional companies.xlsx')
-		communitech['BasicName'] = communitech.apply(lambda df: self.common.get_basic_name(df['company']), axis=1)
+		communitech['BasicName'] = communitech.apply(lambda df: self.common.update_cb_basic_name(df['company']), axis=1)
 		for _, venture in communitech.iterrows():
 			venture['BasicName']
 			df = targetlist[targetlist.Venture_basic_name == venture['BasicName']]
@@ -86,7 +116,7 @@ class TargetList(ds.DataSource):
 		self.common.change_location(enum.PATH.MaRS_FIX)
 		targetlist = self.db.pandas_read(enum.SQL.sql_target_list.value)
 		mars = pd.read_excel('Final FIX- MDD_AnnualSurveyFY18prePopulationTemplate_Final.xlsx')
-		mars['BasicName'] = mars.apply(lambda df: self.common.get_basic_name(df['Venture_Name']), axis=1)
+		mars['BasicName'] = mars.apply(lambda df: self.common.update_cb_basic_name(df['Venture_Name']), axis=1)
 		for _, venture in mars.iterrows():
 			venture['BasicName']
 			df = targetlist[targetlist.Venture_basic_name == venture['BasicName']]
@@ -172,7 +202,7 @@ class TargetList(ds.DataSource):
 	def target_list_comapny_id_update(self):
 		dftl = self.db.pandas_read('SELECT ID, BatchID, CompanyID,Venture_name, Venture_basic_name FROM SURVEY.Targetlist WHERE CompanyID IS NULL')
 		dfdc = self.db.pandas_read('SELECT ID, [Name], BasicName FROM MDCDW.dbo.DimVenture')
-		# dfdc['BasicName'] = dfdc.apply(lambda dfs: common.get_basic_name(dfs.CompanyName), axis=1)
+		# dfdc['BasicName'] = dfdc.apply(lambda dfs: common.update_cb_basic_name(dfs.CompanyName), axis=1)
 		for i, c in dftl.iterrows():
 			dfc = dfdc[dfdc['BasicName'] == c['Venture_basic_name']]
 			val = dict()
@@ -290,7 +320,7 @@ class TargetList(ds.DataSource):
 		print(os.getcwd())
 		targetlist = self.db.pandas_read(enum.SQL.sql_mars_target_list.value)
 		mars = pd.read_excel('MDD_AnnualSurveyFY18 target list prePopulationTemplate_Final_20180323.xlsx', )
-		mars['BasicName'] = mars.apply(lambda df: self.common.get_basic_name(df['Venture_Name']), axis=1)
+		mars['BasicName'] = mars.apply(lambda df: self.common.update_cb_basic_name(df['Venture_Name']), axis=1)
 		# sql_update = '''UPDATE T SET T.Email = \'{}\', T.Invite_first_name = \'{}\', T.Invite_last_name = \'{}\', T.RIC_first_name = \'{}\', T.RIC_last_name = \'{}\', T.RIC_person_email = \'{}\', T.RIC_person_title = \'{}\' FROM MDCRaw.SURVEY.Targetlist T WHERE T.DataSource = 7 AND T.Venture_basic_name = \'{}\''''
 		# for _, ven in mars.iterrows():
 		# 	df = targetlist[targetlist.Venture_basic_name == ven['BasicName']]
@@ -361,7 +391,7 @@ class TargetList(ds.DataSource):
 		print(os.getcwd())
 		targetlist = self.db.pandas_read(enum.SQL.sql_invest_ottawa_target_list.value)
 		ottawa = pd.read_excel('2018-03-28 InvestOttawa_Amalgamated Survey Recipients.xlsx', )
-		ottawa['BasicName'] = ottawa.apply(lambda df: self.common.get_basic_name(df['Venture_Name']), axis=1)
+		ottawa['BasicName'] = ottawa.apply(lambda df: self.common.update_cb_basic_name(df['Venture_Name']), axis=1)
 		sql_update = '''UPDATE T SET T.Email = \'{}\', T.Invite_first_name = \'{}\', T.Invite_last_name = \'{}\' FROM MDCRaw.SURVEY.Targetlist T WHERE T.DataSource = 16 AND T.Venture_basic_name = \'{}\''''
 		for _, ven in ottawa.iterrows():
 			df = targetlist[targetlist.Venture_basic_name == ven['BasicName']]
@@ -439,80 +469,7 @@ class TargetList(ds.DataSource):
 		# self.file.save_as_csv(dfd_match, 'INVEST_OTTAWA_Final_Matching_1.xlsx', os.getcwd(), 'Target list Vs Sheet')
 		print('This do two three things')
 
-	def duplicate_venture_processing(self):
-		path = 'Box Sync/mnadew/IE/Data/Ventures'
-		file_name = 'Duplicate Venture List All Dupes.xlsx'
-		self.common.change_working_directory(path)
-		print(os.getcwd())
-		venture = self.db.pandas_read(enum.SQL.sql_duplicate_venture_list.value)
-		distinct_venture = list(venture.BasicName.unique())
-		db_values = []
-		values_II = []
-		values_III = []
-		values_IV = []
-		values_V = []
-		for v in distinct_venture:
-			df = venture[venture.BasicName == v]
-			ID = df.ID.values
-			Name = df.Name.values
-			BasicName = df.BasicName.values
-			m = len(df)
-			# print('({}){}\t({}){}'.format(ID[0],Name[0],ID[1],Name[1]))
-			for i in range(len(df)):
 
-				val = dict()
-				for j in range(len(df)):
-					val['ID-{}'.format(j)] = ID[j]
-					val['Venture Name-{}'.format(j)] = Name[j]
-					val['Basic Name-{}'.format(j)] = BasicName[j]
-					l= j+1
-					db = dict()
-					if l < len(df):
-						db['CompanyID'] = ID[0]
-						db['DuplicaeCompanyID'] = ID[l]
-						db['Name'] = Name[0]
-						db['DuplicateName'] = Name[l]
-						db['BasicName'] = BasicName[0]
-						if db not in db_values:
-							db_values.append(db)
-				print(val)
-				keys_len = len(val.keys())
-				if keys_len == 6:
-					if val not in values_II:
-						values_II.append(val)
-				elif keys_len == 9:
-					if val not in values_III:
-						values_III.append(val)
-				elif keys_len == 12:
-					if val not in values_IV:
-						values_IV.append(val)
-				else:
-					if val not in values_V:
-						values_V.append(val)
-		df_db = pd.DataFrame(db_values, columns=db_values[0].keys())
-		df_db['CreatedDate'] = datetime.utcnow()
-		df_db['ModifiedDate'] = datetime.utcnow()
-		values = common.df_list(df_db)
-		# self.db.execute(enum.SQL.sql_duplicate_venture_truncate.value)
-		# self.db.bulk_insert(enum.SQL.sql_duplicate_venture_insert.value, values )
-		print(df_db.head(25))
-		# try:
-		# 	writer = pd.ExcelWriter(file_name)
-		# 	dfV2 = pd.DataFrame(values_II, columns=values_II[0].keys())
-		# 	dfV3 = pd.DataFrame(values_III, columns=values_III[0].keys())
-		# 	dfV4 = pd.DataFrame(values_IV, columns=values_IV[0].keys())
-		# 	dfVx = pd.DataFrame(values_V, columns=values_V[0].keys())
-        #
-		# 	dfV2.to_excel(writer, sheet_name='Two Duplicates', index=False)
-		# 	dfV3.to_excel(writer, sheet_name='Three Duplicates', index=False)
-		# 	dfV4.to_excel(writer, sheet_name='Four Duplicates', index=False)
-		# 	dfVx.to_excel(writer, sheet_name='More than four Duplicates', index=False)
-        #
-		# 	writer.save()
-		# except Exception as ex:
-		# 	print(ex)
-
-		print('Duplicate files created for ventures.')
 
 	def duplicate_ventures_for_second_pair_of_eye(self):
 		venture = self.db.pandas_read(enum.SQL.sql_duplicate_venture_select.value)
@@ -521,10 +478,74 @@ class TargetList(ds.DataSource):
 		self.file.save_as_csv(venture, 'Duplicate Ventures for QA.xlsx',path, 'Duplicate Ventures')
 		print(venture.head(50))
 
+	def final_mars_csv_tl_comparision(self):
+		path = 'Box Sync/Innovation Economy/Projects/Survey FY18 Planning/FINAL target lists for QA'
+		self.common.change_working_directory(path)
+		self.data = pd.read_excel('MDD_AnnualSurveyFY18 target list prePopulationTemplate_Final_20180323.xlsx', 'new-Target List')
+		self.data['BasicName'] = self.data.apply(lambda df: self.common.update_cb_basic_name(df.Venture_Name), axis=1)
+		df = self.db.pandas_read('SELECT * FROM MDCRaw.SURVEY.Targetlist WHERE DataSource = 7')
+		print('Target list: {}\t MaRS Final: {}'.format(len(df), len(self.data)))
+		values = []
+		for _, r in df.iterrows():
+			dfm = self.data[self.data['BasicName'] == r['Venture_basic_name']]
+			val = dict()
+			if len(dfm) > 0:
+
+				val['M_Company'] = dfm.Venture_Name.values[0]
+				val['T_Company'] = r['Venture_name']
+				val['M_BasicName'] = dfm.BasicName.values[0]
+				val['T_BasicName'] = r['Venture_basic_name']
+				values.append(val)
+				print(r['Venture_name'])
+			else:
+				val['M_Company'] = None
+				val['T_Company'] = r['Venture_name']
+				val['M_BasicName'] = None
+				val['T_BasicName'] = r['Venture_basic_name']
+				values.append(val)
+				print('\t\t\t{}'.format(r['Venture_name']))
+		df_result = pd.DataFrame(values, columns=values[0].keys())
+		self.file.save_as_csv(df_result, 'MaRS Target List Final v Target List.xlsx', os.getcwd(),
+							  'MaRS Vs TL')
+
+
+class MaRSMetadata(ds.DataSource):
+
+	def __init__(self):
+		super().__init__('','', enum.DataSourceType.MDC_SANDBOX_SURVEY)
+		self.columns = ['CompanyID', 'MaRSProgram', 'MaRSSector', 'MaRSPriority', 'CAIPStatus',
+						'Organization Name', 'Venture Start Date', 'Stage', 'Business Model Tags',
+						'Technology Tag', 'Cluster', 'Sub-cluster', 'CAIP Enrolment Date', 'CAIP Graduation Date']
+
+		self.columns_db = ['CompanyID', 'Program', 'Sector', 'MaRSPriority', 'CAIP',
+						'Organization Name','BasicName', 'Venture Start Date', 'RIC_Stage', 'Business Model Tags',
+						'Technology Tag', 'Cluster', 'Sub-cluster', 'CAIP Enrolment Date', 'CAIP Graduation Date']
+
+	def load_mars_metadata(self):
+		self.common.change_working_directory(enum.FilePath.path_mars_metadata.value)
+		self.data = pd.read_excel('MaRS-venture-categorizations.xlsx', sheet_name='Sheet2')
+		print(list(self.data.columns))
+		print(self.data[['MaRSProgram','MaRSSector','CAIPStatus']])
+		self.data['Program'] = self.data.apply(lambda df: self.common.get_mars_program(df.MaRSProgram), axis=1)
+		self.data['Sector'] = self.data.apply(lambda df: self.common.get_mars_sector(df.MaRSSector), axis=1)
+		self.data['CAIP'] = self.data.apply(lambda df: self.common.get_caip_status(df.CAIPStatus), axis=1)
+		self.data['RIC_Stage'] = self.data.apply(lambda df: self.common.get_stage_level(df.Stage), axis=1)
+		self.data['BasicName'] = self.data.apply(lambda df: self.common.get_basic_name(df['Organization Name']), axis=1)
+
+		self.data = self.data[self.columns_db]
+		values = self.common.df_list(self.data)
+		self.db.bulk_insert(self.enum.SQL.sql_mars_meta_data_insert.value, values)
+
+		print(self.data.head())
 
 
 if __name__ == '__main__':
 	tl = TargetList()
-	tl.duplicate_ventures_for_second_pair_of_eye()
+	mm = MaRSMetadata()
+	# tl.duplicate_ventures_for_second_pair_of_eye()
+	# tl.push_data_to_db()
+	# tl.final_mars_csv_tl_comparision()
+	# tl.update_targetlist_basic_name()
+	mm.load_mars_metadata()
 
 

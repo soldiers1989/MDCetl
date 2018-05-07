@@ -6,7 +6,7 @@ import openpyxl
 from openpyxl.styles import PatternFill
 from Shared.file_service import FileService
 from Shared.common import Common
-from Shared.enums import FileType, WorkSheet as WS, PATH as p
+from Shared.enums import FileType, WorkSheet as WS, PATH as p, FilePath as pth
 import warnings
 import os
 from dateutil import parser
@@ -72,7 +72,7 @@ class BapQA:
 			dfac = pd.concat([dfac, df_ac])
 
 
-		writer = pd.ExcelWriter('00 ALL_RIC_BAP_COLUMNS_FY18_Q3.xlsx')
+		writer = pd.ExcelWriter('00 ALL_RIC_BAP_COLUMNS_FY18_Q4.xlsx')
 		dfps.to_excel(writer, 'Program', index=False)
 		dfpys.to_excel(writer, 'Program Youth', index=False)
 		dfqc.to_excel(writer, 'Quarterly Company', index=False)
@@ -82,17 +82,17 @@ class BapQA:
 		print(os.getcwd())
 		writer.save()
 
-	def check_rics_file(self, loc, combined=False):
-		path = Common.change_location(loc)
+	def check_rics_file(self, loc, dest, combined=False):
+		path = Common.change_working_directory(loc.value)
 		fl = FileService(path)
 		self.ric_files = fl.get_source_file()
 		if combined:
-			self.ric_files = [f for f in self.ric_files if 'ALL_' in f]
+			self.ric_files = [f for f in self.ric_files if 'ETL_RICS_BAP_COMBINED' in f]
 		print('-' * 100, '\nPROCESSING RIC FILES\n')
 		for fl in self.ric_files:
 			print(fl)
 			try:
-				Common.change_location(loc)
+				Common.change_working_directory(loc.value)
 				wb = openpyxl.load_workbook(fl, data_only=True)
 
 				print('\tProgram Data')
@@ -110,9 +110,9 @@ class BapQA:
 					annual_company_sheet = wb.get_sheet_by_name(WS.bap_company_annual.value)
 					self.qa_annual_company_data_sheet(annual_company_sheet)
 
-				# Common.change_location(p.QA)
-				wb.save('00_{}_QA.xlsx'.format(fl[:-5]))
-				print('\t\t[{}_QA] IS SAVED.'.format(fl[:-5]))
+				Common.change_working_directory(dest.value)
+				wb.save('{}_Q4_QA.xlsx'.format(fl[:-5]))
+				print('\t\t[{}_Q4_QA] IS SAVED.'.format(fl[:-5]))
 			except BaseException as ex:
 				print(ex)
 

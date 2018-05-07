@@ -39,8 +39,8 @@ class BatchService:
 		value['DateUpdated'] = str(dt.datetime.today())[:10]
 		value['Year'] = year
 		value['Quarter'] = 'Q{}'.format(quarter)
-		sql = self.sql_batch_single_insert.format('CONFIG.Batch', tuple(value.values()))
-		self.db.execute(sql)
+		sqli = self.sql_batch_single_insert.format('CONFIG.ImportBatch', tuple(value.values()))
+		self.db.execute(sqli)
 		new_batch = self.search_batch(year, quarter, systemsource, datasource, work_sheet_name, file_name,
 									  file_path=full_path)
 		return new_batch

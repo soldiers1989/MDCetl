@@ -267,13 +267,19 @@ class CompanyService:
 			print(sql_update)
 			db.execute(sql_update)
 
+	def insert_new_venture(self):
+		data = db.pandas_read(sql.sql_bap_new_company.value)
+		values = CM.df_list(data)
+		db.bulk_insert(sql.sql_venture_insert.value,values)
+
 
 if __name__ == '__main__':
 	com = CompanyService()
 	# com.update_raw_company()
 	# com.move_annual_company_data()
 	# com.update_tdw_basic_company()
-	com.update_cb_basic_company()
+	# com.update_cb_basic_company()
+	com.insert_new_venture()
 
 
 

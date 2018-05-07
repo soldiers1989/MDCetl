@@ -59,9 +59,9 @@ class FileService:
 						prg_youth.columns = self.program_youth_columns
 						com = pd.read_excel(fl, WS.bap_company.value)
 						com['Date_of_Incorporation'] = None
-						if fl == 'BAP FY 2018 Q4 Submitted Apr13-SPARK CENTRE_BAP_qtrly_perCompany_QTR 4.xlsx':
-							com['Annual Revenue $CAN'] = None
-							com['Number of Employees'] = None
+						# if fl == 'BAP FY 2018 Q4 Submitted Apr13-SPARK CENTRE_BAP_qtrly_perCompany_QTR 4.xlsx':
+						# 	com['Annual Revenue $CAN'] = None
+						# 	com['Number of Employees'] = None
 						com.columns = self.quarterly_company_columns
 						if ds in [DST.COMMUNI_TECH.value, DST.HAL_TECH.value]:
 							com_a = pd.read_excel(fl, WS.bap_company_annual.value)

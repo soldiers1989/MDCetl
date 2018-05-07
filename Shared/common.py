@@ -5,7 +5,7 @@ import requests
 from configparser import ConfigParser
 from dateutil import parser
 from dateutil.parser import parse
-from Shared.enums import DataSourceType, CONSTANTS, PATH, StageLevel as stg, DealType as dt
+from Shared.enums import DataSourceType, CONSTANTS, PATH, StageLevel as stg, DealType as dt, MaRSProgram, MaRSSector, CAIPStatus, Stage
 import pandas as pd
 import dns.resolver
 import socket
@@ -21,11 +21,9 @@ class Common:
 	url_pattern = '^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$'
 	email_pattern = '[a-zA-Z0-9+_\-\.]+@[0-9a-zA-Z][.-0-9a-zA-Z]*.[a-zA-Z]+'
 	address_pattern = '[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]'
-	suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Incorporated', 'Inc.', 'inc', 'Inc','Corporation', 'Corp.', 'Corp',
-			  'Communications', 'Technologies', 'Technology','Tech.','Industry','Industries','Enterprise']
-	#
-	# Note: Consider 'Systems' and 'Solutions'
-	#
+	suffix = ['Limited', 'Ltd.',  'Ltd', 'ltd', 'Incorporated', 'Inc.', 'inc', 'Inc','Corporation', 'Corp.', 'Corp', 'Technologies']
+			  #['Communications', 'Technologies', 'Technology','Tech.','Industry','Industries','Enterprise']
+
 	stage = ['idea', 'discovery', 'validation', 'efficiency', 'scale']
 	basic_name = ''
 	temp_name = ''
@@ -264,25 +262,66 @@ class Common:
 
 	@staticmethod
 	def get_stage_level(stage):
-		st = stage.lower() if stage is not None else ''
+		st = str(stage).lower() if stage is not None else ''
 		company_stage = None
 		if st == '':
 			company_stage = None
 		if 'idea' in st:
-			company_stage = stg.IDEA.value
+			company_stage = Stage.IDEA.value
 		elif 'discovery' in st:
-			company_stage = stg.DISCOVERY.value
+			company_stage = Stage.DISCOVERY.value
 		elif 'validation' in st:
-			company_stage = stg.VALIDATION.value
+			company_stage = Stage.VALIDATION.value
 		elif 'efficiency' in st:
-			company_stage = stg.EFFICIENCY.value
+			company_stage = Stage.EFFICIENCY.value
 		elif 'scale' in st:
-			company_stage = stg.SCALE.value
+			company_stage = Stage.SCALE.value
 
 		if company_stage is not None:
 			return str(company_stage)
 		else:
 			return company_stage
+
+	@staticmethod
+	def get_mars_program(program):
+		prg = str(program).lower() if program is not None else ''
+		mars_program = None
+		if 'start' in prg:
+			mars_program = MaRSProgram.Start.value
+		elif 'growth' in prg:
+			mars_program = MaRSProgram.Growth.value
+		elif 'scale' in prg:
+			mars_program = MaRSProgram.Scale.value
+
+		return mars_program
+
+	@staticmethod
+	def get_mars_sector(sector):
+		sec = str(sector).lower() if sector is not None else ''
+		mars_sector = None
+		if 'clean' in sec:
+			mars_sector = MaRSSector.Cleantech.value
+		elif 'finance' in sec or 'commerce' in sec:
+			mars_sector = MaRSSector.Fiance_and_Commerce.value
+		elif 'health' in sec:
+			mars_sector = MaRSSector.Health.value
+		elif 'work' in sec or 'learn' in sec:
+			mars_sector = MaRSSector.Work_and_Learning.value
+
+		return mars_sector
+
+	@staticmethod
+	def get_caip_status(caip_status):
+		caip = str(caip_status).lower() if caip_status is not None else ''
+		mars_caip = None
+		if 'is caip' in caip:
+			mars_caip = CAIPStatus.IsCAIP.value
+		elif 'was caip' in caip:
+			mars_caip = CAIPStatus.WasCAIP.value
+		elif 'never caip' in caip:
+			mars_caip = CAIPStatus.NeverCAIP.value
+
+		return mars_caip
 
 	@staticmethod
 	def get_yes_no(val):

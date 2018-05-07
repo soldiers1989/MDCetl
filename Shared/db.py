@@ -29,7 +29,7 @@ class DB:
 			cursor = con.cursor()
 			cursor.execute(sql)
 			cursor.commit()
-			print('Executed sucessfully.')
+			# print('Executed sucessfully.')
 		except Exception as ex:
 			print('Executing SC Exception: {}'.format(ex))
 			print(sql)
@@ -85,10 +85,12 @@ class DB:
 	def update_basic_name(select, key, venture_name, update):
 		data = DB.pandas_read(select)
 		for _, r in data.iterrows():
-			print(r['{}'.format(venture_name)])
 			basic_name = Common.get_basic_name(r['{}'.format(venture_name)])
+			ven_name = r['{}'.format(venture_name)]
+			basic_name = basic_name.replace("'", "\''")
 			sql_update = update.format(basic_name, Common.sql_compliant(r['{}'.format(key)]))
 			DB.execute(sql_update)
+			print('{}\t\t\t\t\t\t\t\t---->\t\t\t\t\t\t\t\t{}'.format(ven_name, basic_name))
 
 	@staticmethod
 	def entity_exists(table, column, value):

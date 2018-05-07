@@ -208,7 +208,7 @@ def _main_():
 
     # read answers from DB, clean ans
     print("Reading answers from DB into ans df")
-    ans_sql = CM.get_config("config_sql.ini", "ann_survey_18", "survey_results_by_ric")
+    ans_sql = CM.get_config("config_sql.ini", "ann_survey_18", "sel_ann_survey_res")
     ans = DB.pandas_read(ans_sql)
     print("Cleaning ans df")
     ans.dropna(subset=['Answer'], inplace=True)

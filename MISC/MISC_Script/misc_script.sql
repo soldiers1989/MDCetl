@@ -8,6 +8,7 @@ EXEC Config.DedupeCompanyIDCol  'MDCRaw.SURVEY.Targetlist', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.SURVEY.Question_Answers', 'answer', 50021327348
 EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.AnnualSurveyResult', 'Company_ID'
 EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.ResponseStatus', 'venture_id'
+EXEC Config.DedupeCompanyIDCol  'MDCRaw.MaRS.MaRSMetadata', 'CompanyID'
 
 ALTER DATABASE MDCDim
 SET MULTI_USER

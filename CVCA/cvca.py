@@ -56,7 +56,7 @@ class CVCA(ds.DataSource):
     def cvca_venture_basic_name(self):
         self.data = self.db.pandas_read(self.enum.SQL.sql_cvca_select.value)
         for _, cb in self.data.iterrows():
-            sql_update = self.enum.SQL.sql_cvca_update.value.format(self.common.get_basic_name(cb.CompanyName), cb.ID)
+            sql_update = self.enum.SQL.sql_cvca_update.value.format(self.common.update_cb_basic_name(cb.CompanyName), cb.ID)
             # print(sql_update)
             self.db.execute(sql_update)
             print(cb.CompanyName)
@@ -80,5 +80,5 @@ if __name__ == '__main__':
     cv = CVCA()
     # cv.read_cvca_file()
     # cv.cvca_venture_basic_name()
-    # cv.get_basic_name()
+    # cv.update_cb_basic_name()
     cv.cvca_type_qa_result()

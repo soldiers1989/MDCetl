@@ -357,7 +357,7 @@ class Crunchbase(ds.DataSource):
 		elif int(prprty['paging']['total_items']) > 1:
 			print('{} ----> {}'.format(prprty[CBDict.items.value][0][CBDict.type.value], list(prprty[CBDict.items.value][0][CBDict.properties.value].keys())))
 
-	def get_basic_name(self):
+	def update_cb_basic_name(self):
 		self.db.update_basic_name(self.enum.SQL.sql_cb_basic_company.value,
 								  'org_uuid',
 								  'name',
@@ -370,4 +370,4 @@ if __name__ == '__main__':
 	# crb.save_organization_summary_data()
 	# crb.get_organization_api_url()
 	# crb.get_organization_relationships()
-	crb.get_basic_name()
+	crb.update_cb_basic_name()

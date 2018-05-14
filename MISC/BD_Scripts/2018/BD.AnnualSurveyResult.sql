@@ -1,3 +1,4 @@
+TRUNCATE TABLE MDCReport.BD.AnnualSurveyResult
 INSERT INTO MDCReport.BD.AnnualSurveyResult
 SELECT
   RA.resp_id,

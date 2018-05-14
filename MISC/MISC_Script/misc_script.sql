@@ -9,6 +9,10 @@ EXEC Config.DedupeCompanyIDCol  'MDCRaw.SURVEY.Question_Answers', 'answer', 5002
 EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.AnnualSurveyResult', 'Company_ID'
 EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.ResponseStatus', 'venture_id'
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.MaRS.MaRSMetadata', 'CompanyID'
+EXEC Config.DedupeCompanyIDCol  'MDCRaw.SURVEY.CommunitechList', 'CompanyID'
+EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.FactFunding', 'CompanyID'
+EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.FactEmployment', 'CompanyID'
+EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.FactRevenue', 'CompanyID'
 
 ALTER DATABASE MDCDim
 SET MULTI_USER

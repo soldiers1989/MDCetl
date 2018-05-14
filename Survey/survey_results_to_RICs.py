@@ -46,10 +46,6 @@ def multi_options(q_type):
 def opt_col_title(row):
     d = {1: str(row['col_title']) + ' - Option: ' + str(row['o_label']),
          0: row['col_title']}
-    # if row['multi_options'] == 1:
-    #     return str(row['col_title']) + ' - Option: ' + str(row['o_label'])
-    # else:
-    #     return row['col_title']
     return d[row['multi_options']]
 
 

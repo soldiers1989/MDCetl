@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f6c18a1d-94cf-424b-808c-0a71fdc83433" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MISC/BD_Scripts/2018/BD.AnnualSurveyResult.sql" beforeDir="false" afterPath="$PROJECT_DIR$/MISC/BD_Scripts/2018/BD.AnnualSurveyResult.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MISC/MISC_Script/misc_script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/MISC/MISC_Script/misc_script.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Survey/survey_results_to_RICs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Survey/survey_results_to_RICs.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -68,8 +66,8 @@
       <file leaf-file-name="survey_results_to_RICs.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Survey/survey_results_to_RICs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
-              <caret line="211" column="50" lean-forward="true" selection-start-line="211" selection-start-column="50" selection-end-line="211" selection-end-column="50" />
+            <state relative-caret-position="101">
+              <caret line="218" column="38" lean-forward="true" selection-start-line="218" selection-start-column="38" selection-end-line="218" selection-end-column="38" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
                 <element signature="e#352#627#0" />
@@ -99,8 +97,8 @@
       <file leaf-file-name="misc_script.sql" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/MISC/MISC_Script/misc_script.sql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="32" lean-forward="true" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
+            <state relative-caret-position="225">
+              <caret line="15" column="71" selection-start-line="15" selection-start-column="71" selection-end-line="15" selection-end-column="71" />
             </state>
           </provider>
         </entry>
@@ -639,7 +637,14 @@
       <option name="project" value="LOCAL" />
       <updated>1525705584613</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Added Fact &amp; CommunitechList tables to dedupe script">
+      <created>1526309771881</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1526309771881</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TodoView">
@@ -665,10 +670,10 @@
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16347177" />
       <window_info anchor="bottom" id="Docker" order="10" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="4" weight="0.32960597" />
-      <window_info anchor="right" id="SciView" order="3" visible="true" weight="0.3035144" />
+      <window_info active="true" anchor="right" id="SciView" order="3" visible="true" weight="0.3035144" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" sideWeight="0.64693445" visible="true" weight="0.42044446" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.64693445" visible="true" weight="0.42044446" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -732,7 +737,8 @@
     <MESSAGE value="secondary etl" />
     <MESSAGE value="secondary etl, results to rics" />
     <MESSAGE value="misc" />
-    <option name="LAST_COMMIT_MESSAGE" value="misc" />
+    <MESSAGE value="Added Fact &amp; CommunitechList tables to dedupe script" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Fact &amp; CommunitechList tables to dedupe script" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1228,10 +1234,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/MISC/BD_Scripts/2018/BD.AnnualSurveyResult.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Survey/survey_results_to_RICs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="211" column="50" lean-forward="true" selection-start-line="211" selection-start-column="50" selection-end-line="211" selection-end-column="50" />
+        <state relative-caret-position="101">
+          <caret line="218" column="38" lean-forward="true" selection-start-line="218" selection-start-column="38" selection-end-line="218" selection-end-column="38" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
             <element signature="e#352#627#0" />
@@ -1248,17 +1261,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MISC/BD_Scripts/2018/BD.AnnualSurveyResult.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/MISC/MISC_Script/misc_script.sql">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="32" lean-forward="true" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
+        <state relative-caret-position="225">
+          <caret line="15" column="71" selection-start-line="15" selection-start-column="71" selection-end-line="15" selection-end-column="71" />
         </state>
       </provider>
     </entry>

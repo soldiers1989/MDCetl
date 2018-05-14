@@ -90,7 +90,7 @@ class DB:
 			basic_name = basic_name.replace("'", "\''")
 			sql_update = update.format(basic_name, Common.sql_compliant(r['{}'.format(key)]))
 			DB.execute(sql_update)
-			print('{}\t\t\t\t\t\t\t\t---->\t\t\t\t\t\t\t\t{}'.format(ven_name, basic_name))
+			print('{}({})'.format(ven_name, basic_name))
 
 	@staticmethod
 	def entity_exists(table, column, value):

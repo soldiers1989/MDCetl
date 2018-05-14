@@ -12,6 +12,12 @@ class VentureDedupe(DataSource):
 		self.venture_col = ['ID', 'Name', 'BasicName', 'BatchID', 'DateFounded', 'DateOfIncorporation', 'VentureType', 'Description',
 							'Website', 'Email', 'Phone', 'Fax', 'VentureStatus', 'ModifiedDate', 'CreateDate']
 
+	def update_ventures_basic_name_new(self):
+		self.data = self.db.pandas_read(self.enum.SQL.sql_update_ventures_basic_name.value)
+		for _, r in self.data.iterrows():
+			basicName = self.common.get_basic_name(r.Name)
+			print('{}\t\t{} ---> {}'.format(r.Name, r.BasicName, basicName))
+
 	def get_verified_duplicate(self):
 		self.common.change_working_directory(self.enum.FilePath.path_venture_dedupe.value)
 		self.data = pd.read_excel('Duplicate Ventures for QA.xlsx')
@@ -53,7 +59,7 @@ class VentureDedupe(DataSource):
 	def update_ventures_basic_name(self):
 		self.data = self.db.pandas_read(self.enum.SQL.sql_venture_basic_name.value)
 		for _, r in self.data.iterrows():
-			basicname = self.common.sql_compliant(self.common.update_cb_basic_name(r.Name))
+			basicname = self.common.sql_compliant(self.common.get_basic_name(r.Name))
 			self.db.execute(self.enum.SQL.sql_venture_basic_name_update.value.format(basicname, r.ID))
 			# print(self.enum.SQL.sql_venture_basic_name_update.value.format(basicname, r.ID))
 			print('{}\t\t\t\t\t\t\t\t---->\t\t\t\t\t\t\t\t{}'.format(r.Name, basicname))
@@ -129,7 +135,7 @@ class VentureDedupe(DataSource):
 		# 	# dfV4.to_excel(writer, sheet_name='Four Duplicates', index=False)
 		# 	# dfVx.to_excel(writer, sheet_name='More than four Duplicates', index=False)
 		# 	df_db.to_excel(writer, index=False)
-        #
+		#
 		# 	writer.save()
 		# except Exception as ex:
 		# 	print(ex)
@@ -137,7 +143,9 @@ class VentureDedupe(DataSource):
 		print('Duplicate files created for ventures.')
 
 	def venture_with_former_name(self):
-		self.common.change_working_directory(self.enum.FilePath.path_venture_dedupe.value)
+		# self.common.change_working_directory(self.enum.FilePath.path_venture_dedupe.value)
+
+
 		self.data = self.db.pandas_read(self.enum.SQL.sql_venture_former_name.value)
 		val = []
 		for _, r in self.data.iterrows():
@@ -149,17 +157,49 @@ class VentureDedupe(DataSource):
 																			r.ID)
 			self.db.execute(usql)
 			print(usql)
-			# d = dict()
+			# d = dict() '\[(.*?)\]'
 			# d['ID'] = r.ID
 			# d['Name'] = sname[0]
 			# d['AdditionalName'] = sname[1].replace(')', '')
 			# d['BasicName'] = r.BasicName
 			# d['NewBasicName'] = self.common.get_basic_name(sname[0])
 			# val.append(d)
-		# df = pd.DataFrame(val, columns=val[0].keys())
-		# self.file.save_as_csv(df, 'Venrure with multiple name.xlsx', os.getcwd(), 'Ventures with Multiple name')
+			# df = pd.DataFrame(val, columns=val[0].keys())
+			# self.file.save_as_csv(df, 'Venrure with multiple name.xlsx', os.getcwd(), 'Ventures with Multiple name')
 
+	def ventures_with_double_name(self):
+		self.data = self.db.pandas_read(self.enum.SQL.sql_marsmetadata_double_name.value)
+		for _, r in self.data.iterrows():
+			sname = r.VentureName.split(sep='(')
+			usql = self.enum.SQL.sql_marsmetadata_double_name_update.value.format(self.common.sql_compliant(sname[0]),
+									 self.common.sql_compliant(self.common.get_basic_name(sname[0])),
+									 r.ID)
+			self.db.execute(usql)
+			print(usql)
 
+	def survey_previous_name_for_ventures(self):
+		self.common.change_working_directory(self.enum.FilePath.path_venture_dedupe.value)
+		cols = ['PreviousName','Similar_Pre','ConfirmName','Similar_Confirm', 'Name', 'IssueFound']
+		self.data = pd.read_excel('Venture_Previous_Name_From_Survey.xlsx')
+		temp = ['PreviousName', 'Other companies in dbo.Venture with names similar to PreviousName: ',
+				'ConfirmName', 'Other companies in dbo.Venture with names similar to ConfirmName: ',
+				'Name', 'Issue Found?']
+		self.data = self.data[temp]
+		self.data.columns = cols
+		print(self.data.columns)
+		print(self.data.head(25))
+
+	def update_tdw_basic_name(self):
+		self.db.update_basic_name(self.enum.SQL.sql_tdw_basic_company.value,
+								  'org_uuid',
+								  'name',
+								  self.enum.SQL.sql_tdw_basic_company_update.balue)
+
+	def update_cbInsight_basic_name(self):
+		self.db.update_basic_name(self.enum.SQL.sql_cbinsights_basic_name.value,
+								  'ID',
+								  'CompanyName',
+								  self.enum.SQL.sql_cbinsights_basic_name_update.value)
 
 
 if __name__ == '__main__':
@@ -167,5 +207,10 @@ if __name__ == '__main__':
 	# vd.get_verified_duplicate()
 	# vd.inset_new_ventures()
 	# vd.update_ventures_basic_name()
-	vd.duplicate_venture_table_processing()
+	# vd.duplicate_venture_table_processing()
 	# vd.venture_with_former_name()
+	# vd.survey_previous_name_for_ventures()
+	# vd.ventures_with_double_name()
+	# vd.update_ventures_basic_name_new()
+	# vd.update_tdw_basic_name()
+	vd.update_cbInsight_basic_name()

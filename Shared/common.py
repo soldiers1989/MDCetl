@@ -5,7 +5,9 @@ import requests
 from configparser import ConfigParser
 from dateutil import parser
 from dateutil.parser import parse
-from Shared.enums import DataSourceType, CONSTANTS, PATH, StageLevel as stg, DealType as dt, MaRSProgram, MaRSSector, CAIPStatus, Stage
+from Shared.enums import DataSourceType, CONSTANTS, PATH, \
+	StageLevel as stg, DealType as dt, MaRSProgram, \
+	MaRSSector, CAIPStatus, Stage
 import pandas as pd
 import dns.resolver
 import socket
@@ -643,5 +645,11 @@ class Common:
 		"""
 		lst = list(df[col].dropna().unique())
 		return lst
+
+	@staticmethod
+	def venture_name_with_bracket_split(string):
+		bracket_string = re.findall('\(.*?\)', string)[0]
+		main_string = re.sub(' +',' ',string.replace(bracket_string, ''))
+		return [main_string, bracket_string]
 
 

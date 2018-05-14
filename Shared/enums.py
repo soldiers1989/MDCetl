@@ -617,6 +617,7 @@ class SQL(Enum):
 	sql_venture_insert_short = '''INSERT INTO MDCRaw.dbo.Venture VALUES {}'''
 	sql_venture_other_name_update = '''UPDATE MDCRaw.dbo.Venture SET Name = \'{}\', BasicName = \'{}\',OtherNames = \'{}\' WHERE ID = {}'''
 
+
 	sql_dw_fact_ric_company_data = '''
 		SELECT
 		CompanyID ,
@@ -724,8 +725,6 @@ class SQL(Enum):
 
 	sql_dbo_duplicate_venture_update = '''UPDATE MDCRaw.CONFIG.DuplicateVenture SET Verified = 1 WHERE CompanyID = {}'''
 
-	sql_cbinsights_select = '''SELECT ID, CompanyName FROM MDCRaw.CBINSIGHTS.Funding'''
-	sql_cbinsights_update = '''UPDATE MDCRaw.CBINSIGHTS.Funding SET BasicName = \'{}\' WHERE Id = {}'''
 
 	sql_cvca_select = '''SELECT ID, CompanyName FROM MDCRaw.CVCA.VCPEDeals'''
 	sql_cvca_update = '''UPDATE MDCRaw.CVCA.VCPEDeals SET BasicName = \'{}\' WHERE ID = {}'''
@@ -774,22 +773,28 @@ class SQL(Enum):
 	sql_tdw_companies_single_insert = '''INSERT INTO MDCRaw.TDW.Companies VALUES {}'''
 
 
-	sql_tdw_basic_company = '''SELECT DISTINCT ID, legal_name FROM MDCRaw.TDW.Companies WHERE BasicName = '' '''
+	sql_tdw_basic_company = '''SELECT DISTINCT ID, legal_name FROM MDCRaw.TDW.Companies'''
 	sql_tdw_basic_company_update = '''UPDATE MDCRaw.TDW.Companies SET BasicName = \'{}\' WHERE ID = {}'''
 	sql_cb_basic_company = '''SELECT org_uuid, name FROM MDCRaw.CRUNCHBASE.Organization '''
 	sql_cb_basic_company_update = '''UPDATE MDCRaw.CRUNCHBASE.Organization SET BasicName = \'{}\' WHERE org_uuid = \'{}\''''
 	sql_cvca_basic_company = '''SELECT ID, CompanyName FROM MDCRaw.CVCA.Exits WHERE BasicName = '' '''
 	sql_cvca_basic_company_update = '''UPDATE MDCRaw.CVCA.Exits SET BasicName = \'{}\' WHERE ID = {}'''
 
+	sql_cbinsights_basic_name = '''SELECT ID, CompanyName FROM MDCRaw.CBINSIGHTS.Funding'''
+	sql_cbinsights_basic_name_update = '''UPDATE MDCRaw.CBINSIGHTS.Funding SET BasicName = \'{}\' WHERE ID = {}'''
+
+
 	sql_cvca_exits_new_ventures = '''SELECT E.CompanyName, E.BasicName, E.Batch FROM CVCA.Exits E LEFT JOIN dbo.Venture V ON E.BasicName = V.BasicName WHERE V.Name IS NULL'''
 	sql_iaf_new_ventures = '''SELECT E.Venture_Name, E.BasicName, E.Batch FROM IAF.IAFSummary E LEFT JOIN dbo.Venture V ON E.BasicName = V.BasicName WHERE V.Name IS NULL'''
 	sql_cvca_deals_new_ventures = '''SELECT E.CompanyName, E.BasicName, E.Batch FROM CVCA.VCPEDeals E LEFT JOIN dbo.Venture V ON E.BasicName = V.BasicName WHERE V.Name IS NULL'''
 	sql_cb_new_ventures = '''SELECT E.name, E.BasicName, E.Batch FROM CRUNCHBASE.Organization E LEFT JOIN dbo.Venture V ON E.BasicName = V.BasicName WHERE V.Name IS NULL'''
+	sql_update_ventures_basic_name = '''SELECT ID, Name, BasicName FROM Venture WHERE Name LIKE \'%Tech%\' AND BasicName NOT LIKE \'%Tech%\''''
 	sql_cvca_type_update = '''UPDATE MDCRaw.CVCA.VCPEDeals SET Type = {} WHERE ID = {}'''
 
 	sql_bap_basic_name = '''SELECT ID, CompanyName FROM MaRSDataCatalyst.BAp.QuarterlyCompanyData WHERE CompanyID = 0 AND BasicName IS NULL'''
 	sql_bap_basic_name_update = '''UPDATE MaRSDataCatalyst.BAp.QuarterlyCompanyData SET BasicName = \'{}\' WHERE ID = {}'''
 
+	sql_communitech_venture_insert = '''INSERT INTO MDCRaw.SURVEY.Communitech_Ventures VALUES (?, ?, ?)'''
 	#sql_batch_selects = 'SELECT DISTINCT BatchID FROM Config.ImportBatch WHERE Year = {} AND Quarter = \'Q{}\' AND SourceSystemID = {}'
 	#sql_batch_insert = 'INSERT INTO CONFIG.ImportBATCH Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 	#sql_batch_single_insert = 'INSERT INTO {} Values {}'
@@ -808,6 +813,8 @@ class SQL(Enum):
 
 	sql_mars_meta_data_insert = '''INSERT INTO MDCReport.BD.MaRSMetadata VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
 	sql_marsmetadata_new_ventures = '''SELECT VentureName as Name, BasicName, BatchID FROM MDCReport.BD.MaRSMetadata WHERE CompanyID IS NULL'''
+	sql_marsmetadata_double_name = '''SELECT ID, VentureName, BasicName FROM MaRS.MaRSMetadata WHERE VentureName LIKE '%(%' '''
+	sql_marsmetadata_double_name_update = '''UPDATE MDCRaw.MaRS.MaRSMetadata SET VentureName = \'{}\', BasicName = \'{}\' WHERE ID = {}'''
 
 
 class Columns(Enum):
@@ -926,6 +933,7 @@ class FilePath(Enum):
 	path_bap_combined = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q4/ETL/01 Combined'
 	path_bap_combined_dest = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q4/ETL/01 Combined/00 QA'
 	path_mars_metadata = 'Box Sync/WorkBench/BAP/Annual Survey FY2018/MaRS Metadata'
+	path_communitech_shared = 'Box Sync/WorkBench/BAP/Annual Survey FY2018/Communitech'
 
 
 class DealType(Enum):

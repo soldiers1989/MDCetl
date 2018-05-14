@@ -16,9 +16,19 @@ EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.FactRevenue', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.CVCA.VCPEDeals', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.CBINSIGHTS.Funding', 'CompanyID'
 
+
 ALTER DATABASE MDCDim
 SET MULTI_USER
-WITH NO_WAIT;
+WITH NO_WAIT
+GO;
+
+USE MDCReport;
+GO
+BACKUP DATABASE MDCReport
+TO DISK = 'G:\Database_Backups\MDCReport\MDCReport_Speaking_Points_Draft_20180514.bak'
+   WITH FORMAT,
+      MEDIANAME = 'G_SpeakingPointsDraft',
+      NAME = 'Full Backup of MDCReport';
 GO
 
 SELECT V.Name, V.BasicName,Q.CompanyName, Q.BasicName, Q.CompanyID, Q.Quarter, Q.Year

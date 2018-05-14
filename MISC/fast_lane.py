@@ -469,8 +469,6 @@ class TargetList(ds.DataSource):
 		# self.file.save_as_csv(dfd_match, 'INVEST_OTTAWA_Final_Matching_1.xlsx', os.getcwd(), 'Target list Vs Sheet')
 		print('This do two three things')
 
-
-
 	def duplicate_ventures_for_second_pair_of_eye(self):
 		venture = self.db.pandas_read(enum.SQL.sql_duplicate_venture_select.value)
 		venture = venture.set_index(['CompanyID','BasicName'])
@@ -507,6 +505,23 @@ class TargetList(ds.DataSource):
 		df_result = pd.DataFrame(values, columns=values[0].keys())
 		self.file.save_as_csv(df_result, 'MaRS Target List Final v Target List.xlsx', os.getcwd(),
 							  'MaRS Vs TL')
+
+	def communitech_shared_ventures(self):
+		col = ['CompanyID', 'CompanyName', 'BasicName']
+		self.common.change_working_directory(self.enum.FilePath.path_communitech_shared.value)
+		df_shared = pd.read_excel('Communitech_DataEnrichment_201802.xlsx', sheet_name='Shared')
+		df_unique = pd.read_excel('Communitech_DataEnrichment_201802.xlsx', sheet_name='Unique')
+		df_unique.columns = ['CompanyName','BracketName']
+		df_unique = df_unique.drop('BracketName', axis=1)
+		df_shared.columns = ['CompanyName']
+		df = pd.concat([df_unique, df_shared])
+		df['BasicName'] = df.apply(lambda dfs: self.common.get_basic_name(dfs['CompanyName']), axis=1)
+		df['CompanyID'] = None
+		df = df[col]
+		values = self.common.df_list(df)
+		self.db.bulk_insert(self.enum.SQL.sql_communitech_venture_insert.value,values)
+		print(df.head(25))
+		print(len(df))
 
 
 class MaRSMetadata(ds.DataSource):
@@ -546,6 +561,7 @@ if __name__ == '__main__':
 	# tl.push_data_to_db()
 	# tl.final_mars_csv_tl_comparision()
 	# tl.update_targetlist_basic_name()
-	mm.load_mars_metadata()
+	# mm.load_mars_metadata()
+	tl.communitech_shared_ventures()
 
 

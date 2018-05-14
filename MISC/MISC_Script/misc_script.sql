@@ -14,6 +14,7 @@ EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.FactFunding', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.FactEmployment', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.FactRevenue', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.CVCA.VCPEDeals', 'CompanyID'
+EXEC Config.DedupeCompanyIDCol  'MDCRaw.CBINSIGHTS.Funding', 'CompanyID'
 
 ALTER DATABASE MDCDim
 SET MULTI_USER

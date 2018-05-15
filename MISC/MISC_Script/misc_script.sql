@@ -16,6 +16,9 @@ EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.FactRevenue', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.CVCA.VCPEDeals', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.CBINSIGHTS.Funding', 'CompanyID'
 
+/*Remove non-breaking space characters from answer column in MDCReport.BD.AnualSurveyResult*/
+UPDATE MDCReport.BD.AnnualSurveyResult
+    SET Answer = REPLACE(Answer, NCHAR(0x00A0), '')
 
 ALTER DATABASE MDCDim
 SET MULTI_USER

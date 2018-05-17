@@ -248,33 +248,34 @@ def _main_():
             path = CM.change_working_directory(path_ini)
             print(path)
             misc.write_to_xl(all_resp_stats, 'ResponseStatuses - '.format(survey_title), out_path=path, sheetname="response_statuses")
-            stat_table = 'MDCReport.Fact_Response_Status'
-            print('Truncating and writing to ' + stat_table)
-            trunc_sql = CM.get_config('config.ini', 'sql_queries', 'trunc_stat_rep')
-            DB.execute(trunc_sql)
-            ins_sql = CM.get_config('config.ini', 'sql_queries', 'insert_stat_rep_f')
-            ins_sql = ins_sql.replace('(WHAT_HEADERS) ', '')
-            values = CM.df_list(all_resp_stats)
-            val_num = len(values)
-            for i in range(val_num):
-                try:
-                    val = []
-                    for l, j in enumerate(values[i]):
-                        if isinstance(values[i][l], list):
-                            val.append(''.join(str(x) for x in values[i][l]))
-                        elif isinstance(values[i][l], str):
-                            val.append(CM.sql_compliant(values[i][l]))
-                        else:
-                            val.append(values[i][l])
-                    tup = tuple(val)
-                    ins_sql_final = ins_sql.format(tup)
-                    ins_sql_final = ins_sql_final.replace('"', '\'')
-                    DB.execute(ins_sql_final)
-                    print("Record {} of {} : SUCCESS".format(i, val_num))
-                except Exception as e:
-                    print("Record number {} of {} : ERROR: {}".format(i, val_num, e))
-                    print("ERROR VALUES : {}".format(ins_sql))
-                    continue
+
+            # stat_table = 'MDCReport.Fact_Response_Status'
+            # print('Truncating and writing to ' + stat_table)
+            # trunc_sql = CM.get_config('config.ini', 'sql_queries', 'trunc_stat_rep')
+            # DB.execute(trunc_sql)
+            # ins_sql = CM.get_config('config.ini', 'sql_queries', 'insert_stat_rep_f')
+            # ins_sql = ins_sql.replace('(WHAT_HEADERS) ', '')
+            # values = CM.df_list(all_resp_stats)
+            # val_num = len(values)
+            # for i in range(val_num):
+            #     try:
+            #         val = []
+            #         for l, j in enumerate(values[i]):
+            #             if isinstance(values[i][l], list):
+            #                 val.append(''.join(str(x) for x in values[i][l]))
+            #             elif isinstance(values[i][l], str):
+            #                 val.append(CM.sql_compliant(values[i][l]))
+            #             else:
+            #                 val.append(values[i][l])
+            #         tup = tuple(val)
+            #         ins_sql_final = ins_sql.format(tup)
+            #         ins_sql_final = ins_sql_final.replace('"', '\'')
+            #         DB.execute(ins_sql_final)
+            #         print("Record {} of {} : SUCCESS".format(i, val_num))
+            #     except Exception as e:
+            #         print("Record number {} of {} : ERROR: {}".format(i, val_num, e))
+            #         print("ERROR VALUES : {}".format(ins_sql))
+            #         continue
 
 
         # set survey ID

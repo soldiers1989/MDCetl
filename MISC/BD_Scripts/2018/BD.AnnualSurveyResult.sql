@@ -1,4 +1,4 @@
-TRUNCATE TABLE MDCReport.BD.AnnualSurveyResult
+DELETE MDCReport.BD.AnnualSurveyResult WHERE FiscalYear = 2018
 INSERT INTO MDCReport.BD.AnnualSurveyResult
 SELECT
   RA.resp_id,
@@ -52,20 +52,21 @@ FROM (SELECT DISTINCT
      OV.title        [OptionLabel],
      OV.[value]      OptionValue,
      A.Answer,
-     Q.parent_id,
-     Q.Question_Type [Core/Non-core],
-     Q.[RIC_Program],
-     Q.[Cap/Rev/Emp]
+     Q.parent_id
+--      Q.Question_Type [Core/Non-core],
+--      Q.[RIC_Program],
+--      Q.[Cap/Rev/Emp]
    FROM (SELECT
            R.id resp_id,
            A.answer
          FROM SURVEY.Question_Answers A
            INNER JOIN SURVEY.Survey_Responses R ON A.survey_response_id = R.id
            INNER JOIN SURVEY.Questions Q ON A.question_id = Q.id
-         WHERE Q.id = 50021327348 AND R.survey_id IN (50021327, 50021197)) V
+         WHERE Q.id = 50021327348
+          AND R.survey_id IN (50021327, 50021197)) V
      LEFT JOIN SURVEY.Survey_Responses R ON V.resp_id = r.id
-     INNER JOIN SURVEY.Question_Answers A ON R.id = A.survey_response_id
-     FULL OUTER JOIN SURVEY.Ann_Survey_2018_Qs_Metadata Q ON A.question_id = Q.id
+     INNER JOIN SURVEY.Question_Answers A ON R.id = A.survey_response_id AND A.suppress IS NULL
+     FULL OUTER JOIN SURVEY.Questions Q ON A.question_id = Q.id
      LEFT JOIN (SELECT
                   Q.id qid,
                   O.id oid,

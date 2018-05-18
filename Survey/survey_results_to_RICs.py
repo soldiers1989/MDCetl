@@ -240,17 +240,26 @@ def _main_():
         print("Pivot into datasheet for {}".format(ric))
         ric_datasheet = ric_survey_results[['resp_id', 'Company_ID', 'col_title', 'Answer', 'page_pipe']].drop_duplicates()
         ric_datasheet['col_title'] = ric_datasheet['col_title'] + ' ' + ric_datasheet['page_pipe'].astype(str)
-        ric_datasheet['rid_cid'] = ric_datasheet['resp_id'].astype(str) + '-' + ric_datasheet['Company_ID'].astype(str)
+        ric_datasheet['rid_cid'] = ric_datasheet['resp_id'].astype(float).astype(str) + '-' + ric_datasheet['Company_ID'].astype(str)
         ric_datasheet = ric_datasheet[['rid_cid', 'col_title', 'Answer']]
-        ric_datasheet = ric_datasheet.pivot(index='rid_cid', columns='col_title', values='Answer')
-        # ric_datasheet = pd.pivot_table(ric_datasheet, values='Answer', columns='col_title', index='rid_cid')
-
-        ric_datasheet.reset_index(inplace=True)
 
         try:
+            ric_datasheet = ric_datasheet.pivot(index='rid_cid', columns='col_title', values='Answer')
+            # ric_datasheet = pd.pivot_table(ric_datasheet, values='Answer', columns='col_title', index='rid_cid')
+
+            ric_datasheet.reset_index(inplace=True)
+
             ric_datasheet['resp_id'], ric_datasheet['Company_ID'] = ric_datasheet['rid_cid'].str.split('-', 1).str
             ric_datasheet.drop('rid_cid', axis=1, inplace=True)
             ric_datasheet = ric_datasheet.apply(pd.to_numeric, errors='ignore')
+
+            # remove non-consenting responses
+            for val in list(ric_datasheet):
+                if 'consent' in str(val.lower()):
+                    consent_col = val
+                    break
+            ric_datasheet[consent_col] = ric_datasheet[consent_col].str.replace(u"\u2019", "'")
+            ric_datasheet = ric_datasheet[ric_datasheet[consent_col] != "I don't give consent"]
 
             # re-order columns to reflect q_num ordering
             cols = list(ric_datasheet)
@@ -271,7 +280,7 @@ def _main_():
             # save to disc
             save_path = path_xl(
                                  user_path=user_path,
-                                 path_extension="Box Sync/Workbench/BAP/Annual Survey FY2018/DEV - Results to RICs",
+                                 path_extension="Box Sync/Workbench/BAP/Annual Survey FY2018/DEV - Results to RICs/",
                                  filename=ric + '.xlsx')
             results_sheets = [ric_datasheet, ric_data_dicts[ric]]
             sheetnames = ['SurveyData', 'DataDictionary']

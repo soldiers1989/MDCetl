@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f6c18a1d-94cf-424b-808c-0a71fdc83433" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MISC/MISC_Script/misc_script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/MISC/MISC_Script/misc_script.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Survey/survey_results_to_RICs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Survey/survey_results_to_RICs.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -15,7 +15,7 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/MDCetl$iaf.coverage" NAME="iaf Coverage Results" MODIFIED="1517667595615" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/IAF" />
     <SUITE FILE_PATH="coverage/MDCetl$match.coverage" NAME="match Coverage Results" MODIFIED="1517785437584" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Shared" />
-    <SUITE FILE_PATH="coverage/MDCetl$survey_results_to_RICs.coverage" NAME="survey_results_to_RICs Coverage Results" MODIFIED="1526329441256" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
+    <SUITE FILE_PATH="coverage/MDCetl$survey_results_to_RICs.coverage" NAME="survey_results_to_RICs Coverage Results" MODIFIED="1526679100755" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
     <SUITE FILE_PATH="coverage/MDCetl$Validate.coverage" NAME="Validate Coverage Results" MODIFIED="1518452236171" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/BAP" />
     <SUITE FILE_PATH="coverage/MDCetl$__init__.coverage" NAME="__init__ Coverage Results" MODIFIED="1525702318271" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
     <SUITE FILE_PATH="coverage/MDCetl$results_by_RIC.coverage" NAME="results_by_RIC Coverage Results" MODIFIED="1524665066464" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
@@ -23,6 +23,7 @@
     <SUITE FILE_PATH="coverage/MDCetl$secondary_etl.coverage" NAME="secondary_etl Coverage Results" MODIFIED="1525188930393" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
     <SUITE FILE_PATH="coverage/MDCetl$bap.coverage" NAME="bap Coverage Results" MODIFIED="1518448785345" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/BAP" />
     <SUITE FILE_PATH="coverage/MDCetl$fast_lane.coverage" NAME="fast_lane Coverage Results" MODIFIED="1518640591574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/MISC" />
+    <SUITE FILE_PATH="coverage/MDCetl$merge_resps.coverage" NAME="merge_resps Coverage Results" MODIFIED="1526676673601" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Survey" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -63,78 +64,26 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="survey_results_to_RICs.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="survey_results_to_RICs.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Survey/survey_results_to_RICs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-47">
-              <caret line="218" column="38" lean-forward="true" selection-start-line="218" selection-start-column="38" selection-end-line="218" selection-end-column="38" />
+            <state relative-caret-position="177">
+              <caret line="291" column="61" lean-forward="true" selection-start-line="291" selection-start-column="61" selection-end-line="291" selection-end-column="61" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
                 <element signature="e#352#627#0" />
                 <element signature="e#657#1097#0" />
                 <element signature="e#1131#1287#0" />
-                <element signature="e#1318#1610#0" />
-                <element signature="e#1645#1785#0" />
-                <element signature="e#1864#1934#0" />
-                <element signature="e#1964#3896#0" />
-                <element signature="e#4024#5195#0" />
-                <element signature="e#5261#5682#0" />
-                <element signature="e#6461#6693#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pydevd.py" pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+      <file leaf-file-name="merge_resps.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Survey/merge_resps.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="522">
-              <caret line="1663" selection-start-line="1663" selection-end-line="1663" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="misc_script.sql" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/MISC/MISC_Script/misc_script.sql">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" column="71" lean-forward="true" selection-start-line="14" selection-start-column="71" selection-end-line="14" selection-end-column="71" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BD.AnnualSurveyResult.sql" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MISC/BD_Scripts/2018/BD.AnnualSurveyResult.sql">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="config_sql.ini" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Shared/config_sql.ini">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1010">
-              <caret line="176" column="18" selection-start-line="176" selection-end-line="176" selection-end-column="18" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="config.ini" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Shared/config.ini">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="710">
-              <caret line="104" column="17" selection-start-line="104" selection-start-column="17" selection-end-line="104" selection-end-column="17" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="secondary_etl.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Survey/secondary_etl.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="485">
-              <caret line="218" selection-start-line="218" selection-end-line="218" />
+            <state relative-caret-position="297">
+              <caret line="348" lean-forward="true" selection-start-line="348" selection-end-line="348" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -142,14 +91,50 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="misc_script.sql" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MISC/MISC_Script/misc_script.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="25" column="3" selection-start-line="25" selection-start-column="3" selection-end-line="25" selection-end-column="3" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config_sql.ini" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Shared/config_sql.ini">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2640">
+              <caret line="176" column="18" selection-start-line="176" selection-end-line="176" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BD.AnnualSurveyResult.sql" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MISC/BD_Scripts/2018/BD.AnnualSurveyResult.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="4" column="16" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="survey_etl_main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Survey/survey_etl_main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="9">
-              <caret line="370" column="51" selection-start-line="370" selection-start-column="51" selection-end-line="370" selection-end-column="51" />
+            <state relative-caret-position="3795">
+              <caret line="263" column="60" selection-start-line="263" selection-start-column="60" selection-end-line="263" selection-end-column="60" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config.ini" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Shared/config.ini">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+              <caret line="20" column="47" selection-start-line="20" selection-start-column="47" selection-end-line="20" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -232,17 +217,18 @@
         <option value="$PROJECT_DIR$/Survey/results_by_RIC.py" />
         <option value="$PROJECT_DIR$/Survey/CapRevJob_by_RIC.py" />
         <option value="$APPLICATION_CONFIG_DIR$/consoles/db/d936f066-4ba8-4d7f-9501-9e297b2c9721/console.sql" />
-        <option value="$PROJECT_DIR$/Shared/common.py" />
         <option value="$PROJECT_DIR$/Survey/sg_responses.py" />
         <option value="$PROJECT_DIR$/Shared/db.py" />
         <option value="$PROJECT_DIR$/Survey/sg_misc.py" />
-        <option value="$PROJECT_DIR$/Survey/secondary_etl.py" />
         <option value="$PROJECT_DIR$/Shared/config.ini" />
-        <option value="$PROJECT_DIR$/Survey/survey_etl_main.py" />
         <option value="$PROJECT_DIR$/Shared/config_sql.ini" />
-        <option value="$PROJECT_DIR$/MISC/BD_Scripts/2018/BD.AnnualSurveyResult.sql" />
-        <option value="$PROJECT_DIR$/Survey/survey_results_to_RICs.py" />
         <option value="$PROJECT_DIR$/MISC/MISC_Script/misc_script.sql" />
+        <option value="$PROJECT_DIR$/Survey/survey_etl_main.py" />
+        <option value="$PROJECT_DIR$/Shared/common.py" />
+        <option value="$PROJECT_DIR$/MISC/BD_Scripts/2018/BD.AnnualSurveyResult.sql" />
+        <option value="$PROJECT_DIR$/Survey/secondary_etl.py" />
+        <option value="$PROJECT_DIR$/Survey/merge_resps.py" />
+        <option value="$PROJECT_DIR$/Survey/survey_results_to_RICs.py" />
       </list>
     </option>
   </component>
@@ -266,6 +252,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -286,17 +273,6 @@
             <path>
               <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
               <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
-              <item name="MISC" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
-              <item name="MISC" type="462c0819:PsiDirectoryNode" />
-              <item name="MISC_Script" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MDCetl" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MDCetl" type="462c0819:PsiDirectoryNode" />
               <item name="Shared" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -312,7 +288,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -376,6 +351,25 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
+    <configuration name="merge_resps" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="MDCetl" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Survey" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Survey/merge_resps.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
     <configuration name="q_metadata" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="MDCetl" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -390,25 +384,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Survey/q_metadata.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
-    <configuration name="results_by_RIC" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="MDCetl" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Survey" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Survey/CapRevJob_by_RIC.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -472,17 +447,17 @@
     <list>
       <item itemvalue="Python.__init__" />
       <item itemvalue="Python.q_metadata" />
-      <item itemvalue="Python.results_by_RIC" />
       <item itemvalue="Python.survey_results_to_RICs" />
       <item itemvalue="Python.secondary_etl" />
+      <item itemvalue="Python.merge_resps" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.survey_results_to_RICs" />
+        <item itemvalue="Python.merge_resps" />
         <item itemvalue="Python.__init__" />
         <item itemvalue="Python.secondary_etl" />
         <item itemvalue="Python.q_metadata" />
-        <item itemvalue="Python.results_by_RIC" />
       </list>
     </recent_temporary>
   </component>
@@ -658,7 +633,35 @@
       <option name="project" value="LOCAL" />
       <updated>1526333923537</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Added cleanup script for removing non-breaking spaces from AnnualSurveyResult">
+      <created>1526399767495</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1526399767495</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Commented out response status DB loading">
+      <created>1526562422579</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1526562422579</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Filtered out non-consenting responses.">
+      <created>1526670545059</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1526670545059</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Added functionality to catch and print duplicate answers when pivot fails">
+      <created>1526678320130</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1526678320130</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TodoView">
@@ -672,21 +675,22 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1440" y="-300" width="1920" height="1200" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3272727" />
       <window_info anchor="bottom" id="Event Log" order="13" sideWeight="0.35306555" side_tool="true" weight="0.39903265" />
       <window_info anchor="bottom" id="Database Changes" order="11" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.22853687" />
-      <window_info anchor="bottom" id="Python Console" order="8" sideWeight="0.49815693" weight="1.0" />
       <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49815693" visible="true" weight="0.5608889" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.22844444" />
+      <window_info anchor="bottom" id="Python Console" order="8" sideWeight="0.49815693" weight="1.0" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.3288889" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16347177" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16506922" />
       <window_info anchor="bottom" id="Docker" order="10" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="4" weight="0.32960597" />
-      <window_info anchor="right" id="SciView" order="3" visible="true" weight="0.3035144" />
+      <window_info anchor="right" id="SciView" order="3" weight="0.3035144" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.64693445" weight="0.42044446" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -730,8 +734,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="deleted .ideas" />
-    <MESSAGE value="minor changes" />
     <MESSAGE value="fixed major response loading bug" />
     <MESSAGE value="changed SourceSystemID 50 from ANNUAL_SURVEY to SURVEY" />
     <MESSAGE value="updated DataSourceIDs" />
@@ -753,7 +755,11 @@
     <MESSAGE value="Added Fact &amp; CommunitechList tables to dedupe script" />
     <MESSAGE value="Added MDCRaw.CVCA.VCPEDeals to dedupe script" />
     <MESSAGE value="Added MDCRaw.CBINSIGHTS.Funding to dedupe script" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added MDCRaw.CBINSIGHTS.Funding to dedupe script" />
+    <MESSAGE value="Added cleanup script for removing non-breaking spaces from AnnualSurveyResult" />
+    <MESSAGE value="Commented out response status DB loading" />
+    <MESSAGE value="Filtered out non-consenting responses." />
+    <MESSAGE value="Added functionality to catch and print duplicate answers when pivot fails" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added functionality to catch and print duplicate answers when pivot fails" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -787,11 +793,17 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="273" />
+      <option name="time" value="301" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="ans[ans['Company_ID'] == 11533]" language="Python" />
+        <watch expression="len(df)" language="Python" />
+        <watch expression="len(new_ans)" language="Python" />
+        <watch expression="ric_datasheet[ric_datasheet.duplicated(['rid_cid', 'col_title'], keep=False)]" language="Python" />
+        <watch expression="ric_datasheet['resp_id'].astype(float).astype(str)" language="Python" />
+        <watch expression="list(ric_datasheet)" language="Python" />
+        <watch expression="ric_datasheet[ric_datasheet[consent_col] != &quot;I give consent&quot;]" language="Python" />
+        <watch expression="ric_datasheet[consent_col].str.replace(u&quot;\u2019&quot;, &quot;'&quot;)[70] == &quot;I don't give consent&quot;" language="Python" />
       </configuration>
     </watches-manager>
   </component>
@@ -845,52 +857,47 @@
     </expressions>
     <expressions id="watch">
       <expression>
-        <expression-string>ans[ans['Company_ID'] == 11533]</expression-string>
+        <expression-string>ric_datasheet[ric_datasheet.duplicated(['rid_cid', 'col_title'], keep=False)]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ans[ans['Company_ID'] == 20663]</expression-string>
+        <expression-string>ric_datasheet[consent_col].str.replace(u&quot;\u2019&quot;, &quot;'&quot;)[70] == &quot;I don't give consent&quot;</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ans[ans['Company_ID'] == 7796]</expression-string>
+        <expression-string>ric_datasheet[consent_col].str.replace(u&quot;\u2019&quot;, &quot;'&quot;)[70]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ans[ans['Company_ID'] == 7282]</expression-string>
+        <expression-string>ric_datasheet[consent_col].str.replace(r&quot;[\']&quot;, '')[70]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ans[ans['Company_ID'] == 6971]</expression-string>
+        <expression-string>ric_datasheet[consent_col].str.replace(r&quot;[\']&quot;, '')</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ans[ans['Company_ID'] == 1836]</expression-string>
+        <expression-string>ric_datasheet[ric_datasheet[consent_col] != &quot;I give consent&quot;]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ans[ans['Company_ID'] == 1538]</expression-string>
+        <expression-string>ric_datasheet[ric_datasheet[consent_col] != &quot;I don't give consent&quot;]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ans[ans['Company_ID'] == 1433]</expression-string>
+        <expression-string>list(ric_datasheet)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>ans[ans['Company_ID'] == 1224]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>ans[ans['Company_ID'] == 1302]</expression-string>
+        <expression-string>ric_datasheet['resp_id'].astype(float).astype(str)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -909,29 +916,7 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/MISC/fast_lane.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/batch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="51" column="37" selection-start-line="51" selection-start-column="37" selection-end-line="51" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AnnSurvey18/__init__.py" />
     <entry file="file://$PROJECT_DIR$/AnnSurvey18/queries.ini" />
-    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/reshape/concat.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="271" selection-start-line="271" selection-end-line="271" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Survey/sg_emails.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
@@ -1007,13 +992,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
           <caret line="3613" selection-start-line="3613" selection-end-line="3613" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/reshape/reshape.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="153" selection-start-line="153" selection-end-line="153" />
         </state>
       </provider>
     </entry>
@@ -1108,13 +1086,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/db.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="503">
-          <caret line="68" column="31" selection-start-line="68" selection-start-column="31" selection-end-line="68" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/ops.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
@@ -1133,13 +1104,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
           <caret line="1268" selection-start-line="1268" selection-end-line="1268" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/frame.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="4909" selection-start-line="4909" selection-end-line="4909" />
         </state>
       </provider>
     </entry>
@@ -1188,43 +1152,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/common.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="41">
-          <caret line="380" column="24" selection-start-line="380" selection-start-column="24" selection-end-line="380" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Shared/config.ini">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="710">
-          <caret line="104" column="17" selection-start-line="104" selection-start-column="17" selection-end-line="104" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Survey/secondary_etl.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="485">
-          <caret line="218" selection-start-line="218" selection-end-line="218" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Survey/survey_etl_main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9">
-          <caret line="370" column="51" selection-start-line="370" selection-start-column="51" selection-end-line="370" selection-end-column="51" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="522">
@@ -1232,44 +1159,126 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/reshape/concat.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3232">
+          <caret line="262" selection-start-line="262" selection-end-line="262" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/indexes/base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="2940" selection-start-line="2940" selection-end-line="2940" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/strings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="1905" selection-start-line="1905" selection-end-line="1905" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/frame.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="4853" selection-start-line="4853" selection-end-line="4853" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/db.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-648">
+          <caret line="36" column="17" lean-forward="true" selection-start-line="36" selection-start-column="17" selection-end-line="36" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/common.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="56">
+          <caret line="434" column="44" selection-start-line="434" selection-start-column="44" selection-end-line="434" selection-end-column="44" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda/lib/python3.6/site-packages/pandas/core/reshape/reshape.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="201">
+          <caret line="153" selection-start-line="153" selection-end-line="153" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Shared/config_sql.ini">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1010">
+        <state relative-caret-position="2640">
           <caret line="176" column="18" selection-start-line="176" selection-end-line="176" selection-end-column="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/MISC/BD_Scripts/2018/BD.AnnualSurveyResult.sql">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
+        <state relative-caret-position="60">
+          <caret line="4" column="16" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Survey/survey_results_to_RICs.py">
+    <entry file="file://$PROJECT_DIR$/Survey/survey_etl_main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-47">
-          <caret line="218" column="38" lean-forward="true" selection-start-line="218" selection-start-column="38" selection-end-line="218" selection-end-column="38" />
+        <state relative-caret-position="3795">
+          <caret line="263" column="60" selection-start-line="263" selection-start-column="60" selection-end-line="263" selection-end-column="60" />
           <folding>
-            <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#352#627#0" />
-            <element signature="e#657#1097#0" />
-            <element signature="e#1131#1287#0" />
-            <element signature="e#1318#1610#0" />
-            <element signature="e#1645#1785#0" />
-            <element signature="e#1864#1934#0" />
-            <element signature="e#1964#3896#0" />
-            <element signature="e#4024#5195#0" />
-            <element signature="e#5261#5682#0" />
-            <element signature="e#6461#6693#0" />
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Shared/config.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="47" selection-start-line="20" selection-start-column="47" selection-end-line="20" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Survey/secondary_etl.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="406">
+          <caret line="185" column="2" selection-start-line="185" selection-start-column="2" selection-end-line="185" selection-end-column="2" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/MISC/MISC_Script/misc_script.sql">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="71" lean-forward="true" selection-start-line="14" selection-start-column="71" selection-end-line="14" selection-end-column="71" />
+        <state relative-caret-position="375">
+          <caret line="25" column="3" selection-start-line="25" selection-start-column="3" selection-end-line="25" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Survey/merge_resps.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="297">
+          <caret line="348" lean-forward="true" selection-start-line="348" selection-end-line="348" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Survey/survey_results_to_RICs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="177">
+          <caret line="291" column="61" lean-forward="true" selection-start-line="291" selection-start-column="61" selection-end-line="291" selection-end-column="61" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+            <element signature="e#352#627#0" />
+            <element signature="e#657#1097#0" />
+            <element signature="e#1131#1287#0" />
+          </folding>
         </state>
       </provider>
     </entry>

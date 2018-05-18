@@ -289,7 +289,7 @@ def _main_():
         except ValueError as ex:
             print("!\nERROR FOR {}: {}\n!\n".format(ric, ex))
 
-            # save duplicate answer values when pivot fails
+            # save conflicting answer values when pivot fails
             save_path = path_xl(
                 user_path=user_path,
                 path_extension="Box Sync/Workbench/BAP/Annual Survey FY2018/DEV - Results to RICs/__dupies/",

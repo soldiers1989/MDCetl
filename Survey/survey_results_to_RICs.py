@@ -288,6 +288,13 @@ def _main_():
             print("Wrote to {}".format(save_path))
         except ValueError as ex:
             print("!\nERROR FOR {}: {}\n!\n".format(ric, ex))
+
+            # save duplicate answer values when pivot fails
+            save_path = path_xl(
+                user_path=user_path,
+                path_extension="Box Sync/Workbench/BAP/Annual Survey FY2018/DEV - Results to RICs/__dupies/",
+                filename=ric + '_dupies' + '.xlsx')
+            save_xls([ric_datasheet[ric_datasheet.duplicated(['rid_cid', 'col_title'], keep=False)]], save_path, ['dupies'])
             continue
         pass
 

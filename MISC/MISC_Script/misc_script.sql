@@ -1,4 +1,3 @@
-EXEC Config.DedupeCompanyIDCol  'MDCRaw.dbo.Venture', 'ID'
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.IAF.IAFDetail', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.IAF.IAFSummary', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.CVCA.VCPEDeals', 'CompanyID'
@@ -15,6 +14,8 @@ EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.FactEmployment', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.FactRevenue', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.CVCA.VCPEDeals', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.CBINSIGHTS.Funding', 'CompanyID'
+
+EXEC Config.DedupeCompanyIDCol  'MDCRaw.dbo.Venture', 'ID'
 
 /*Remove non-breaking space characters from answer column in MDCReport.BD.AnualSurveyResult*/
 UPDATE MDCReport.BD.AnnualSurveyResult

@@ -215,7 +215,7 @@ class Table(Enum):
 
 
 class SQL(Enum):
-	sql_entity_exists = '''SELECT * FROM {} WHERE {} = \'{}\' '''
+	sql_entity_exists = '''SELECT * FROM {} WHERE {} LIKE \'{}\' '''
 	sql_annual_comapny_data_update = 'UPDATE BAP.AnnualCompanyData SET CompanyID = {} WHERE ID = {}'
 	sql_target_list_update = 'UPDATE MDCRaw.SURVEY.Targetlist SET CompanyID = {} WHERE ID = {}'
 	sql_batch_insert = 'INSERT INTO Config.ImportBatch VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
@@ -742,7 +742,7 @@ class SQL(Enum):
 	sql_orgs_summary_update = '''UPDATE [CRUNCHBASE].[OrganizationsSummary] SET data_fetched = 1 WHERE uuid = \'{}\''''
 	sql_orgs_detail_update = '''UPDATE [CRUNCHBASE].[Organization] SET data_fetched = 1 WHERE org_uuid = \'{}\''''
 
-	sql_orgs_summary_select = 'SELECT uuid, api_url, name, fetched FROM MDCRaw.CRUNCHBASE.OrganizationsSummary'
+	sql_orgs_summary_select = 'SELECT uuid, api_url, name, fetched FROM MDCRaw.CRUNCHBASE.OrganizationsSummary WHERE fetched = 0'
 	sql_acquired_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Acquired_by] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
 	sql_acquiree_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Acquiree] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
 	sql_acquisition_insert = '''INSERT INTO MDCRaw.[CRUNCHBASE].[Acquisition] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
@@ -811,7 +811,7 @@ class SQL(Enum):
 			FROM MaRSDataCatalyst.BAP.QuarterlyCompanyData
 			WHERE CompanyID = 0 '''
 
-	sql_mars_meta_data_insert = '''INSERT INTO MDCReport.BD.MaRSMetadata VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+	sql_mars_meta_data_insert = '''INSERT INTO MDCRaw.MaRS.MaRSMetadata VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
 	sql_marsmetadata_new_ventures = '''SELECT VentureName as Name, BasicName, BatchID FROM MDCReport.BD.MaRSMetadata WHERE CompanyID IS NULL'''
 	sql_marsmetadata_double_name = '''SELECT ID, VentureName, BasicName FROM MaRS.MaRSMetadata WHERE VentureName LIKE '%(%' '''
 	sql_marsmetadata_double_name_update = '''UPDATE MDCRaw.MaRS.MaRSMetadata SET VentureName = \'{}\', BasicName = \'{}\' WHERE ID = {}'''
@@ -988,5 +988,29 @@ class CAIPStatus(Enum):
 	IsCAIP = 1
 	WasCAIP = 2
 	NeverCAIP = 3
+
+
+class FundingType(Enum):
+    CROWDFUNDING = 1
+    DEBT = 2
+    EQUITY = 3
+    GRANT = 4
+    NON_EQUITY = 5
+    UNDISCLOSED = 6
+    ANGEL = 7
+    SEED = 8
+    DEBT_FINANCING = 9
+    PRIVATE_EQUITY = 10
+    INITIAL_COIN_OFFERING = 11
+    PRODUCT_CROWDFUNDING = 12
+    VENTURE = 13
+    NON_EQUITY_ASSISTANCE = 14
+    EQUITY_CROWDFUNDING = 15
+    CONVERTIBLE_NOTE = 16
+    SECONDARY_MARKET = 17
+    POST_IPO_DEBT = 18
+    POST_IPO_EQUITY = 19
+    CORPORATE_ROUND = 20
+
 
 

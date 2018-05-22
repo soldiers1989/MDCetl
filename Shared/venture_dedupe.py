@@ -142,6 +142,43 @@ class VentureDedupe(DataSource):
 		self.file.save_as_csv(df_db, file_name, os.getcwd(), 'Duplicates after Former names')
 		print('Duplicate files created for ventures.')
 
+	def duplicate_venture_insert(self):
+		# vlist = [48267, 302113,22724, 302757,7810, 303224,22863, 24423,4832, 24272,1367, 303259,24779,
+		# 		 302557,11439, 21359,1494, 303275,20806, 22230,49338, 49473,47303, 302848,1578, 22087,
+		# 		 24812, 304013,60371, 304228,17748, 23157,1621, 304042,22378, 302230,13588, 21329,13731,
+		# 		 303196,6810, 48529,7136, 50043,302181, 303443,24819, 303298,11582, 26310,1224, 302868,
+		# 		 10069, 302906,22641, 22764,10436, 304233,47348, 303986,1771, 302678,7098, 22585,48755,
+		# 		 304110,16032, 303305,1822, 304230,26369, 49515,49470, 302591,7116, 22132,1395, 302689,19023, 21053]
+		# vtups = [(48267, 302113), (22724, 302757), (7810, 303224), (22863, 24423), (4832, 24272), (1367, 303259),
+		# 		 (24779, 302557), (11439, 21359), (1494, 303275), (20806, 22230), (49338, 49473), (47303, 302848), (1578, 22087),
+		# 		 (24812, 304013), (60371, 304228), (17748, 23157), (1621, 304042), (22378, 302230), (13588, 21329), (13731, 303196),
+		# 		 (6810, 48529), (7136, 50043), (302181, 303443), (24819, 303298), (11582, 26310), (1224, 302868), (10069, 302906),
+		# 		 (22641, 22764), (10436, 304233), (47348, 303986), (1771, 302678), (7098, 22585), (48755, 304110), (16032, 303305),
+		# 		 (1822, 304230), (26369, 49515), (49470, 302591), (7116, 22132), (1395, 302689), (19023, 21053)]
+
+		# vlist = [1319 , 9556,303163 , 303251,20362 , 304016,7134 , 49549,6999 , 302654,48271 , 22388,46189, 4832]
+		# vtups = [(1319 , 9556),(303163 , 303251),(20362 , 304016),(7134 , 49549),(6999 , 302654),(48271 , 22388),(46189, 4832)]
+
+		vlist = [850,302754,24797,303215,9981,54765,9583,22611,
+				 22868,26299,49474,302897,23128,302289,1497,24448,
+				 24870,301772,48048,49386,17744,22373,20529,302127,304153,304119]
+		vtups = [(850, 302754),(24797, 303215),(9981, 54765),(9583, 22611),
+				 (22868, 26299),(49474, 302897),(23128, 302289),(1497, 24448),
+				 (24870, 301772),(48048, 49386),(17744, 22373),(20529, 302127),(304119,304153)]
+
+		for i in range(len(vtups)):
+			sql_statement = 'SELECT ID, Name, AlternateName, BasicName FROM MDCRaw.dbo.Venture WHERE ID IN {} ORDER BY ID'.format(str(vtups[i]))
+			print(sql_statement)
+			self.data = self.db.pandas_read(sql_statement)
+			venture = self.data[self.data['ID'] == vtups[i][0]]
+			dventure = self.data[self.data['ID'] == vtups[i][1]]
+			#(CompanyID, DuplicateCompanyID, Name, DuplicateName, BasicName, ModifiedDate, CreateDate, Deduped, Verified)
+			insert_sql = 'INSERT INTO MDCRaw.CONFIG.DuplicateVenture VALUES ({},{},\'{}\',\'{}\',\'{}\',\'{}\',\'{}\',{},{})'.format(
+				venture.ID.values[0], dventure.ID.values[0], venture.Name.values[0], dventure.Name.values[0], venture.BasicName.values[0],
+				str(datetime.utcnow())[:23], str(datetime.utcnow())[:23], 0, 1)
+			# print(insert_sql)
+			self.db.execute(insert_sql)
+
 	def venture_with_former_name(self):
 		# self.common.change_working_directory(self.enum.FilePath.path_venture_dedupe.value)
 
@@ -213,4 +250,5 @@ if __name__ == '__main__':
 	# vd.ventures_with_double_name()
 	# vd.update_ventures_basic_name_new()
 	# vd.update_tdw_basic_name()
-	vd.update_cbInsight_basic_name()
+	# vd.update_cbInsight_basic_name()
+	vd.duplicate_venture_insert()

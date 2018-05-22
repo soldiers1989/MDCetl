@@ -29,9 +29,9 @@ class DB:
 			cursor = con.cursor()
 			cursor.execute(sql)
 			cursor.commit()
-			# print('Executed sucessfully.')
+			print('Executed sucessfully.')
 		except Exception as ex:
-			print('Executing SC Exception: {}'.format(ex))
+			print('Executing Exception: {}'.format(ex))
 			print(sql)
 
 	@staticmethod

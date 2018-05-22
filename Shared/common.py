@@ -430,9 +430,12 @@ class Common:
 			strs = value
 			lst = [x + 1 for x in lst]
 		return strs
+
 	@staticmethod
 	def sql_compliant(strs):
-		return str(strs).replace("'", "\''")
+		complaint = str(strs).replace("'", "\'\'")
+		complaint: str = str(complaint).replace('"', '')
+		return complaint
 
 	@staticmethod
 	def set_datasource(file):

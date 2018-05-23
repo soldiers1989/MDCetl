@@ -59,8 +59,7 @@ class Crunchbase(ds.DataSource):
 					   'pre_money_valuation', 'pre_money_valuation_currency_code', 'pre_money_valuation_usd', 'rank',
 					   'created_at',
 					   'updated_at']
-		self.org_columns = ['org_uuid', 'company_id', 'permalink', 'permalink_aliases', 'api_path', 'web_path', 'api_url',
-					   'name', 'BasicName',
+		self.org_columns = ['org_uuid','batch', 'company_id', 'permalink', 'permalink_aliases', 'api_path', 'web_path', 'api_url','name', 'BasicName',
 					   'also_known_as', 'short_description', 'description', 'profile_image_url',
 					   'primary_role', 'role_company', 'role_investor', 'role_group', 'role_school',
 					   'investor_type', 'founded_on', 'founded_on_trust_code', 'is_closed', 'closed_on',
@@ -161,10 +160,11 @@ class Crunchbase(ds.DataSource):
 		except FileNotFoundError as f:
 			print(f)
 
-	def get_organization_api_url(self):
-		df = db.pandas_read(self.enum.SQL.sql_orgs_summary.value)# self.orgs_api_url)
-		for c in df.iterrows():
-			self.save_orgs_detail(c[1].api_url)
+	#**self.save_orts_detail() can't be found***#
+	# def get_organization_api_url(self):
+	# 	df = db.pandas_read(self.enum.SQL.sql_orgs_summary.value)# self.orgs_api_url)
+	# 	for c in df.iterrows():
+	# 		self.save_orgs_detail(c[1].api_url)
 
 	def get_organization_relationships(self):
 		df = db.pandas_read(self.enum.SQL.sql_orgs_summary_select.value)
@@ -179,7 +179,8 @@ class Crunchbase(ds.DataSource):
 		if orgs.ok:
 
 			self.org_uuid = orgs.json()[CBDict.data.value][CBDict.uuid.value]
-			if self.db.entity_exists('MDCRaw.CRUNCHBASE.Organization', 'org_uuid', self.org_uuid):
+			df = self.db.pandas_read(self.enum.SQL.sql_org_detail_exists.value.format(self.org_uuid))
+			if len(df) == 0:#self.db.entity_exists('MDCRaw.CRUNCHBASE.Organization', 'org_uuid', self.org_uuid):
 				self.save_organization_detail(self.org_uuid, orgs.json()[CBDict.data.value][CBDict.properties.value])
 				rs_json = orgs.json()[CBDict.data.value][CBDict.relationships.value]
 				self.save_funding_rounds(rs_json['funding_rounds'], self.org_uuid)
@@ -223,25 +224,30 @@ class Crunchbase(ds.DataSource):
 		df = self.db.pandas_read(self.enum.SQL.sql_org_detail_exists.value.format(uuid))
 		if len(df) == 0:
 			json_properties['org_uuid'] = uuid
+			json_properties['batch'] = 3862
 			json_properties['company_id'] = None
 			json_properties['BasicName'] = None
 			json_properties['fetched'] = 0
 			df_properties = pd.DataFrame([json_properties], columns=self.org_columns)
 			values = CM.df_list(df_properties)
 			val = []
+			tup = ()
 			for l, j in enumerate(values[0]):
 				if isinstance(values[0][l], list):
 					val.append(''.join(str(x) for x in values[0][l]))
 				elif isinstance(values[0][l], str):
-					val.append(self.common.sql_compliant(values[0][l]))
+					val.append(self.common.sql_compliant(values[0][l]).replace('\r',' ').replace('\n',' ').replace('(',' - ').replace(')',''))
+				elif values[0][l] is None:
+					val.append(self.common.sql_compliant(''))
 				else:
 					val.append(values[0][l])
+			# print(val)
 			tup = tuple(val)
 			# print(tup)
 			ival = [val]
 			sql_insert = self.enum.SQL.sql_org_short_insert.value.format(tup)
 			# print(sql_insert)
-			sql_insert = sql_insert.replace('"', '\'').replace('True', '1').replace('False','0')
+			sql_insert = sql_insert.replace('True', '1').replace('False','0').replace('"',"'")
 			# print(sql_insert)
 			self.db.execute(sql_insert)
 		else:
@@ -254,6 +260,7 @@ class Crunchbase(ds.DataSource):
 				for i in range(int(json[CBDict.paging.value][CBDict.total_items.value])):
 					if not self.record_exits(self.enum.SQL.sql_funding_exists.value.format(json[CBDict.items.value][i]['uuid'])):
 						self.save_relational_entity(json[CBDict.items.value][i], org_uuid,self.enum.SQL.sql_funding_exists.value, self.enum.SQL.sql_funding_rounds_insert.value, self.col_funding)
+						print('Funding saved SUCCESSFULLY')
 		except Exception as ex:
 			print(ex)
 
@@ -276,6 +283,7 @@ class Crunchbase(ds.DataSource):
 				# 			if CBDict.partners.value in partners.keys():
 				# 				partner_uuid = partners[CBDict.uuid.value]
 				# 				self.push_entity_to_db(partners, investment_uuid, self.sql_investors_insert, partner_uuid, fk_uuid='investment_uuid')
+
 	def save_relational_entity(self, json, org_uuid, sql_exist, sql_insert, columns=[]):
 		try:
 			if CBDict.properties.value in json.keys():
@@ -295,6 +303,7 @@ class Crunchbase(ds.DataSource):
 						uuid = json[CBDict.items.value][i][CBDict.uuid.value]
 						if not self.record_exits(sql_exist.format(uuid)):
 							self.push_entity_to_db(json, org_uuid, sql_insert, uuid, i, self.fk_uuid, columns)
+			print('Saved Successfully.')
 		except Exception as ex:
 			print(ex)
 
@@ -369,5 +378,5 @@ if __name__ == '__main__':
 	# crb.get_organizations()
 	# crb.save_organization_summary_data()
 	# crb.get_organization_api_url()
-	# crb.get_organization_relationships()
-	crb.update_cb_basic_name()
+	crb.get_organization_relationships()
+	# crb.update_cb_basic_name()

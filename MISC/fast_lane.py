@@ -532,7 +532,7 @@ class MaRSMetadata(ds.DataSource):
 						'Organization Name', 'Venture Start Date', 'Stage', 'Business Model Tags',
 						'Technology Tag', 'Cluster', 'Sub-cluster', 'CAIP Enrolment Date', 'CAIP Graduation Date']
 
-		self.columns_db = ['CompanyID', 'Program', 'Sector', 'MaRSPriority', 'CAIP',
+		self.columns_db = ['BatchID', 'CompanyID', 'Program', 'Sector', 'MaRSPriority', 'CAIP',
 						'Organization Name','BasicName', 'Venture Start Date', 'RIC_Stage', 'Business Model Tags',
 						'Technology Tag', 'Cluster', 'Sub-cluster', 'CAIP Enrolment Date', 'CAIP Graduation Date']
 
@@ -541,6 +541,9 @@ class MaRSMetadata(ds.DataSource):
 		self.data = pd.read_excel('MaRS-venture-categorizations.xlsx', sheet_name='Sheet2')
 		print(list(self.data.columns))
 		print(self.data[['MaRSProgram','MaRSSector','CAIPStatus']])
+
+
+		self.data['BatchID'] = None # Generate the batch here and assign it.
 		self.data['Program'] = self.data.apply(lambda df: self.common.get_mars_program(df.MaRSProgram), axis=1)
 		self.data['Sector'] = self.data.apply(lambda df: self.common.get_mars_sector(df.MaRSSector), axis=1)
 		self.data['CAIP'] = self.data.apply(lambda df: self.common.get_caip_status(df.CAIPStatus), axis=1)
@@ -553,6 +556,24 @@ class MaRSMetadata(ds.DataSource):
 
 		print(self.data.head())
 
+	def load_five_missing_marsMetaData(self):
+		self.common.change_working_directory(enum.FilePath.path_mars_metadata.value)
+		self.data = pd.read_excel('MaRS-venture-categorizations.xlsx', sheet_name='FiveMissingVentures')
+
+		self.data['BatchID'] = 3865
+		self.data['CompanyID'] = None
+		self.data['Program'] = self.data.apply(lambda df: self.common.get_mars_program(df.MaRSProgram), axis=1)
+		self.data['Sector'] = self.data.apply(lambda df: self.common.get_mars_sector(df.Sector), axis=1)
+		self.data['CAIP'] = self.data.apply(lambda df: self.common.get_caip_status(df.CAIPStatus), axis=1)
+		self.data['RIC_Stage'] = self.data.apply(lambda df: self.common.get_stage_level(df.Stage), axis=1)
+		self.data['BasicName'] = self.data.apply(lambda df: self.common.get_basic_name(df['Organization Name']), axis=1)
+
+		self.data = self.data[self.columns_db]
+		values = self.common.df_list(self.data)
+
+		self.db.bulk_insert(self.enum.SQL.sql_mars_meta_data_insert.value, values)
+		print(self.data.head())
+
 
 if __name__ == '__main__':
 	tl = TargetList()
@@ -562,6 +583,7 @@ if __name__ == '__main__':
 	# tl.final_mars_csv_tl_comparision()
 	# tl.update_targetlist_basic_name()
 	# mm.load_mars_metadata()
-	tl.communitech_shared_ventures()
+	# tl.communitech_shared_ventures()
+	mm.load_five_missing_marsMetaData()
 
 

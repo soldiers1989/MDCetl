@@ -634,7 +634,7 @@ class menu_actions():
                 j = changed_resps.index(id)
                 where_sql = "WHERE id = " + str(id)
                 set_strs = ""
-                for i in range(len(resp_headers)):
+                for i in range(2, len(resp_headers)):
                     header = resp_headers[i]
                     val = resp_vals[j][i]
                     set_str = "[" + header + "]" + " = '" + str(val) + "', "

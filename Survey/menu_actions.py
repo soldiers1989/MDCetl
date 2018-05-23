@@ -597,7 +597,7 @@ class menu_actions():
             "\nDetecting responses that have changed (looking for discrepancy between DB date_submitted and API date_submitted)")
         # changed_resps = []
         i = 0
-        changed_resps = pd.merge(db_resps[["id", "date_submitted"]], api_resps[["id", "date_submitted"]],  how='left',
+        changed_resps = pd.merge(db_resps[["id", "date_submitted"]], api_resps[["id", "date_submitted"]],  how='outer',
                                  indicator=True, on=["id", "date_submitted"])
         changed_resps = changed_resps[["id"]][changed_resps["_merge"] == 'right_only']
         changed_resps = changed_resps["id"].tolist()

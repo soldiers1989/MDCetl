@@ -141,6 +141,7 @@ def _main_():
         'VentureLAB': {'db_name': 'ventureLAB', 'code': 11},
         'Innovate Niagara': {'db_name': 'Innovate Niagara', 'code': 17},
         'Launch Lab': {'db_name': 'Launch Lab', 'code': 13}
+        # ,'Communitech': {'db_name': 'Communitech', 'code': 4}
     }
 
     with shelve.open(q_meta_name, 'r') as qs_metadata:
@@ -151,8 +152,8 @@ def _main_():
             if ric in list(qs_metadata['addedby'].keys()):
                 ric_qids = include_list(ric)
                 ric_qs[ric] = ric_qids
-            elif ric.lower() == 'communitech':
-                ric_qs[ric] = qs_metadata['which_survey']['COMMUNITECH']
+            # elif ric.lower() == 'communitech':
+            #     ric_qs[ric] = qs_metadata['which_survey']['COMMUNITECH']
             else:
                 ric_qs[ric] = qs_metadata['core/noncore']['core']
 
@@ -202,10 +203,19 @@ def _main_():
     # capture correct order for columns for use later in formatting pivoted datasheets
     col_title_order = pd.Series(qsos.q_num.values, index=qsos.col_title).to_dict()
 
-    # read answers from DB, clean ans
+    # read answers from DB
     print("Reading answers from DB into ans df")
     ans_sql = CM.get_config("config_sql.ini", "ann_survey_18", "sel_ann_survey_res")
     ans = DB.pandas_read(ans_sql)
+
+    # separate process for Communitech shared ventures
+    # 1. get list of Communitech shared client answers
+    comm_sql = CM.get_config("config_sql.ini", "ann_survey_18", "sel_communitech_shared")
+    comm_ans = DB.pandas_read(comm_sql)
+    # 2. concat with rest of answers (?)
+    ans = pd.concat([ans, comm_ans])
+
+    # clean ans
     print("Cleaning ans df")
     ans.dropna(subset=['Answer'], inplace=True)
     ans['Answer'] = ans.apply(replacements, axis=1)
@@ -257,9 +267,10 @@ def _main_():
             for val in list(ric_datasheet):
                 if 'consent' in str(val.lower()):
                     consent_col = val
+                    ric_datasheet[consent_col] = ric_datasheet[consent_col].str.replace(u"\u2019", "'")
+                    ric_datasheet = ric_datasheet[ric_datasheet[consent_col] != "I don't give consent"]
+                    consent_col = ''
                     break
-            ric_datasheet[consent_col] = ric_datasheet[consent_col].str.replace(u"\u2019", "'")
-            ric_datasheet = ric_datasheet[ric_datasheet[consent_col] != "I don't give consent"]
 
             # re-order columns to reflect q_num ordering
             cols = list(ric_datasheet)

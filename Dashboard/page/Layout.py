@@ -1,42 +1,65 @@
+from Shared.common import Common as common
+from Dashboard.graph.Chart import Chart
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_table_experiments as dt
+import json
+import pandas as pd
 
 
 class HomePage:
 	def __init__(self, page_title, user_name):
 		self.title = page_title
 		self.user = user_name
+		self.chart = Chart()
+		self.COLORS = [
+			{
+				'background': '#fef0d9',
+				'text': 'rgb(30, 30, 30)'
+			},
+			{
+				'background': '#fdcc8a',
+				'text': 'rgb(30, 30, 30)'
+			},
+			{
+				'background': '#fc8d59',
+				'text': 'rgb(30, 30, 30)'
+			},
+			{
+				'background': '#d7301f',
+				'text': 'rgb(30, 30, 30)'
+			},
+		]
 
-	def page_header(self):
-		header = html.Div(style={'backgroundColor': 'black'}, children=[
-		    # LOGO
-		    self.page_logo(),
-		    # USER DETAIL
-		    self.user_detail(),
-		    # MENU
-		    self.page_menu(),
-		    #DROPDOWN MENU
-		    self.dropdown(),
-		    self.upper_graph(),
-		    self.lower_graph(),
+	def index_page(self):
+		index = html.Div(style={'backgroundColor': 'black'}, children=[
+			# LOGO
+			self.page_logo(),
+			# USER DETAIL
+			self.user_detail(),
+			# MENU
+			self.page_menu(),
+			#DROPDOWN MENU
+			self.dropdown(),
+            # SLIDER
+            self.rangeslider(),
+			# First half of the graph
+			self.upper_graph(),
+			# Second half of the graph
+			self.lower_graph(),
 		],
 		className='ten columns offset-by-one'
 		)
-		return header
-
-	def page_logo(self):
-		pass
-
-	def page_user_section(self):
-		pass
+		return index
 
 	def page_menu(self):
 		menu = html.Div(
 			[
 				html.Div([
-					dcc.Link('BAP Quarterly  ', href='/bap', className="tab first"),
-					dcc.Link('Annual Survey   ', href='/annual-survey', className="tab"),
+					dcc.Link('Annual Survey   ', href='/annual-survey', className="tab first"),
+					dcc.Link('BAP Quarterly  ', href='/bap', className="tab"),
+
 					dcc.Link('Crunchbase   ', href='/crunchbase', className="tab"),
 					dcc.Link('EPP   ', href='/epp', className="tab"),
 					dcc.Link('Think Data Works   ', href='/tdw', className="tab"),
@@ -66,14 +89,20 @@ class HomePage:
 			[
 				html.Div(
 					[
-						dcc.Graph(id='main_graph')
+						# dcc.Graph(id='main_graph',
+                        #           figure=self.chart.alpha_graph()
+						# 		  )
+						self.table('TEST FOR BAP DATA')
 					],
 					className='eight columns',
-					style={'margin-top': '20'}
+					style={'margin-top': '20',  'backgroundColor':'grey'}
 				),
 				html.Div(
 					[
-						dcc.Graph(id='individual_graph')
+						dcc.Graph(
+							id='individual_graph',
+							figure=self.chart.beta_graph()
+						)
 					],
 					className='four columns',
 					style={'margin-top': '20'}
@@ -88,21 +117,26 @@ class HomePage:
 			[
 				html.Div(
 					[
-						dcc.Graph(id='count_graph')
+						dcc.Graph(id='count_graph',
+								  figure=self.chart.gamma_graph()
+								  )
 					],
 					className='four columns',
 					style={'margin-top': '10'}
 				),
 				html.Div(
 					[
-						dcc.Graph(id='pie_graph')
+						dcc.Graph(id='pie_graph',
+								  figure=self.chart.delta_graph()
+								  )
 					],
 					className='four columns',
 					style={'margin-top': '10'}
 				),
 				html.Div(
 					[
-						dcc.Graph(id='aggregate_graph')
+						dcc.Graph(id='aggregate_graph',
+								  figure=self.chart.epsilon_graph())
 					],
 					className='four columns',
 					style={'margin-top': '10'}
@@ -117,17 +151,7 @@ class HomePage:
 			[
 				html.Div(
 					[
-						# html.P('Filter by well status:'),
-						# dcc.RadioItems(
-						#     id='well_status_selector',
-						#     options=[
-						#         {'label': 'All ', 'value': 'all'},
-						#         {'label': 'Active only ', 'value': 'active'},
-						#         {'label': 'Customize ', 'value': 'custom'}
-						#     ],
-						#     value='active',
-						#     labelStyle={'display': 'inline-block'}
-						# ),
+
 						dcc.Dropdown(
 							id='well_statuses',
 							options=[{'label':'BAP', 'value':'BAP'},
@@ -136,29 +160,13 @@ class HomePage:
 							multi=False,
 							value=['BAP'],
 						)# ,
-						# dcc.Checklist(
-						#     id='lock_selector',
-						#     options=[
-						#         {'label': 'Lock camera', 'value': 'locked'}
-						#     ],
-						#     values=[],
-						# )
+
 					],
 					className='six columns'
 				),
 				html.Div(
 					[
-						# html.P('Filter by well type:'),
-						# dcc.RadioItems(
-						#     id='well_type_selector',
-						#     options=[
-						#         {'label': 'All ', 'value': 'all'},
-						#         {'label': 'Productive only ', 'value': 'productive'},  # noqa: E501
-						#         {'label': 'Customize ', 'value': 'custom'}
-						#     ],
-						#     value='productive',
-						#     labelStyle={'display': 'inline-block'}
-						# ),
+
 						dcc.Dropdown(
 							id='well_types',
 							options=[{'label':'Database', 'value':'DB'},
@@ -175,16 +183,31 @@ class HomePage:
 		)
 		return dd
 
+	def rangeslider(self):
+		slider = html.Div(
+			[
+				dcc.RangeSlider(
+					id='year_slider',
+					min=2000,
+					max=2018,
+                    step=1,
+					value=[2015, 2015]
+				),
+			],
+			style={'margin-top': '1'}
+		)
+		return slider
+
 	def user_detail(self):
 		user = html.Div(
 			[
 				html.H5(
-					'++++',
+					'Year Range: ',
 					id='well_text',
 					className='two columns'
 				),
 				html.H5(
-					'****',
+					'Type and Value: ',
 					id='production_text',
 					className='eight columns',
 					style={'text-align': 'center'}
@@ -201,9 +224,10 @@ class HomePage:
 			],
 			className='row'
 		)
+		return user
 
-    def page_logo(self):
-        logo = html.Div(
+	def page_logo(self):
+		logo = html.Div(
 			[
 				html.H1(
 					self.title,
@@ -227,4 +251,61 @@ class HomePage:
 			],
 			className='row'
 		)
+		return logo
+
+	def cell_style(self, value, min_value, max_value):
+		style = {}
+		if common.is_numeric(value):
+			relative_value = (value - min_value) / (max_value - min_value)
+			if relative_value <= 0.25:
+				style = {
+					'backgroundColor': self.COLORS[0]['background'],
+					'color': self.COLORS[0]['text']
+				}
+			elif relative_value <= 0.5:
+				style = {
+					'backgroundColor': self.COLORS[1]['background'],
+					'color': self.COLORS[1]['text']
+				}
+			elif relative_value <= 0.75:
+				style = {
+					'backgroundColor': self.COLORS[2]['background'],
+					'color': self.COLORS[2]['text']
+				}
+			elif relative_value <= 1:
+				style = {
+					'backgroundColor': self.COLORS[3]['background'],
+					'color': self.COLORS[3]['text']
+				}
+		return style
+
+	def table(self, title):
+		common.change_working_directory('Box Sync/mnadew/IE/MDCetl/Dashboard/data')
+		df = pd.read_csv('geo.csv')
+		return self.generate_table(df)
+		# tbl = html.Div([
+		# 	html.H5(title),
+		# 	dt.DataTable(
+		# 		id='main_table',
+		# 		rows=df.to_dict('records'),
+		# 		columns=df.columns,
+		# 		editable=False,
+		# 		filterable=True,
+		# 		sortable=True)
+		# ])
+		# return tbl
+
+	def generate_table(self, df):
+		min_value=0
+		max_value=200000
+		rows = []
+		for i in range(len(df)):
+			row = []
+			for col in df.columns:
+				value = df.iloc[i][col]
+				style = self.cell_style(value,min_value, max_value)
+				row.append(html.Td(value, style=style))
+			rows.append(html.Tr(row))
+		table = html.Table([html.Tr([html.Th(col) for col in df.columns])] + rows)
+		return table
 

@@ -12,9 +12,9 @@ class MdcDb:
 
 
     def run_app(self):
-        self.app.css.append_css({'external_url': 'https://cdn.rawgit.com/plotly/dash-app-stylesheets/2d266c578d2a6e8850ebce48fdb52759b2aef506/stylesheet-oil-and-gas.css'})
-        self.app.css.append_css({'external_url': 'https://codepen.io/bcd/pen/KQrXdb.css'})
-        # self.app.css.append_css({'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'})
+        self.app.css.append_css({'external_url':'https://storage.googleapis.com/general_mdc_20180525/css/items.css'})
+        self.app.css.append_css({'external_url': 'https://storage.googleapis.com/general_mdc_20180525/css/main.css'})
+        # self.app.css.append_css({'external_url': 'https://storage.googleapis.com/general_mdc_20180525/css/tables.css'})
         self.server = self.app.server
         CORS(self.server)
         self.app_layout()

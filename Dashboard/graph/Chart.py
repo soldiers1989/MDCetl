@@ -1,15 +1,19 @@
 from Dashboard.data.Data import ChartData
+from Dashboard.data.constants import Category, SQL, Keys
 import copy
 import pandas as pd
 from Shared.common import Common as common
+import plotly.graph_objs as go
 
 class Chart:
 
-    chart = ChartData()
+
 
     def __init__(self):
-        self.mapbox_access_token = 'pk.eyJ1IjoiamFja2x1byIsImEiOiJjajNlcnh3MzEwMHZtMzNueGw3NWw5ZXF5In0.fk8k06T96Ml9CLGgKmk81w'
-        self.data_frame = self.chart.test_data()
+        self.mapbox_access_token = Keys.mapbox_access_token.value
+        self.chart_data = ChartData()
+        self.data_frame = self.chart_data.test_data()
+        self.df = self.chart_data.bap_data(Category.DataSource)
 
     def layout(self):
         ly = dict(
@@ -63,6 +67,30 @@ class Chart:
 
         return traces
 
+    def bubble_chart(self, df, x_value, y_value):
+        traces = []
+        for ric in self.df.Name.unique():
+            x = self.df[df['Name'] == ric][x_value].dropna()
+            y = self.df[df['Name'] == ric][y_value].dropna()
+            trace = go.Scatter(
+                x=x,
+                y=y,
+                text = ric,
+                mode='markers',
+                opacity=0.7,
+                marker={
+                    'size': 20,
+                    'line': dict(
+                        width=0.5,
+                        color='red'
+                    )
+                },
+                name= ric
+            )
+            traces.append(trace)
+
+        return traces
+
     def scatter_chart(self, mode, graph_name,
                       x_series, y_series, line_shape,
                       smoothing=2, line_width=1, line_color='#fac1b7', line_symbol='diamond', opacity=1):
@@ -97,30 +125,35 @@ class Chart:
 
     def pie_graph(self, labels, values, name, text, hole, domains, colors=['#fac1b7', '#a9bb95', '#92d8d8']):
         pie = dict(
-            type='pie',
-            labels=labels,
-            values=values,
-            name=name,
-            text=text,
-            hoverinfo="text+value+percent",
-            textinfo="label+percent+name",
-            hole=hole,
-            marker=dict(
-                colors=colors
-            ),
-            domain=domains,
-        )
+                type='pie',
+                labels=labels,
+                values=values,
+                name=name,
+                text=text,
+                hoverinfo="text+value+percent",
+                textinfo="label+percent+name",
+                hole=hole,
+                marker=dict(
+                    colors=colors
+                ),
+                domain=domains)
         return pie
 
-    def alpha_graph(self):
-        common.change_working_directory('Box Sync/mnadew/IE/MDCetl/Dashboard/data')
-        df = pd.read_csv('geo.csv')
-        figure = dict(data=self.map(df), layout=self.layout())
+    def alpha_graph(self, x_title, y_title, x_value, y_value):
+
+        layout_bubble = copy.deepcopy(self.layout())
+        layout_bubble['xaxis'] = dict(type='log', title=x_title)
+        layout_bubble['yaxis'] = dict(title=y_title)
+        # layout_bubble['legend'] = dict(x=0, y=1)
+        layout_bubble['hovermode'] = 'closest'
+
+        figure = dict(data=self.bubble_chart(self.df, x_value, y_value), layout=layout_bubble)
+
         return figure
 
     def beta_graph(self):
         layout_beta = copy.deepcopy(self.layout())
-        if self.data_frame is None:
+        if self.df is None:
             annotation = dict(
                 text='No data available',
                 x=0.5,
@@ -131,13 +164,15 @@ class Chart:
                 yref='paper'
             )
         else:
+            x = self.df.Name.unique()
             data = [
-                self.scatter_chart('lines+markers', 'Fist name', self.data_frame[0],
-                                   self.data_frame[1], 'spline', 2, 1, '#fac1b7', 'diamond'),
-                self.scatter_chart('lines+markers', 'Forest Gamb', self.data_frame[2],
-                                   self.data_frame[3], 'spline', 2, 1, '#a9bb95', 'diamond'),
-                self.scatter_chart('lines+markers', 'Forest Gamb', self.data_frame[4],
-                                   self.data_frame[5], 'spline', 2, 1, '#92d8d8', 'diamond')
+
+                self.scatter_chart('lines', 'Revenue', x,
+                                   self.df.REVENUE.dropna(), 'spline', 2, 1, '#fac1b7', 'diamond'),
+                self.scatter_chart('lines', 'Number of Employees', x,
+                                   self.df.Employees.dropna(), 'spline', 2, 1, '#a9bb95', 'diamond'),
+                self.scatter_chart('lines', 'Funding', x,
+                                   self.df.FundingTODate.dropna(), 'spline', 2, 1, '#92d8d8', 'diamond')
             ]
         layout_beta['title'] = 'Individual Data'
         figure = dict(data=data, layout=layout_beta)
@@ -165,12 +200,12 @@ class Chart:
         layout_delta = copy.deepcopy(self.layout())
         data = [
             self.pie_graph(['Fire', 'Smoke', 'Water'],
-                           [sum(self.data_frame[0]), sum(self.data_frame[1]), sum(self.data_frame[2])],
+                           [sum(self.data_frame[0]), sum(self.data_frame[2]), sum(self.data_frame[4])],
                            'Bap data pie chart',
                            ['Fire Burnt', 'Smoke Inhaled', 'Water Consumed'], 0.5, {"x": [0, .45], 'y': [0.2, 0.8]},
                            ['#fac1b7', '#a9bb95', '#92d8d8']),
             self.pie_graph(['Soccer', 'Football', 'Basketball'],
-                           [sum(self.data_frame[3]), sum(self.data_frame[4]), sum(self.data_frame[5])],
+                           [sum(self.data_frame[0]), sum(self.data_frame[4]), sum(self.data_frame[2])],
                            'Bap data pie chart',
                            ['Soccer Goal', 'Touch Down', 'Tripple Point'], 0.5, {"x": [0.55, 1], 'y':[0.2, 0.8]},
                            ['#caf167', '#a90095', '#2aa45fd'])
@@ -188,12 +223,12 @@ class Chart:
     def epsilon_graph(self):
         layout_epsilon = copy.deepcopy(self.layout())
         data = [
-            self.scatter_chart('lines+markers', 'Fist name', self.data_frame[0][:10],
-                               self.data_frame[1][:10], 'spline', 2, 1, '#fac1b7', 'diamond'),
-            self.scatter_chart('lines+markers', 'Forest Gamb', self.data_frame[2][:10],
-                               self.data_frame[3][:10], 'spline', 2, 1, '#a9bb95', 'diamond'),
-            self.scatter_chart('lines+markers', 'Forest Gamb', self.data_frame[4][:10],
-                               self.data_frame[5][:10], 'spline', 2, 1, '#92d8d8', 'diamond')
+            self.scatter_chart('lines', 'Fist name', self.data_frame[0],
+                               self.data_frame[1], 'spline', 2, 1, '#fac1b7', 'diamond'),
+            self.scatter_chart('lines', 'Forest Gamb', self.data_frame[2],
+                               self.data_frame[3], 'spline', 2, 1, '#a9bb95', 'diamond'),
+            self.scatter_chart('lines', 'Forest Gamb', self.data_frame[4],
+                               self.data_frame[5], 'spline', 2, 1, '#92d8d8', 'diamond')
         ]
         layout_epsilon['title'] = 'Aggregate Production'
         figure = dict(data=data, layout=layout_epsilon)

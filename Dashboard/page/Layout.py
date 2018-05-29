@@ -89,10 +89,10 @@ class HomePage:
 			[
 				html.Div(
 					[
-						# dcc.Graph(id='main_graph',
-                        #           figure=self.chart.alpha_graph()
-						# 		  )
-						self.table('TEST FOR BAP DATA')
+						dcc.Graph(id='main_graph',
+                                  figure=self.chart.alpha_graph('Revenue','Funding to Date','REVENUE', 'FundingTODate')
+								  )
+						# self.table('TEST FOR BAP DATA')
 					],
 					className='eight columns',
 					style={'margin-top': '20',  'backgroundColor':'grey'}
@@ -239,7 +239,7 @@ class HomePage:
 						   },
 				),
 				html.Img(
-					src="https://s3-us-west-1.amazonaws.com/plotly-tutorials/logo/new-branding/dash-logo-by-plotly-stripe.png",
+					src="https://storage.googleapis.com/general_mdc_20180525/mdcdatacatalysti.png",#"https://s3-us-west-1.amazonaws.com/plotly-tutorials/logo/new-branding/dash-logo-by-plotly-stripe.png",
 					className='one columns',
 					style={
 						'height': '100',

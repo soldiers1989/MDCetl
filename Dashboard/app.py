@@ -5,7 +5,7 @@ from Dashboard.page.Layout import HomePage
 
 class MdcDb:
     def __init__(self):
-        self.page = HomePage('BAP Quarterly','MDC User')
+        self.page = HomePage('BAP Quarterly','Mussie N.')
 
         self.app = dash.Dash()
         self.app.title= 'MDC DashBoard'

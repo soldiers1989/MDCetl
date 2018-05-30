@@ -6,6 +6,7 @@ import dash_html_components as html
 import dash_table_experiments as dt
 import json
 import pandas as pd
+import datetime
 
 
 class HomePage:
@@ -48,8 +49,10 @@ class HomePage:
 			self.upper_graph(),
 			# Second half of the graph
 			self.lower_graph(),
+			#Third lower graph
+			self.third_lower_graph(),
 		],
-		className='ten columns offset-by-one'
+		className='ten columns offset-by-one' #'ten columns offset-by-one'
 		)
 		return index
 
@@ -57,9 +60,8 @@ class HomePage:
 		menu = html.Div(
 			[
 				html.Div([
-					dcc.Link('Annual Survey   ', href='/annual-survey', className="tab first"),
-					dcc.Link('BAP Quarterly  ', href='/bap', className="tab"),
-
+					dcc.Link('BAP Quarterly  ', href='/bap', className="tab first"),
+					dcc.Link('Annual Survey   ', href='/annual-survey', className="tab"),
 					dcc.Link('Crunchbase   ', href='/crunchbase', className="tab"),
 					dcc.Link('EPP   ', href='/epp', className="tab"),
 					dcc.Link('Think Data Works   ', href='/tdw', className="tab"),
@@ -77,9 +79,9 @@ class HomePage:
 					dcc.Link('About   ', href='/about', className="tab"),
 					], className="row ")
 				],
-			style={'margin-top': '20',
-				   'backgroundColor': '#e6eeff',
-				   'color': 'white',
+			style={'margin-top': '5',
+				   'backgroundColor': 'grey',#e6eeff',
+				   'color': 'blue',
 				   'font-weight': 'bold'}
 		)
 		return menu
@@ -136,7 +138,8 @@ class HomePage:
 				html.Div(
 					[
 						dcc.Graph(id='aggregate_graph',
-								  figure=self.chart.epsilon_graph())
+								  figure=self.chart.epsilon_graph()
+						)
 					],
 					className='four columns',
 					style={'margin-top': '10'}
@@ -145,6 +148,41 @@ class HomePage:
 			className='row'
 		)
 		return l_graph
+
+	def third_lower_graph(self):
+		tl_graph = html.Div(
+			[
+				html.Div(
+					[
+						dcc.Graph(id='tcount_graph',
+								  figure=self.chart.zeta_graph()
+								  )
+					],
+					className='four columns',
+					style={'margin-top': '10'}
+				),
+				html.Div(
+					[
+						dcc.Graph(id='tpie_graph',
+								  figure=self.chart.eta_graph()
+								  )
+					],
+					className='four columns',
+					style={'margin-top': '10'}
+				),
+				html.Div(
+					[
+						dcc.Graph(id='taggregate_graph',
+								  figure=self.chart.theta_graph()
+						)
+					],
+					className='four columns',
+					style={'margin-top': '10'}
+				),
+			],
+			className='row'
+		)
+		return tl_graph
 
 	def dropdown(self):
 		dd = html.Div(
@@ -176,10 +214,12 @@ class HomePage:
 							value=['DB'],
 						),
 					],
-					className='six columns'
+					className='six columns',
+					style={'backgroundColor':'none'}
 				),
 			],
-			className='row'
+			className='row',
+			style={'backgroundColor': ''}
 		)
 		return dd
 
@@ -202,27 +242,26 @@ class HomePage:
 		user = html.Div(
 			[
 				html.H5(
-					'Year Range: ',
+					'[Demo Only!]',
 					id='well_text',
-					className='two columns'
+					className='three columns'
 				),
 				html.H5(
-					'Type and Value: ',
+					str(datetime.date.today())[:15],
 					id='production_text',
-					className='eight columns',
+					className='seven columns',
 					style={'text-align': 'center'}
 				),
 				html.H5(
 					self.user,
-					id='year_text',
+					id='user_text',
 					className='two columns',
-					style={'text-align': 'left',
-						   'color': 'skyblue',
-						   'padding-left':0,
-						   'padding-bottom': 2,}
+					style={'text-align': 'right',
+						   'color': 'skyblue'}
 				),
 			],
-			className='row'
+			className='row',
+			style={'color': 'skyblue'}
 		)
 		return user
 

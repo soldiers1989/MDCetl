@@ -655,4 +655,12 @@ class Common:
 		main_string = re.sub(' +',' ',string.replace(bracket_string, ''))
 		return [main_string, bracket_string]
 
+	@staticmethod
+	def is_numeric(value):
+		try:
+			float(value)
+			return True
+		except ValueError:
+			return False
+
 

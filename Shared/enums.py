@@ -47,6 +47,7 @@ class DataSourceType(Enum):
 	STUDIO_Y_C5_S1 = 45
 	OSVP_METRICS_TEST_SURVEY = 46
 	MDC_SANDBOX_SURVEY = 47
+	NO_SOURCE = 48
 
 
 class SourceSystemType(Enum):
@@ -190,11 +191,11 @@ class MDCDataSource(Enum):
 class WorkSheet(Enum):
 	bap_program = 'csv_program16'
 	bap_program_youth = 'csv_program16_youth'
-	bap_company = 'Quarterly Company Data'
-	bap_company_annual = 'Annual Company Data'
+	bap_company = 'Quarterly Company data'
+	bap_company_annual = 'Annual Company data'
 	bap_program_final = 'Program'
 	bap_program_youth_final = 'Program Youth'
-	bap_company_old = 'Company Data'
+	bap_company_old = 'Company data'
 	target_list = 'target_list'
 
 
@@ -923,11 +924,11 @@ class FilePath(Enum):
 	path_iaf_source = 'Box Sync/IAF-MDC_Shared'
 	path_cbinsight_source = ''
 	path_bap_source = ''
-	path_missing_bap_etl = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q3/for ETL/Missing Data Reports'
+	path_missing_bap_etl = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q3/for ETL/Missing data Reports'
 	path_iaf = 'Box Sync/Workbench/IAF/ETL Prep/2017/ETL'
 	path_cvca = 'Box Sync/Workbench/CVCA/ETL/2017'
 	path_venture_dedupe = 'Box Sync/Workbench/Venture_Dedupe'
-	path_namara = 'Box Sync/Workbench/Think Data Works/Namara'
+	path_namara = 'Box Sync/Workbench/Think data Works/Namara'
 	path_bap_qa = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q4/ETL/00 QA'
 	path_bap_etl = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q4/ETL'
 	path_bap_combined = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q4/ETL/01 Combined'

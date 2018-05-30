@@ -9,7 +9,7 @@ from Shared.enums import DataSourceType, CONSTANTS, PATH, \
 	StageLevel as stg, DealType as dt, MaRSProgram, \
 	MaRSSector, CAIPStatus, Stage
 import pandas as pd
-import dns.resolver
+# import dns.resolver
 import socket
 import smtplib
 
@@ -584,40 +584,40 @@ class Common:
 		else:
 			return True
 
-	@staticmethod
-	def verify_email_exists(email):
-		try:
-			_, domain = email.split('@')
-			records = dns.resolver.query(domain, 'MX')
-			mxRecord = records[0].exchange
-			mxRecord = str(mxRecord)
-			#Get local server hostname
-			host = socket.gethostbyname(mxRecord)
-			#SMTP lib setup
-			server = smtplib.SMTP()
-			server.set_debuglevel(0)
-			#SMTP Conversation
-			server.connect(mxRecord)
-			server.helo(host)
-			server.mail(email)
-			code, message = server.rcpt(str(email))
-			server.quit()
-			if code == 250:
-				return True
-			else:
-				return False
-		except ConnectionRefusedError:
-			return False
-		except smtplib.SMTPServerDisconnected:
-			return False
-		except dns.resolver.NoAnswer:
-			return False
-		except dns.resolver.NXDOMAIN:
-			return False
-		except dns.resolver.NoNameservers:
-			return False
-		except socket.error:
-			return False
+	# @staticmethod
+	# def verify_email_exists(email):
+	# 	try:
+	# 		_, domain = email.split('@')
+	# 		records = dns.resolver.query(domain, 'MX')
+	# 		mxRecord = records[0].exchange
+	# 		mxRecord = str(mxRecord)
+	# 		#Get local server hostname
+	# 		host = socket.gethostbyname(mxRecord)
+	# 		#SMTP lib setup
+	# 		server = smtplib.SMTP()
+	# 		server.set_debuglevel(0)
+	# 		#SMTP Conversation
+	# 		server.connect(mxRecord)
+	# 		server.helo(host)
+	# 		server.mail(email)
+	# 		code, message = server.rcpt(str(email))
+	# 		server.quit()
+	# 		if code == 250:
+	# 			return True
+	# 		else:
+	# 			return False
+	# 	except ConnectionRefusedError:
+	# 		return False
+	# 	except smtplib.SMTPServerDisconnected:
+	# 		return False
+	# 	except dns.resolver.NoAnswer:
+	# 		return False
+	# 	except dns.resolver.NXDOMAIN:
+	# 		return False
+	# 	except dns.resolver.NoNameservers:
+	# 		return False
+	# 	except socket.error:
+	# 		return False
 
 	@staticmethod
 	def convert_float_todate(fl):# Don't use

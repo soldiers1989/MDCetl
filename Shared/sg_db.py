@@ -83,3 +83,4 @@ class DAL:
             sql = 'INSERT INTO[Config].[CompanyAggProgramYouth] Values (?,?,?,?,?,?,?,?,?,?,?,?,?)'
             self.bulk_insert(sql, values)
 
+

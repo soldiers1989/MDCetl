@@ -9,8 +9,8 @@ class Chart:
 	def __init__(self):
 		self.mapbox_access_token = Keys.mapbox_access_token.value
 		self.chart_data = ChartData()
-		self.data_frame = self.chart_data.test_data()
-		self.df = self.chart_data.bap_data(Category.DataSource)
+		self.dfRIC = self.chart_data.bap_data(Category.DataSource)
+		self.dfStage = self.chart_data.bap_data(Category.Stage)
 
 	def layout(self):
 		ly = dict(
@@ -41,6 +41,20 @@ class Chart:
 		)
 		return ly
 
+	def table(self, df):
+		min_value=0
+		max_value=200000
+		rows = []
+		for i in range(len(df)):
+			row = []
+			for col in df.columns:
+				value = df.iloc[i][col]
+				style = self.cell_style(value,min_value, max_value)
+				row.append(html.Td(value, style=style))
+			rows.append(html.Tr(row))
+		table = html.Table([html.Tr([html.Th(col) for col in df.columns])] + rows)
+		return table
+
 	def map(self, df):
 		traces = []
 		for city, val in df.iterrows():
@@ -66,7 +80,7 @@ class Chart:
 
 	def bubble_chart(self, df, x_value, y_value):
 		traces = []
-		for ric in self.df.Name.unique():
+		for ric in self.dfRIC.Name.unique():
 			# dx = pd.Series(list(self.df.groupby(['Name'])[x_value].agg('sum')))
 			# dy = pd.Series(list(self.df.groupby(['Name'])[y_value].agg('sum')))
 			x = df[df['Name'] == ric][x_value].dropna()#pd.Series(df.Name.unique())#
@@ -147,7 +161,7 @@ class Chart:
 		layout_bubble['hovermode'] = 'closest'
 		layout_bubble['title'] = 'Revenue Vs Funding Rasided by RIC'
 		layout_bubble['margin'] = dict(l=65,r=35,b=35,t=45)
-		dff = self.df[self.df['FundingTODate'] < 10000000]
+		dff = self.dfRIC[self.dfRIC['FundingTODate'] < 10000000]
 
 		figure = dict(data=self.bubble_chart(dff, x_value, y_value), layout=layout_bubble)
 
@@ -155,7 +169,7 @@ class Chart:
 
 	def beta_graph(self):
 		layout_beta = copy.deepcopy(self.layout())
-		if self.df is None:
+		if self.dfRIC is None:
 			annotation = dict(
 				text='No data available',
 				x=0.5,
@@ -166,11 +180,11 @@ class Chart:
 				yref='paper'
 			)
 		else:
-			x = self.df.Name.unique()
+			x = self.dfRIC.Name.unique()
 			data = [
 
 				self.scatter_chart('lines+markers', 'Revenue', x,
-								   self.df.FundingTODate.dropna(), 'spline', 2, 1, '#fac1b7', 'diamond')
+								   self.dfRIC.FundingTODate.dropna(), 'spline', 2, 1, '#fac1b7', 'diamond')
 			]
 		layout_beta['title'] = 'FUNDING'
 		layout_beta['title'] = 'FUNDING'
@@ -181,11 +195,11 @@ class Chart:
 		layout_gamma = copy.deepcopy(self.layout())
 		colors = ['skyblue','skyblue']
 
-		data = [self.bar_graph(self.df.Name.unique(),
-							   self.df.REVENUE.dropna(),
+		data = [self.bar_graph(self.dfRIC.Name.unique(),
+							   self.dfRIC.REVENUE.dropna(),# self.dfRIC[self.dfRIC.REVENUE < 40000000]['REVENUE'],
 							   'All RICS Revenue',
 							   colors='skyblue')]
-		layout_gamma['title'] = 'Gamma bar chart'
+		layout_gamma['title'] = 'Revenues by RIC'
 		layout_gamma['dragmode'] = 'select'
 		layout_gamma['showlegend'] = False
 
@@ -195,10 +209,10 @@ class Chart:
 	def delta_graph(self): # pie
 		layout_delta = copy.deepcopy(self.layout())
 		data = [
-			self.pie_graph(list(self.df.Name.unique()),
-						   list(self.df.groupby(['Name'])['FundingTODate'].agg('sum')),
+			self.pie_graph(list(self.dfRIC.Name.unique()),
+						   list(self.dfRIC.groupby(['Name'])['FundingTODate'].agg('sum')),
 						   'Revenue Distribution',
-							list(self.df.Name.unique()), 0.5,{"x": [1.1, 1.55], 'y': [1.2, 0.8]}, #{"x": [0, .45], 'y': [0.2, 0.8]},
+						   list(self.dfRIC.Name.unique()), 0.5, {"x": [1.1, 1.55], 'y': [1.2, 0.8]},  #{"x": [0, .45], 'y': [0.2, 0.8]},
 						   ['#fac1b7', '#a9bb95', '#92d8d8']),
 			# self.pie_graph(list(self.df.Name.unique()),
 			# 			   list(self.df.groupby(['Name'])['Employees'].agg('sum')),
@@ -224,20 +238,19 @@ class Chart:
 	def epsilon_graph(self):
 		layout_epsilon = copy.deepcopy(self.layout())
 		data = [
-			self.scatter_chart('lines+markers', 'Funding', self.df.Name.unique(),
-							   self.df.REVENUE.dropna(), 'spline', 2, 1, '#92d8d8', 'diamond')
+			self.scatter_chart('lines+markers', 'Funding', self.dfRIC.Name.unique(),
+							   self.dfRIC.REVENUE.dropna(), 'spline', 2, 1, '#92d8d8', 'diamond')
 		]
 		layout_epsilon['title'] = 'REVENUE'
 		figure = dict(data=data, layout=layout_epsilon)
 		return figure
 
-
 	def zeta_graph(self):  # Aggregate
 		layout_zeta = copy.deepcopy(self.layout())
 		colors = ['skyblue', 'skyblue']
 
-		data = [self.bar_graph(self.df.Name.unique(),
-							   self.df.REVENUE.dropna(),
+		data = [self.bar_graph(self.dfStage.Name.unique(),
+							   self.dfStage.REVENUE.dropna(),
 							   'All RICS Revenue',
 							   colors='skyblue')]
 		layout_zeta['title'] = 'Gamma bar chart'
@@ -247,14 +260,13 @@ class Chart:
 		figure = dict(data=data, layout=layout_zeta)
 		return figure
 
-
 	def eta_graph(self):  # pie
 		layout_eta = copy.deepcopy(self.layout())
 		data = [
-			self.pie_graph(list(self.df.Name.unique()),
-						   list(self.df.groupby(['Name'])['REVENUE'].agg('sum')),
+			self.pie_graph(list(self.dfStage.Name.unique()),
+						   list(self.dfStage.groupby(['Name'])['REVENUE'].agg('sum')),
 						   'Revenue Distribution',
-						   list(self.df.Name.unique()), 0.5, {"x": [1.1, 1.55], 'y': [1.2, 0.8]},
+						   list(self.dfRIC.Name.unique()), 0.5, {"x": [1.1, 1.55], 'y': [1.2, 0.8]},
 						   # {"x": [0, .45], 'y': [0.2, 0.8]},
 						   ['#fac1b7', '#a9bb95', '#92d8d8']),
 		]
@@ -268,10 +280,9 @@ class Chart:
 		figure = dict(data=data, layout=layout_eta)
 		return figure
 
-
 	def theta_graph(self):
 		layout_theta = copy.deepcopy(self.layout())
-		if self.df is None:
+		if self.dfRIC is None:
 			annotation = dict(
 				text='No data available',
 				x=0.5,
@@ -282,10 +293,10 @@ class Chart:
 				yref='paper'
 			)
 		else:
-			x = self.df.Name.unique()
+			x = self.dfStage.Name.unique()
 			data = [
 				self.scatter_chart('lines+markers', 'Number of Employees', x,
-								   self.df.Employees.dropna(), 'spline', 2, 1, '#a9bb95', 'diamond')
+								   self.dfStage.Employees.dropna(), 'spline', 2, 1, '#a9bb95', 'diamond')
 			]
 		layout_theta['title'] = 'EMPLOYMENT'
 		figure = dict(data=data, layout=layout_theta)

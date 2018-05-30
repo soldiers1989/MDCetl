@@ -43,8 +43,6 @@ class HomePage:
 			self.page_menu(),
 			#DROPDOWN MENU
 			self.dropdown(),
-            # SLIDER
-            self.rangeslider(),
 			# First half of the graph
 			self.upper_graph(),
 			# Second half of the graph
@@ -92,7 +90,7 @@ class HomePage:
 				html.Div(
 					[
 						dcc.Graph(id='main_graph',
-                                  figure=self.chart.alpha_graph('Revenue','Funding to Date','REVENUE', 'FundingTODate')
+								  figure=self.chart.alpha_graph('Revenue','Funding to Date','REVENUE', 'FundingTODate')
 								  )
 						# self.table('TEST FOR BAP DATA')
 					],
@@ -185,6 +183,7 @@ class HomePage:
 		return tl_graph
 
 	def dropdown(self):
+		val = list(self.chart.dfRIC.FiscalYear.unique())
 		dd = html.Div(
 			[
 				html.Div(
@@ -192,30 +191,29 @@ class HomePage:
 
 						dcc.Dropdown(
 							id='well_statuses',
-							options=[{'label':'BAP', 'value':'BAP'},
-									 {'label': 'CRUNCHBASE', 'value': 'CB'},
-									 {'label': 'CVCA', 'value': 'CV'}],
+							options=[{'label': 'Funding to Date', 'value': 'FundingTODate'},
+									 {'label': 'Revenue', 'value': 'REVENUE'},
+									 {'label': 'Employment', 'value': 'Employees'},
+									 {'label': 'Advisory Hours', 'value': 'AdvisoryHours'},
+									 {'label': 'Volunteer Hours', 'value': 'VolunteerHours'}],
 							multi=False,
 							value=['BAP'],
-						)# ,
-
+						),
 					],
 					className='six columns'
 				),
 				html.Div(
 					[
-
-						dcc.Dropdown(
-							id='well_types',
-							options=[{'label':'Database', 'value':'DB'},
-									 {'label': 'EPP', 'value': 'EP'},
-									 {'label': 'Spark', 'value': 'SP'}],
-							multi=False,
-							value=['DB'],
+						dcc.RangeSlider(
+							id='year_slider',
+							min=2015,
+							max=2018,
+							step=1,
+							value=val
 						),
 					],
 					className='six columns',
-					style={'backgroundColor':'none'}
+					style={'backgroundColor':'none', 'padding-top':10}
 				),
 			],
 			className='row',
@@ -230,7 +228,7 @@ class HomePage:
 					id='year_slider',
 					min=2000,
 					max=2018,
-                    step=1,
+					step=1,
 					value=[2015, 2015]
 				),
 			],
@@ -318,33 +316,9 @@ class HomePage:
 				}
 		return style
 
-	def table(self, title):
+	def temp_table(self, title):
 		common.change_working_directory('Box Sync/mnadew/IE/MDCetl/Dashboard/data')
 		df = pd.read_csv('geo.csv')
-		return self.generate_table(df)
-		# tbl = html.Div([
-		# 	html.H5(title),
-		# 	dt.DataTable(
-		# 		id='main_table',
-		# 		rows=df.to_dict('records'),
-		# 		columns=df.columns,
-		# 		editable=False,
-		# 		filterable=True,
-		# 		sortable=True)
-		# ])
-		# return tbl
+		return self.chart.table(df)
 
-	def generate_table(self, df):
-		min_value=0
-		max_value=200000
-		rows = []
-		for i in range(len(df)):
-			row = []
-			for col in df.columns:
-				value = df.iloc[i][col]
-				style = self.cell_style(value,min_value, max_value)
-				row.append(html.Td(value, style=style))
-			rows.append(html.Tr(row))
-		table = html.Table([html.Tr([html.Th(col) for col in df.columns])] + rows)
-		return table
 

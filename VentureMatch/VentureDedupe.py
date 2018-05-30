@@ -319,6 +319,7 @@ logging.info("creating BlockKey index")
 #db.execute("CREATE INDEX BlockKeyIndex ON MDC_DEV.dbo.PluralKey (BlockKey)")
 
 logging.info("calculating plural_block")
+db.execute("DELETE FROM MDC_DEV.dbo.PluralBlock")
 db.execute("INSERT INTO MDC_DEV.dbo.PluralBlock (BlockID, ID) SELECT a.BlockKey, a.ID "
            "FROM MDC_DEV.dbo.BlockingMap AS a INNER JOIN MDC_DEV.dbo.PluralKey "
            "AS b ON a.BlockKey = b.BlockKey")
@@ -327,7 +328,7 @@ logging.info("adding company id index and sorting index")
 # db.execute("ALTER TABLE MDC_DEV.dbo.PluralBlock "
 #            "ADD INDEX (ID), "
 #            "ADD UNIQUE INDEX ON (BlockID, ID)")
-db.execute("CREATE UNIQUE INDEX PluralBlockIndex ON MDC_DEV.dbo.PluralBlock (BlockID, ID)")
+db.execute("CREATE INDEX PluralBlockIndex ON MDC_DEV.dbo.PluralBlock (BlockID, ID)")
 # To use Kolb, et.al's Redundant Free Comparison scheme, we need to
 # keep track of all the BlockIDs that are associated with a
 # particular venture records.
@@ -340,13 +341,17 @@ logging.info("creating covered_blocks")
 #           " FROM plural_block "
 #           " GROUP BY ID)")
 
-# db.execute("CREATE TABLE MDC_DEV.dbo.CoveredBlocks "
-db.execute("INSERT INTO MDC_DEV.dbo.CoveredBlocks "
-           "SELECT ID, STUFF((SELECT ',' + BlockID FROM MDC_DEV.dbo.PluralBlock "
-           "WHERE BlockID = a.BlockID "
-           "ORDER BY BlockID FOR XML Path ('')),1,1,'') AS SortedIDs "
-           "FROM MDC_DEV.dbo.PluralBlock AS a "
-           "GROUP BY ID")
+db.execute("DELETE FROM MDC_DEV.dbo.CoveredBlocks")
+# db.execute("INSERT INTO MDC_DEV.dbo.CoveredBlocks "
+#            "SELECT ID, STUFF((SELECT ',' + BlockID FROM MDC_DEV.dbo.PluralBlock "
+#            "WHERE BlockID = a.BlockID "
+#            "ORDER BY BlockID FOR XML Path ('')),1,1,'') AS SortedIDs "
+#            "FROM MDC_DEV.dbo.PluralBlock AS a "
+#            "GROUP BY ID")
+db.execute("INSERT INTO MDC_DEV.dbo.CoveredBlocks (ID, SortedIDs) SELECT ID, "
+           "STUFF((SELECT ',' + BlockID FROM MDC_DEV.dbo.PluralBlock "
+           "WHERE ID = a.ID) ORDER BY BlockID FOR XML Path (''),1,1,'') "
+           "AS SortedIDs FROM MDC_DEV.dbo.PluralBlock AS a GROUP BY ID")
 
 db.execute("CREATE UNIQUE INDEX VentureIndex ON MDC_DEV.dbo.CoveredBlocks (ID)")
 

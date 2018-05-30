@@ -35,4 +35,4 @@ class CBInsights(ds.DataSource):
 if __name__ == '__main__':
 	cb = CBInsights()
 	# cb.push_cbinsights_to_db()
-	cb.cs_venture_matching()
+	# cb.cs_venture_matching()

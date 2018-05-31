@@ -5,7 +5,7 @@ import os
 import logging
 import optparse
 from Shared.common import Common as common
-from multiprocessing import pool
+
 from multiprocessing.pool import Pool
 
 import dedupe
@@ -58,7 +58,8 @@ db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture "
            "OR Website = 'none' OR Website = 'http://NA'OR Website = 'tbd' "
            "OR Website = 'https' OR Website = 'http://www.nowebsite.com' "
            "OR Website = 'http://nowebsite.com' OR Website = 'http://Nowebsiteyet' "
-           "OR Website = 'Coming soon' OR Website = 'not set up yet'")
+           "OR Website = 'Coming soon' OR Website = 'not set up yet' "
+           "OR Website = 'http://under construction' OR Website = 'http://www.nwebsite.com'")
 
 # # PHONE CLEANING
 # db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET Phone = NULL WHERE Phone<10 ")
@@ -71,7 +72,7 @@ db.execute("DELETE FROM MDC_DEV.dbo.ProcessedVenture WHERE Name LIKE '%communite
            "OR Name LIKE '%manitoba ltd%' OR Name LIKE '%NB inc%' OR Name LIKE '%NB ltd%' OR Name LIKE '%venture%' "
            "OR Name LIKE '%testBAP%' OR Name LIKE '%SSMIC%' OR Name LIKE '%Techalliance%' OR Name LIKE '%RICC_%' "
            "OR Name LIKE '%_anon_%' OR Name LIKE '%InnovationFactory_%' OR Name LIKE '%InvestOttawa_%' "
-           "OR Name LIKE 'Québec inc' OR Name LIKE 'Haltech_'")
+           "OR Name LIKE '%Québec inc%' OR Name LIKE '%Haltech_%' OR Name LIKE '%InnovNiag_survey%' OR Name LIKE '%NOIC%'")
 
 VENTURE_SELECT = "SELECT ID, Name, Description, Website, Phone, Email FROM MDC_DEV.dbo.ProcessedVenture"
 db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET Name = NULL WHERE Name = ''")
@@ -91,7 +92,7 @@ db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET VentureStatus = NULL WHERE V
 db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET ModifiedDate = NULL WHERE ModifiedDate = ''")
 db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET CreateDate = NULL WHERE CreateDate = ''")
 
-# TRAINING
+# # TRAINING
 
 print('importing and data cleaning time: ', time.time() - start_time, 'seconds')
 start_time = time.time()
@@ -103,7 +104,7 @@ else:
     # Define the fields dedupe will pay attention to
     fields = [
         {'field': 'Name', 'type': 'String'},
-        {'field': 'Website', 'type': 'String'},
+        {'field': 'Website', 'type': 'String', 'has missing': True},
         {'field': 'Description', 'type': 'Text', 'has missing': True},
         {'field': 'Phone', 'type': 'Exact', 'has missing': True},
         {'field': 'Email', 'type': 'String', 'has missing': True},
@@ -114,9 +115,10 @@ else:
 
     # We will sample pairs from the entire venture table for training
     data = db.pandas_read(VENTURE_SELECT).to_dict('index')
-
-    deduper.sample(data, 10000)
+    start = time.time()
+    deduper.sample(data, 8000)
     data = None
+
     # If we have training data saved from a previous run of dedupe,
     # look for it an load it in.
     #
@@ -147,8 +149,6 @@ else:
     with open(training_file, 'w') as tf:
         deduper.writeTraining(tf)
 
-    # Notice our the argument here
-    #
     # `recall` is the proportion of true dupes pairs that the learned
     # rules must cover. You may want to reduce this if your are making
     # too many blocks and too many comparisons.
@@ -166,7 +166,7 @@ else:
 print('blocking...')
 
 # To run blocking on such a large set of data, we create a separate table
-# that contains blocking keys and record ids
+# that contains blocking keys and venture ids
 
 # If dedupe learned a Index Predicate, we have to take a pass
 # through the data and create indices.
@@ -179,166 +179,177 @@ for field in deduper.blocker.index_fields:
     field_data = set(row[0] for row in dataset)
     deduper.blocker.index(field_data, field)
 
-#Free up some memory
-dataset = None
-field_data = None
-field = None
-df = None
+    # Free up memory
+    dataset = None
+    field_data = None
+    df = None
 
 # Now we are ready to write our blocking map table by creating a
 # generator that yields unique `(BlockKey, ID)` tuples.
 print('writing blocking map')
-#-----
 db.execute("DELETE FROM MDC_DEV.dbo.BlockingMap")
-
 
 df = db.pandas_read(VENTURE_SELECT).set_index('ID').to_dict('index')
 b_data = deduper.blocker(df)
 df = None
 
-# MySQL has a hard limit on the size of a data object that can be
-# passed to it.  To get around this, we chunk the blocked data in
-# to groups of 30,000 blocks
+# Chunk the blocked data into groups of 30,000 blocks
 step_size = 30000
+
 
 # We will also speed up the writing of blocking map by using
 # parallel database writers
+
 def dbWriter(sql, rows):
     db.bulk_insert(sql, rows)
 
 
-pool = Pool(processes=3)
+#pool = Pool(processes=3)
 start = time.time()
 
 done = False
-sql = 'INSERT INTO MDC_DEV.dbo.BlockingMap VALUES (?,?)'
+sql = 'INSERT INTO MDC_DEV.dbo.BlockingMap values (?,?)'
 
-print('starting bulk insert. this may take a while')
-while not done:
-    chunks = (list(itertools.islice(b_data, step)) for step in [step_size]* 100)
-    results = []
-    for chunk in chunks:
-        results.append((pool.apply_async(dbWriter, (sql, chunk))))
-        dbWriter(sql,chunk)
+print('creating blocking map... this will probably take a while')
+
+main_list = list(b_data)
+
+print('blocking time: ', time.time() - start)
+
+chunks = [main_list[x:x+step_size] for x in range(0, len(main_list), step_size)]
+main_list = None
+#results = []
+
+for chunk in chunks:
+    dbWriter(sql,chunk)
+
+chunks = None
+
+# chunks = list(split_every(step_size, b_data))
+# results = []
+# for chunk in chunks:
+#     results.append((pool.apply_async(dbWriter, (sql, chunk))))
+#     for r in results:
+#         r.wait()
+
+# while not done:
+#     chunks = list((list(itertools.islice(b_data, step)) for step in [step_size] * 100))
+#     #chunks = list(b_data)
+#     results = []
+#     for chunk in chunks:
+#         results.append((pool.apply_async(dbWriter, (sql, chunk))))
+#        # dbWriter(sql, chunk)
+#
+#     for r in results:
+#         r.wait()
+#
+#     if len(chunk) < step_size:
+#         done = True
 
 
-    for r in results:
-         r.wait()
-
-    if len(chunk) < step_size:
-        done = True
-
-print('bulk insert time: ', time.time() - start)
-pool.close()
+print('blocking map time: ', time.time() - start)
+#pool.close()
 
 # Free up memory by removing indices we don't need anymore
 deduper.blocker.resetIndices()
-#----------
-# Remove blocks that contain only one record, sort by block key and
-# venture, key and index blocking map.
-
-# These steps, particularly the sorting will let us quickly create
-# blocks of data for comparison
-print('prepare blocking table. this will probably take a while ...')
 
 # Many BlockKeys will only form blocks that contain a single
 # record. Since there are no comparisons possible within such a
-# singleton block we can ignore them.
+# singleton ID we can ignore them.
 #
 # Additionally, if more than one BlockKey forms identifical blocks
 # we will only consider one of them.
+
 logging.info("populating transition map")
+
 db.execute("DELETE FROM MDC_DEV.dbo.TransitionMap")
-db.execute("INSERT INTO MDC_DEV.dbo.TransitionMap SELECT BlockKey, "
+db.execute("INSERT INTO MDC_DEV.dbo.TransitionMap (BlockKey, IDs) SELECT BlockKey, "
            "STUFF((SELECT ',' + CONVERT(varchar, a.ID) FROM MDC_DEV.dbo.BlockingMap "
            "WHERE BlockKey = a.BlockKey ORDER BY ID "
-           "FOR XML Path (''), TYPE).value('.','NVARCHAR(MAX)'),1,1,'') AS Block "
+           "FOR XML Path (''), TYPE).value('.','VARCHAR(MAX)'),1,1,'') AS IDs "
            "FROM MDC_DEV.dbo.BlockingMap AS a")
 
 logging.info("calculating plural_key")
 
-
 db.execute("DELETE FROM MDC_DEV.dbo.PluralKey")
-#Insert BlockeyKeys from TransitionMap where there are multiple IDs (comparisions available)
-# and the BlockKey doesn't already exist in PluralKey
+
+# Move BlockeyKeys with multiple company IDs from TransitionMap to PluralKey
+# and where the BlockKey doesn't already exist in PluralKey
 db.execute("INSERT INTO MDC_DEV.dbo.PluralKey (BlockKey) SELECT a.BlockKey "
-           "FROM MDC_DEV.dbo.TransitionMap AS a WHERE a.Block LIKE '%,%' AND a.BlockKey "
+           "FROM MDC_DEV.dbo.TransitionMap AS a WHERE a.IDs LIKE '%,%' AND a.BlockKey "
            "NOT IN (SELECT BlockKey FROM MDC_DEV.dbo.PluralKey)")
 
-
-logging.info("creating BlockKey index")
-
 logging.info("calculating plural_block")
+
 db.execute("DELETE FROM MDC_DEV.dbo.PluralBlock")
 db.execute("INSERT INTO MDC_DEV.dbo.PluralBlock SELECT a.BlockKey, a.ID "
            "FROM MDC_DEV.dbo.BlockingMap AS a WHERE a.BlockKey IN "
            "(SELECT b.BlockKey FROM MDC_DEV.dbo.PluralKey AS b)")
+
 logging.info("adding company id index and sorting index")
 
 # To use Kolb, et.al's Redundant Free Comparison scheme, we need to
-# keep track of all the BlockIDs that are associated with a
+# keep track of all the BlockKeys that are associated with a
 # particular venture records.
 
 logging.info("creating covered_blocks")
 
 db.execute("DELETE FROM MDC_DEV.dbo.CoveredBlocks")
-db.execute("INSERT INTO MDC_DEV.dbo.CoveredBlocks (ID, SortedIDs) SELECT ID, "
-           "STUFF((SELECT ',' + BlockID FROM MDC_DEV.dbo.PluralBlock "
-           "WHERE ID = a.ID ORDER BY BlockID FOR XML Path ('')),1,1,'') "
-           "AS SortedIDs FROM MDC_DEV.dbo.PluralBlock AS a GROUP BY ID")
-
-
+db.execute("INSERT INTO MDC_DEV.dbo.CoveredBlocks (ID, SortedKeys) SELECT ID, "
+           "STUFF((SELECT ',' + BlockKey FROM MDC_DEV.dbo.PluralBlock "
+           "WHERE ID = a.ID ORDER BY BlockKey FOR XML Path ('')),1,1,'') "
+           "AS SortedKeys FROM MDC_DEV.dbo.PluralBlock AS a GROUP BY ID")
 
 # In particular, for every block of records, we need to keep
-# track of a venture records's associated BlockIDs that are SMALLER than
+# track of a venture records's associated BlockKeys that are SMALLER than
 # the current block's id. Because we ordered the ids we can achieve this by using some string hacks.
-#def substring_index(string, delimeter, number):
 
 logging.info("creating SmallerCoverage")
 db.execute("DELETE FROM MDC_DEV.dbo.SmallerCoverage")
-db.execute("INSERT INTO MDC_DEV.dbo.SmallerCoverage (ID, BlockID, SmallerID) SELECT a.ID, a.BlockID, "
-           "REPLACE(SUBSTRING(b.SortedIDs, 0, CHARINDEX(a.BlockID, b.SortedIDs)), ',', ' ') "
-           "AS SmallerIDs FROM MDC_DEV.dbo.PluralBlock AS a "
+db.execute("INSERT INTO MDC_DEV.dbo.SmallerCoverage (ID, BlockKey, SmallerKeys) SELECT a.ID, a.BlockKey, "
+           "REPLACE(SUBSTRING(b.SortedKeys, 0, CHARINDEX(a.BlockKey, b.SortedKeys)), ',', ' ') "
+           "AS SmallerKeys FROM MDC_DEV.dbo.PluralBlock AS a "
            "INNER JOIN MDC_DEV.dbo.CoveredBlocks AS b ON a.ID = b.ID")
 
-## Clustering
+
+# # Clustering
 
 def candidates_gen(result_set):
     lset = set
 
-    blockID = None
+    blockKey = None
     records = []
     i = 0
     for row, value in result_set.items():
-        if value['BlockID'] != blockID:
+        if value['BlockKey'] != blockKey:
             if records:
                 yield records
 
-            blockID = value['BlockID']
+            blockKey = value['BlockKey']
             records = []
             i += 1
 
             if i % 10000 == 0:
                 print(i, "blocks")
-                # print(time.time() - start_time, "seconds")
 
-        smallerID = value['SmallerID']
+        smallerKeys = value['SmallerKeys']
 
-        if smallerID:
-            smallerID = lset(smallerID.split(','))
+        if smallerKeys:
+            smallerKeys = lset(smallerKeys.split(','))
         else:
-            smallerID = lset([])
+            smallerKeys = lset([])
 
-        records.append((value['ID'], value, smallerID))
+        records.append((value['ID'], value, smallerKeys))
 
     if records:
         yield records
 
+
 entity_dict = db.pandas_read("SELECT b.ID, b.Name, b.AlternateName, b.BatchID, b.DateFounded, "
-                    "b.DateOfIncorporation, b.Description, b.Website, b.Email, b.Phone, "
-                    "b.Address, a.BlockID, a.SmallerID FROM MDC_DEV.dbo.SmallerCoverage "
-                    "AS a INNER JOIN MDC_DEV.dbo.ProcessedVenture AS b "
-                    "ON a.ID = b.ID ORDER BY a.BlockID").to_dict('index')
+                             "b.DateOfIncorporation, b.Description, b.Website, b.Email, b.Phone, "
+                             "b.Address, a.BlockKey, a.SmallerKeys FROM MDC_DEV.dbo.SmallerCoverage "
+                             "AS a INNER JOIN MDC_DEV.dbo.ProcessedVenture AS b "
+                             "ON a.ID = b.ID ORDER BY a.BlockKey").to_dict('index')
 
 print('clustering...')
 clustered_dupes = deduper.matchBlocks(candidates_gen(entity_dict),
@@ -348,9 +359,9 @@ entity_dict = None
 # matchBlocks returns a generator. Turn it into a list
 clustered_dupes_list = []
 for item in clustered_dupes:
-        clustered_dupes_list.append(item)
+    clustered_dupes_list.append(item)
 
-## Writing out results
+# # Writing out results
 
 # We now have a sequence of tuples of venture ids that dedupe believes
 # all refer to the same entity. We write this out onto an entity map
@@ -364,10 +375,10 @@ values = []
 cluster_id = 1
 for cluster, scores in clustered_dupes_list:
     for id, score in zip(cluster, scores):
-        values.append([int(id), int(cluster_id),float(score)])
+        values.append([int(id), int(cluster_id), float(score)])
     cluster_id = cluster_id + 1
 
-db.bulk_insert(sql,values)
+db.bulk_insert(sql, values)
 
 db.execute("UPDATE MDC_DEV.dbo.EntityMap SET Name =  p.Name, Description = p.Description, "
            "Website = p.Website, Email = p.Email, Phone = p.Phone, Address = p.Address "

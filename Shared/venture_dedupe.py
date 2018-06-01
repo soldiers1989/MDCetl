@@ -65,7 +65,7 @@ class VentureDedupe(DataSource):
 			print('{}\t\t\t\t\t\t\t\t---->\t\t\t\t\t\t\t\t{}'.format(r.Name, basicname))
 
 	def duplicate_venture_table_processing(self):
-		path = 'Box Sync/mnadew/IE/Data/Ventures'
+		path = 'Box Sync/mnadew/IE/data/Ventures'
 		file_name = 'Duplicate Venture Former All Dupes_20180504.xlsx'
 		self.common.change_working_directory(self.enum.FilePath.path_venture_dedupe.value)
 		print(os.getcwd())

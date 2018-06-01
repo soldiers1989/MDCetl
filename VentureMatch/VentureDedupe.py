@@ -42,7 +42,6 @@ start_time = time.time()
 db.execute("DELETE FROM MDC_DEV.dbo.ProcessedVenture")
 db.execute("INSERT INTO MDC_DEV.dbo.ProcessedVenture SELECT * FROM MDC_DEV.dbo.Venture")
 
-# #######################################
 # # CLEANING
 # # WEBSITE CLEANING
 # #Where all the fields are 'n/a' 'NA' etc need to change them to null
@@ -203,53 +202,26 @@ step_size = 30000
 def dbWriter(sql, rows):
     db.bulk_insert(sql, rows)
 
-
-#pool = Pool(processes=3)
 start = time.time()
 
-done = False
 sql = 'INSERT INTO MDC_DEV.dbo.BlockingMap values (?,?)'
 
 print('creating blocking map... this will probably take a while')
 
 main_list = list(b_data)
 
-print('blocking time: ', time.time() - start)
-
 chunks = [main_list[x:x+step_size] for x in range(0, len(main_list), step_size)]
+print('data chunking time: ', time.time() - start)
+
+start = time.time()
 main_list = None
-#results = []
 
 for chunk in chunks:
     dbWriter(sql,chunk)
 
 chunks = None
 
-# chunks = list(split_every(step_size, b_data))
-# results = []
-# for chunk in chunks:
-#     results.append((pool.apply_async(dbWriter, (sql, chunk))))
-#     for r in results:
-#         r.wait()
-
-# while not done:
-#     chunks = list((list(itertools.islice(b_data, step)) for step in [step_size] * 100))
-#     #chunks = list(b_data)
-#     results = []
-#     for chunk in chunks:
-#         results.append((pool.apply_async(dbWriter, (sql, chunk))))
-#        # dbWriter(sql, chunk)
-#
-#     for r in results:
-#         r.wait()
-#
-#     if len(chunk) < step_size:
-#         done = True
-
-
-print('blocking map time: ', time.time() - start)
-#pool.close()
-
+print('insertion into blocking map time: ', time.time() - start)
 # Free up memory by removing indices we don't need anymore
 deduper.blocker.resetIndices()
 

@@ -94,9 +94,9 @@ class BapQuarterly:
 
 		BapQuarterly.transfer_csv_program(bap['csv_program16'])
 		BapQuarterly.transfer_csv_program_youth(bap['csv_program16_youth'])
-		BapQuarterly.bulk_insert_quarterly_data(bap['Quarterly Company Data'])
+		BapQuarterly.bulk_insert_quarterly_data(bap['Quarterly Company data'])
 		if BapQuarterly.quarter == 3:
-			BapQuarterly.bulk_insert_annual_data(bap['Annual Company Data'])
+			BapQuarterly.bulk_insert_annual_data(bap['Annual Company data'])
 
 	@staticmethod
 	def create_bap_batch():
@@ -396,7 +396,7 @@ class BapQuarterly:
 			df_FactRICRolledUp = df_FactRICRolledUp[clm.clmn_fact_ric_rolled_up.value]
 			BapQuarterly.file.save_as_csv(df_FactRICRolledUp,
 										  'BAP_Rolled_UP_{}.xlsx'.format(str(datetime.datetime.today())),
-										  '/Users/mnadew/Box Sync/mnadew/IE/Data/ETL/BAP')
+										  '/Users/mnadew/Box Sync/mnadew/IE/data/ETL/BAP')
 			print(company)
 			print('{} + {} = {}/ 6236 '.format(len(df_FactRICRolledUp), total, len(df_FactRICRolledUp) + total))
 	
@@ -496,9 +496,9 @@ class BapQuarterly:
 	def tech_alliance_intake_date_TEMP():
 		# update = 'UPDATE BAP.QuarterlyCompanyData SET [Date of Intake] = \'{}\' WHERE [Company Name] = \'{}\' AND DataSource = 6'
 		update = ' SELECT * FROM BAP.QuarterlyCompanyData WHERE [Company Name] = \'{}\' AND DataSource = 6 UNION'
-		current_path = os.path.join(os.path.expanduser("~"), '/Users/mnadew/Box Sync/Workbench/BAP/BAP_FY18/FY18_Q3/for ETL/Missing Data Reports')
+		current_path = os.path.join(os.path.expanduser("~"), '/Users/mnadew/Box Sync/Workbench/BAP/BAP_FY18/FY18_Q3/for ETL/Missing data Reports')
 		os.chdir(current_path)
-		df = pd.read_excel('01 TechAlliance_BAP_qtrly_perCompany_MISSING DATA(2).xlsx', 'Quarterly Company Data')
+		df = pd.read_excel('01 TechAlliance_BAP_qtrly_perCompany_MISSING DATA(2).xlsx', 'Quarterly Company data')
 		# df['BasicName'] = df.apply(lambda dfs: COM.update_cb_basic_name(dfs['Company Name']), axis=1)
 		i = 0
 		for i, r in df.iterrows():
@@ -524,14 +524,14 @@ class BapQuarterly:
 		print(df.columns)
 		dfs = df[['CompanyName', 'BasicName', 'Website', 'AnnualRevenue', 'NumberOfEmployees', 'FundingToDate',
 				  'DataSource']]
-		BapQuarterly.file.save_as_csv(dfs, '00 BAP Missing Data Combined.xlsx', os.getcwd(), 'BAP Missing Data')
+		BapQuarterly.file.save_as_csv(dfs, '00 BAP Missing data Combined.xlsx', os.getcwd(), 'BAP Missing data')
 		print(dfs.head())
 
 	@staticmethod
 	def push_bap_missing_data_to_temp_table():
-		 current_path = os.path.join(os.path.expanduser("~"), '/Users/mnadew/Box Sync/Workbench/BAP/BAP_FY18/FY18_Q3/for ETL/Missing Data Reports')
+		 current_path = os.path.join(os.path.expanduser("~"), '/Users/mnadew/Box Sync/Workbench/BAP/BAP_FY18/FY18_Q3/for ETL/Missing data Reports')
 		 os.chdir(current_path)
-		 df = pd.read_excel('00 BAP Missing Data Combined.xlsx', 'BAP Missing Data')
+		 df = pd.read_excel('00 BAP Missing data Combined.xlsx', 'BAP Missing data')
 		 df['CompanyID'] = 0
 		 new_col = ['CompanyID','CompanyName','BasicName','Website','AnnualRevenue','NumberOfEmployees','FundingToDate','DataSource']
 		 dfs = df[new_col]

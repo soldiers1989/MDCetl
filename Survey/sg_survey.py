@@ -26,6 +26,8 @@ class sg_survey:
         URL = "https://restapica.surveygizmo.com/v5/survey/?resultsperpage=500&" + str(api_token)
         for i in range(0, attempts):
             try:
+                if attempt_count == 0:
+                    print(URL)
                 attempt_count += 1
                 output = requests.get(URL, verify=common.get_cert_path())
                 if output.ok:

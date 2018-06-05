@@ -14,6 +14,7 @@ EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.FactEmployment', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCReport.BD.FactRevenue', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.CVCA.VCPEDeals', 'CompanyID'
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.CBINSIGHTS.Funding', 'CompanyID'
+EXEC Config.DedupeCompanyIDCol  'MDCRaw.CONFIG.Correction', 'CompanyID'
 
 EXEC Config.DedupeCompanyIDCol  'MDCRaw.dbo.Venture', 'ID'
 

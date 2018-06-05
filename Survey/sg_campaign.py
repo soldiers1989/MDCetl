@@ -16,6 +16,7 @@ class sg_campaign:
 
         attempt_count = 0
         URL = "https://restapica.surveygizmo.com/v5/survey/" + str(surveyID) + "/surveycampaign/?resultsperpage=500&" + api_token
+        print(URL)
         for i in range(0, attempts):
             try:
                 attempt_count +=1

@@ -18,6 +18,7 @@ class sg_contact_lists:
 
         base = "https://restapica.surveygizmo.com/v5/contactlist"
         url = base + "/?" + api_token
+        print(url)
         for i in range(0, 10):
             try:
                 output = requests.get(url, verify=common.get_cert_path())

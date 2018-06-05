@@ -268,6 +268,7 @@ class sg_qsos:
 
         surveyID = str(surveyID)
         URL = self.sg_create_questionsURL(surveyID, api_token)
+        print(URL)
         jsons = self.sg_get_api_output(URL)
         qs = self.qs_to_dataframe(surveyID, jsons)
         os = self.sg_options_to_dataframe(surveyID, jsons)

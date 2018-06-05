@@ -288,15 +288,33 @@ def _main_():
             cols = rid_cid + ordered_q_cols
             ric_datasheet = ric_datasheet[cols]
 
-            # save to disc
             save_path = path_xl(
-                                 user_path=user_path,
-                                 path_extension="Box Sync/Workbench/BAP/Annual Survey FY2018/DEV - Results to RICs/",
-                                 filename=ric + '.xlsx')
-            results_sheets = [ric_datasheet, ric_data_dicts[ric]]
-            sheetnames = ['SurveyData', 'DataDictionary']
-            save_xls(results_sheets, save_path, sheetnames)
-            print("Wrote to {}".format(save_path))
+                user_path=user_path,
+                path_extension="Box Sync/Workbench/BAP/Annual Survey FY2018/DEV - Results to RICs/",
+                filename=ric + '.xlsx')
+
+            # pull out social impact companies separately for use later in CII datasheet
+            if ric == 'MaRS Discovery District':
+                soc_imp_df = ric_datasheet[ric_datasheet['social_impact - Motives '] == 'Yes']
+            if ric != 'CII':
+                # save to disc
+                results_sheets = [ric_datasheet, ric_data_dicts[ric]]
+                sheetnames = ['SurveyData', 'DataDictionary']
+                save_xls(results_sheets, save_path, sheetnames)
+                print("Wrote to {}".format(save_path))
+            else:
+                print('Add extra tabs to {} datasheet'.format(ric))
+                results_sheets = [ric_datasheet,
+                                  soc_imp_df,
+                                  ric_data_dicts[ric],
+                                  ric_data_dicts['MaRS Discovery District']]
+                sheetnames = ['CII_SurveyData',
+                              'MaRS_SocialImpact_SurveyData',
+                              'CII_DataDict',
+                              'MaRS_DataDict']
+                save_xls(results_sheets, save_path, sheetnames)
+                print("Wrote to {}".format(save_path))
+
         except ValueError as ex:
             print("!\nERROR FOR {}: {}\n!\n".format(ric, ex))
 

@@ -188,7 +188,7 @@ class DBInteractions:
         #   store old ans in xl file
         old_ans_sql = CM.get_config('config.ini', 'secondary_etl', 'old_ans')
         old_ans_df = DB.pandas_read(old_ans_sql)
-        # DBInteractions.store_df(old_ans_df, '_OLD_PIPE_ANS')
+        DBInteractions.store_df(old_ans_df, '_OLD_PIPE_ANS')
         #   run sql to delete old ans
         del_old_ans_sql = CM.get_config('config.ini', 'secondary_etl', 'del_old_ans')
         DB.execute(del_old_ans_sql)
@@ -197,7 +197,7 @@ class DBInteractions:
         # clean
         self.clean_df()
         # delete old ans
-        DBInteractions.delete_old_ans()
+        # DBInteractions.delete_old_ans()
         # load
         self.load()
 
@@ -217,4 +217,5 @@ if __name__ == '__main__':
     j = Json(data, surveyid)
     all_ans = j.to_df()
     db_interactions = DBInteractions(all_ans)
+    # db_interactions.store_df(all_ans, 'secondary_etl_extra_ans')
     db_interactions.etl()

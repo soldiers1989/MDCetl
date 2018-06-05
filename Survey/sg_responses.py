@@ -58,6 +58,7 @@ class sg_responses:
         which_page = 1
         result_pages = []
         URL = sg_responses.create_response_API_URL(surveyID, api_token, resultsperpage=200, page=which_page)
+        print(URL)
         for i in range(0, attempts):
             try:
 

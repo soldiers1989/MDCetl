@@ -20,7 +20,8 @@ class Match:
                 log_level = logging.DEBUG
         logging.getLogger().setLevel(log_level)
 
-    def deduper_setup(self, settings_file, training_file, field_list, selection, sample):
+    @staticmethod
+    def deduper_setup(settings_file, training_file, field_list, selection, sample):
         """
         Trains (if training and settings files do not exist) otherwise set up deduper object
         :param settings_file: settings file name
@@ -30,7 +31,6 @@ class Match:
         :param sample: sample size of data to be used for training
         :return: deduper object
         """
-
         if os.path.exists(settings_file):
             print('Reading from ', settings_file)
             with open(settings_file, 'rb') as sf:
@@ -73,7 +73,8 @@ class Match:
 
         return deduper
 
-    def block(self, deduper, selection):
+    @staticmethod
+    def block(deduper, selection):
         """
         :param deduper: deduper object created in training
         :param selection: sql statement selecting all relevant columns to use in deduplication
@@ -107,7 +108,8 @@ class Match:
 
         deduper.blocker.resetIndices()
 
-    def prematch_processing(self):
+    @staticmethod
+    def prematch_processing():
         """
         Organize the data by passing it through the processing tables
         :return: None
@@ -163,7 +165,8 @@ class Match:
 
         return None
 
-    def candidates_gen(self, result_set):
+    @staticmethod
+    def candidates_gen(result_set):
         """
         Helper method for clustering
         :return: generator of records used for clustering
@@ -209,8 +212,8 @@ class Match:
         # matchBlocks returns a generator. Turn it into a list
         return list(clustered_dupes)
 
-
-    def write_results(self, clustered_dupes_list):
+    @staticmethod
+    def write_results(clustered_dupes_list):
         """
         Load finalized clusters into EntityMap table
         :param clustered_dupes_list: list of tuples returned from clustering
@@ -239,3 +242,32 @@ class Match:
                    "ON a.ID = p.ID")
 
         return len(clustered_dupes_list)
+
+    @staticmethod
+    def false_positives():
+        """
+        Consult MatchingFalsePositives and remove known false positive clusters from EntityMap
+        :return: None
+        """
+        db.execute("SELECT * FROM MDC_DEV.dbo.EntityMap ORDER BY CanonID")
+        entity_map = db.pandas_read("SELECT * FROM MDC_DEV.dbo.EntityMap").set_index('ID').to_dict('index')
+        clusters = []
+        for index1, val1 in entity_map.items():
+            for index2, val2 in entity_map.items():
+                if val1['CanonID'] == val2['CanonID'] and index1 != index2:
+                    clusters.append([index1, index2])
+                    break
+
+        fal_pos = db.pandas_read("SELECT * FROM MDC_DEV.dbo.MatchingFalsePositives").to_dict('index')
+        remove = []
+        for cluster in clusters:
+            for i, v in fal_pos.items():
+                if cluster[0] == v['ID'] and cluster[1] == v['FalseID']:
+                    remove.append([cluster[0]])
+                    remove.append([cluster[1]])
+                    break
+                else:
+                    continue
+
+        sql = 'DELETE FROM MDC_DEV.dbo.EntityMap WHERE ID = (?)'
+        db.bulk_insert(sql, remove)

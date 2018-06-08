@@ -95,7 +95,7 @@ class Match:
 
         df = db.pandas_read(selection).set_index('ID').to_dict('index')
         b_data = deduper.blocker(df)
-        sql = 'INSERT INTO MDC_DEV.dbo.BlockingMap values (?,?)'
+        sql = 'INSERT INTO MDC_DEV.dbo.BlockingMap VALUES (?,?)'
 
         print('Populating BlockingMap... ')
         # Chunk the blocked data into groups of 30,000 blocks to be inserted in the BlockingMap
@@ -244,7 +244,7 @@ class Match:
         return len(clustered_dupes_list)
 
     @staticmethod
-    def false_positives():
+    def remove_false_positives():
         """
         Consult MatchingFalsePositives and remove known false positive clusters from EntityMap
         :return: None

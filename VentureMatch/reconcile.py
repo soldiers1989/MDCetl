@@ -15,6 +15,8 @@ This is where you can validate the results of the EntityMap
 
 
 class Reconcile:
+
+    @classmethod
     def rec(self):
         """
 
@@ -22,12 +24,12 @@ class Reconcile:
         """
         print('output reconciling')
         db.execute("SELECT * FROM MDC_DEV.dbo.EntityMap ORDER BY CanonID")
-        clustered_data = db.pandas_read("SELECT TOP 20 * FROM MDC_DEV.dbo.EntityMap WHERE ClusterScore >0.98").to_dict(
+        clustered_data = db.pandas_read("SELECT TOP 50 * FROM MDC_DEV.dbo.EntityMap WHERE ClusterScore >0.5").to_dict(
             'index')
         print('ID, CanonID, ClusterScore, Name, Description, Website, Email, Phone, Address, BatchID')
 
-        duplicate_records = {}
-        secondary_source = {}
+        duplicate_records = []
+        secondary_source = []
         for row1, value1 in clustered_data.items():
             if row1 % 2 == 0:
                 for row2, value2 in clustered_data.items():
@@ -42,32 +44,16 @@ class Reconcile:
                         # If yes, add records to MDCRaw.CONFIG.DiplicateVenture for validation, remove both records
                         # from EntityMap table
                         if choice == 'y':
-                            duplicate_records[row1] = {}
-                            # Both records are already in the database
                             if value2['ID'] > value1['ID'] > 0:
-                                duplicate_records[row1] = self.deduplicate(value1, value2)
+                                duplicate_records.append(self.deduplicate_existing(value1, value2))
                             elif value1['ID'] > value2['ID'] > 0:
-                                duplicate_records[row1] = self.deduplicate(value2, value1)
-                            # One record is in the database and the other is not in the database (-ve ID)
+                                duplicate_records.append(self.deduplicate_existing(value2, value1))
                             elif value2['ID'] > value1['ID'] and value2['ID'] > 0:
-                                update.update_blanks(value2, value1)
-                                value1['ID'] = value2['ID']
-                                secondary_source[row1] = value1
+                                secondary_source.append(self.duplicate_existing_new(value2, value1))
                             elif value1['ID'] > value2['ID'] and value1['ID'] > 0:
-                                update.update_blanks(value1, value2)
-                                value2['ID'] = value1['ID']
-                                secondary_source[row1] = value2
-                            # Matching ventures but both records are from new data (both have -ve ID)
+                                secondary_source.append(self.duplicate_existing_new(value1, value2))
                             else:
-                                # Fill any missing dimensions to create a "full" record
-                                value1 = update.update_blanks(value1, value2)
-                                # Insert record into Venture Table
-                                sql = "INSERT INTO MDC_DEV.dbo.ProcessedVenture (Name, BatchID, Description, Website, Email, Phone, Address) " \
-                                      "VALUES ('{Name}',{BatchID},'{Description}','{Website}','{Email}','{Phone}','{Address}')".format(
-                                      Name=str(value1['Name']), BatchID=value1['BatchID'], Description=str(value1['Description']),
-                                      Website=str(value1['Website']), Email=str(value1['Email']), Phone=str(value1['Phone']), Address=str(value1['Address']))
-                                db.execute(sql)
-                                secondary_source[row1] = value1
+                                secondary_source.append(self.duplicate_new(value1,value2))
 
                             sql = 'DELETE FROM MDC_DEV.dbo.EntityMap WHERE ID = (?)'
                             values = [[value1['ID']], [value2['ID']]]
@@ -76,13 +62,7 @@ class Reconcile:
                         # If no, add both records to false positives list and remove both records from the EntityMap
                         # table
                         if choice == 'n':
-                            values = [
-                                [value1['ID'], value1['Name'], value2['ID'], value2['Name'], value1['ClusterScore']],
-                                [value2['ID'], value2['Name'], value1['ID'], value1['Name'], value2['ClusterScore']]
-                            ]
-                            sql = 'INSERT INTO MDC_DEV.dbo.MatchingFalsePositives (ID, Name, FalseID, FalseName, ClusterScore) VALUES (?,?,?,?,?)'  # \
-                            # ' WHERE (?,?,?,?) NOT IN (SELECT (ID, Name, FalseID, FalseName) FROM MDC_DEV.dbo.MatchingFalsePositives)'
-                            db.bulk_insert(sql, values)
+                            self.false_positive(value1,value2)
                             sql = 'DELETE FROM MDC_DEV.dbo.EntityMap WHERE ID = (?)'
                             values = [[value1['ID']], [value2['ID']]]
                             db.bulk_insert(sql, values)
@@ -97,20 +77,26 @@ class Reconcile:
                         continue
             else:
                 continue
-
-        for row, val in duplicate_records.items():
-            print(val)
+        # Insert duplicates of existing records into DuplicateVenture
+        try:
+            sql = 'INSERT INTO MDC_DEV.dbo.DuplicateVenture (CompanyID,DuplicateCompanyID,Name,DuplicateName) VALUES (?,?,?,?)'
+            db.bulk_insert(sql, duplicate_records)
+        except:
+            pass
+        # for row, val in duplicate_records.items():
+        #     print(val)
         return secondary_source
 
     @staticmethod
-    def deduplicate(record1, record2):
+    def deduplicate_existing(record1, record2):
         """
-
+        Both records are already in the database
         :param record1: Historic record
         :param record2: Duplicate record
         :return:
         """
-        duplicate_records = {}
+        merged = update.update_blanks(record1, record2)
+        print('Both records already exist in database!\nMerged record preview: \n', merged)
         while True:
             choice = input('Would you like to merge? (y)es or (n)o \n')
             if choice.lower() not in ('y', 'n'):
@@ -119,15 +105,76 @@ class Reconcile:
                 break
         if choice == 'y':
             # Update record and push the changes to venture table
-            record1 = update.update_blanks(record1, record2)
-            sql = "UPDATE MDC_DEV.dbo.ProcessedVenture SET Name = '{Name}', BatchID = {BatchID}, Description = '{Description}', Website = '{Website}', " \
+            record1 = merged
+            sql = "UPDATE MDC_DEV.dbo.Venture SET Name = (?), BatchID = (?), Description = (?), Website = (?), " \
+                  "Email = (?), Phone = (?), Address = (?) WHERE ID = (?)"
+            values = [[record1['Name'], record1['BatchID'],record1['Description'],record1['Website'],record1['Email'],record1['Phone'],record1['Address'],record1['ID']]]
+            db.bulk_insert(sql, values)
+
+        duplicate_records = [record1['ID'],record2['ID'],record1['Name'],record2['Name']]
+        return duplicate_records
+
+    @staticmethod
+    def duplicate_existing_new(record1, record2):
+        """
+        One record is in the database and the other is not in the database (-ve ID)
+        :param record1: historic record
+        :param record2: secondary source record
+        :return:
+        """
+        merged = update.update_blanks(record1, record2)
+        print('One record is from secondary source!\nMerged record preview: \n', merged)
+        while True:
+            choice = input('Would you like to update database? (y)es or (n)o \n')
+            if choice.lower() not in ('y', 'n'):
+                continue
+            else:
+                break
+        if choice == 'y':
+            # Update record and push the changes to venture table
+            record1 = merged
+            sql = "UPDATE MDC_DEV.dbo.Venture SET Name = '{Name}', BatchID = {BatchID}, Description = '{Description}', Website = '{Website}', " \
                   "Email = '{Email}', Phone = '{Phone}', Address = '{Address}' WHERE ID = {ID}".format(
                       Name=str(record1['Name']), BatchID=record1['BatchID'], Description=str(record1['Description']),
                       Website=str(record1['Website']), Email=str(record1['Email']), Phone=str(record1['Phone']),
                       Address=str(record1['Address']), ID=record1['ID'])
             db.execute(sql)
-        duplicate_records['CompanyID'] = record1['ID']
-        duplicate_records['DuplicateCompanyID'] = record2['ID']
-        duplicate_records['Name'] = record1['Name']
-        duplicate_records['DuplicateName'] = record2['Name']
-        return duplicate_records
+        record2['ID'] = record1['ID']
+        return record2
+
+    @staticmethod
+    def duplicate_new(record1, record2):
+        """
+        Matching ventures but both records are from new data (both have -ve ID)
+        :param record1:
+        :param record2:
+        :return:
+        """
+        # Fill any missing dimensions to create a "full" record
+        record1 = update.update_blanks(record1, record2)
+        # Insert record into Venture Table
+        sql = "INSERT INTO MDC_DEV.dbo.Venture (Name, BatchID, Description, Website, Email, Phone, Address) " \
+              "VALUES ('{Name}',{BatchID},'{Description}','{Website}','{Email}','{Phone}','{Address}')".format(
+            Name=str(record1['Name']), BatchID=record1['BatchID'], Description=str(record1['Description']),
+            Website=str(record1['Website']), Email=str(record1['Email']), Phone=str(record1['Phone']),
+            Address=str(record1['Address']))
+        db.execute(sql)
+        return record1
+
+    @staticmethod
+    def false_positive(record1, record2):
+        """
+        Add 2 records into MatchingFalsePositives
+        :param record1:
+        :param record2:
+        :return:
+        """
+        values = [
+            [record1['ID'], record1['Name'], record2['ID'], record2['Name'], record1['ClusterScore'], record1['ID'],
+             record1['Name'], record2['ID'], record2['Name']],
+            [record2['ID'], record2['Name'], record1['ID'], record1['Name'], record2['ClusterScore'], record2['ID'],
+             record2['Name'], record1['ID'], record1['Name']]
+        ]
+        sql = 'INSERT INTO MDC_DEV.dbo.MatchingFalsePositives VALUES (?,?,?,?,?) ' \
+              'WHERE (?,?,?,?) NOT IN (SELECT (ID, Name, FalseID, FalseName) FROM MDC_DEV.dbo.MatchingFalsePositives)'
+        db.bulk_insert(sql, values)

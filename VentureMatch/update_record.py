@@ -21,5 +21,8 @@ class Update:
     def update_all(record1, record2):
         # Update  update all the fields of existing record in database where record2 has data
         for index, field in enumerate(record1):
-            record1[index] = record2[index]
+            try:
+                record1[index] = record2[index]
+            except:
+                pass
         return record1

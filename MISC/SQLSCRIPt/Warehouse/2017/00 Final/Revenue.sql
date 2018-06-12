@@ -62,6 +62,77 @@ SELECT DISTINCT
 5002132745)
 AND CAST(Answer AS Float) < 100000000000
 
+UNION
+
+--BAP Quarterly Annual Data
+
+SELECT E.BatchID, E.CompanyID, E.DataSource, E.TableSource,
+	CASE WHEN E.Territory = 'Sales revenue from Canadian sources $CAN' THEN 1
+		WHEN E.Territory = 'Sales revenue from international sources $CAN' THEN 2
+			ELSE NULL END AS Territory,
+CAST(E.Value AS Float) AS Value
+	, E.ZIndex, E.Year, Currency
+FROM (
+	SELECT
+		BatchID,
+		CompanyID,
+		DataSource,
+		'MDCRaw.BAP.AnnualCompanyData' AS TableSource,
+		[RevenueTerritory] AS Territory,
+		[Value] AS  Value,
+		7           ZIndex,
+		2017         Year,
+		42 AS Currency
+	FROM MDCRaw.BAP.AnnualCompanyData
+			 UNPIVOT
+			 (
+					 [Value]
+			 FOR [RevenueTerritory]
+			 IN (
+				 [Sales revenue from Canadian sources $CAN],
+			   [Sales revenue from international sources $CAN]
+				 )
+			 ) un
+) E
+
+UNION
+
+--MaRS Suppliment
+
+
+SELECT F.BatchID, F.CompanyID, F.DataSource,
+	F.TableSource, F.Territory, F.Amount,
+	F.Zindex, F.FiscalYear, F.Currency
+FROM (
+	SELECT
+		BatchID,
+		CompanyID,
+		37                             DataSource,
+		'MDCRaw.MaRS.MaRSSupplemental' TableSource,
+		CASE WHEN [RevenueSource]='RevenueCanadianSource' THEN 40
+				 WHEN [RevenueSource]='RevenueUSASource' THEN 235
+				 WHEN [RevenueSource]='RevenueInternational' THEN 248
+				 ELSE NULL END AS Territory,
+		[Amount]        AS             [Amount],
+		8               AS             Zindex,
+		2017            AS             FiscalYear,
+		CASE WHEN [RevenueSource]='RevenueCanadianSource' THEN 42
+				 WHEN [RevenueSource]='RevenueUSASource' THEN 5
+				 WHEN [RevenueSource]='RevenueInternational' THEN 5
+				 ELSE NULL END AS Currency
+	FROM MDCRaw.MaRS.MaRSSupplemental
+			 UNPIVOT
+			 (
+					 [Amount]
+			 FOR [RevenueSource]
+			 IN (
+				 RevenueCanadianSource,
+				 RevenueUSASource,
+				 RevenueInternational
+			 )
+			 ) un
+) F
+
 
 
 

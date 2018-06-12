@@ -62,5 +62,73 @@ WHERE QuestionID IN (
 	,50021327274
 	,50021327274
 )
-AND Answer NOT LIKE 'N/A' -- Should we convert this to NULL -- [CONVERT to Zero]
--- AND CAST(ROUND(CAST(Answer AS FLOAT), 0)AS INT) > 0
+AND Answer NOT LIKE 'N/A'
+
+UNION
+--BAP Quarterly Annual Data
+
+SELECT E.BatchID, E.CompanyID, E.DataSource, E.TableSource,
+	CASE WHEN E.EmploymentTimeType = 'Full-time employees at end of calendar year' THEN 1
+		WHEN E.EmploymentTimeType = 'Part-time employees at end of year' THEN 2
+			ELSE NULL END AS TimeTYPE,
+	E.EmploymentType,
+	E.TimeOfYear, E.Value, E.AssocDate, E.ZIndex, E.Year
+FROM (
+	SELECT
+		BatchID,
+		CompanyID,
+		DataSource,
+		'MDCRaw.BAP.AnnualCompanyData' AS TableSource,
+		EmploymentTimeType AS EmploymentTimeType,
+		NULL         EmploymentType,
+		1            TimeOfYear,
+		[Value] AS  Value,
+		'2017-12-31' AssocDate,
+		7           ZIndex,
+		2017         Year
+	FROM MDCRaw.BAP.AnnualCompanyData
+			 UNPIVOT
+			 (
+					 [Value]
+			 FOR [EmploymentTimeType]
+			 IN (
+				 [Full-time employees at end of calendar year],
+				 [Part-time employees at end of year]
+				 )
+			 ) un
+) E
+
+UNION
+
+--MaRSSuppliment
+
+SELECT F.BatchID, F.CompanyID, F.DataSource,
+	F.TableSource, F.TimeType,F.EmploymentType,F.TimeOfYear, F.Amount,
+	F.AssocDate, F.Zindex, F.FiscalYear
+FROM (
+	SELECT
+		BatchID,
+		CompanyID,
+		37                             DataSource,
+		'MDCRaw.MaRS.MaRSSupplemental' TableSource,
+		CASE WHEN [EmploymentTimeType]='EmploymentFullTimeEOY' THEN 1
+				 WHEN [EmploymentTimeType]='EmploymentPartTimeEOY' THEN 2
+				 ELSE NULL END AS TimeType,
+		NULL            AS             EmploymentType,
+		1            AS             TimeOfYear,
+		CASE WHEN [DateSubmitted]='0001-01-01 00:00:00.0000000' THEN NULL
+			ELSE SUBSTRING(DateSubmitted,1,10) END AS AssocDate,
+		[Amount]        AS             [Amount],
+		8               AS             Zindex,
+		2017            AS             FiscalYear
+	FROM MDCRaw.MaRS.MaRSSupplemental
+			 UNPIVOT
+			 (
+					 [Amount]
+			 FOR [EmploymentTimeType]
+			 IN (
+				 EmploymentFullTimeEOY,
+				 EmploymentPartTimeEOY
+			 )
+			 ) un
+) F

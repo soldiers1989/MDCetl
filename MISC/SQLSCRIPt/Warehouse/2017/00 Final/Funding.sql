@@ -1,4 +1,4 @@
--- TRUNCATE TABLE MDCDW.dbo.FactFunding
+
 INSERT INTO MDCDW.dbo.FactFunding
 --IAF
 SELECT
@@ -118,6 +118,48 @@ SELECT
 FROM MDCRaw.CRUNCHBASE.Organization O INNER JOIN
 	MDCRaw.CRUNCHBASE.Funding_Rounds F ON O.org_uuid = F.org_uuid
 WHERE O.role_company = 1 -- Should we move all type of FUnding raising or just the company ones
+
+UNION
+--MaRS Suppliment
+
+SELECT F.BatchID, F.CompanyID, F.DataSource,
+	F.TableSource, F.FundingSource, F.FundingType, F.FundingTerritory,
+	F.FundingDate, F.Amount, F.Zindex, F.FiscalYear
+FROM (
+	SELECT
+		BatchID,
+		CompanyID,
+		37                             DataSource,
+		'MDCRaw.MaRS.MaRSSupplemental' TableSource,
+		CASE WHEN [FundingSource]='FundingFederal' THEN 3
+				 WHEN [FundingSource]='FundingProvincial' THEN 9
+				 WHEN [FundingSource]='FundingVC' THEN 12
+				 WHEN [FundingSource]='FundingAngel' THEN 1
+				 WHEN [FundingSource]='FundingPrivateOther' THEN 7
+				 WHEN [FundingSource]='FundingOtherNonPrivate' THEN 6
+				 ELSE NULL END AS FundingSource,
+		NULL            AS             FundingType,
+		39            AS             FundingTerritory,
+		[DateSubmitted] AS             FundingDate,
+		[Amount]        AS             [Amount],
+		8               AS             Zindex,
+		2017            AS             FiscalYear
+	FROM MDCRaw.MaRS.MaRSSupplemental
+			 UNPIVOT
+			 (
+					 [Amount]
+			 FOR [FundingSource]
+			 IN (
+				 FundingFederal,
+				 FundingProvincial,
+				 FundingVC,
+				 FundingAngel,
+				 FundingPrivateOther,
+				 FundingOtherNonPrivate
+			 )
+			 ) un
+) F
+
 
 
 

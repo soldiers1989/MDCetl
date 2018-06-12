@@ -20,56 +20,8 @@ class Match:
                 log_level = logging.DEBUG
         logging.getLogger().setLevel(log_level)
 
-    def preprocess(self):
-        ##TO BE MOVED
-        # # CLEANING
-        # Website Cleaning
-        # Where all the fields are 'n/a' 'NA' etc need to change them to null
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture "
-                   "SET Website = NULL WHERE Website ='na' OR Website = 'n/a' OR Website = '-' "
-                   "OR Website = 'http://' OR Website = 'no website' OR Website = '--' "
-                   "OR Website = 'http://N/A' OR Website = 'no data' OR Website = 'http://www.facebook.com' "
-                   "OR Website = '0' OR Website = 'http://www.nowebsite.co'"
-                   "OR Website = 'http://N/A - Development stage.' OR Website = ' -'"
-                   "OR Website = 'http://NOT ON WEB' OR Website = 'http://none'"
-                   "OR Website = 'http://coming soon' OR Website = 'http://not.yet' "
-                   "OR Website = 'http://no website' OR Website = 'http://not yet' "
-                   "OR Website = 'none' OR Website = 'http://NA'OR Website = 'tbd' "
-                   "OR Website = 'https' OR Website = 'http://www.nowebsite.com' "
-                   "OR Website = 'http://nowebsite.com' OR Website = 'http://Nowebsiteyet' "
-                   "OR Website = 'Coming soon' OR Website = 'not set up yet' "
-                   "OR Website = 'http://under construction' OR Website = 'http://www.nwebsite.com' "
-                   "OR Website = 'http://www.google.com' OR Website = 'http://www.google.ca' OR Website = 'youtube.com'")
-
-        # # Phone Cleaning
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET Phone = NULL WHERE LEN(Phone)<10 ")
-
-        # # Name Cleaning
-        db.execute("DELETE FROM MDC_DEV.dbo.ProcessedVenture WHERE Name LIKE '%communitech%' OR Name LIKE '%company:%' "
-                   "OR Name LIKE '%nwoic%' OR Name LIKE '%riccentre%' OR Name LIKE '%sparkcentre%'OR Name LIKE '%venture%' "
-                   "OR Name LIKE '%Wetch_%' OR Name LIKE '%testBAP%' OR Name LIKE '%SSMIC%' OR Name LIKE '%Techalliance%' "
-                   "OR Name LIKE '%RICC_%' OR Name LIKE '%_anon_%' OR Name LIKE '%InnovationFactory_%' "
-                   "OR Name LIKE '%InvestOttawa_%' OR Name LIKE '%Québec inc%' OR Name LIKE '%Haltech_%' "
-                   "OR Name LIKE '%InnovNiag_survey%' OR Name LIKE '%NOIC%'")
-
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET Name = NULL WHERE Name = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET ID = NULL WHERE ID = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET AlternateName = NULL WHERE AlternateName = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET BasicName = NULL WHERE BasicName = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET BatchID = NULL WHERE BatchID = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET DateFounded = NULL WHERE DateFounded = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET DateOfIncorporation = NULL WHERE DateOfIncorporation = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET VentureType = NULL WHERE VentureType = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET Description = NULL WHERE Description = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET Website = NULL WHERE Website = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET Email = NULL WHERE Email = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET Phone = NULL WHERE Phone = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET Fax = NULL WHERE Fax = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET VentureStatus = NULL WHERE VentureStatus = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET ModifiedDate = NULL WHERE ModifiedDate = ''")
-        db.execute("UPDATE MDC_DEV.dbo.ProcessedVenture SET CreateDate = NULL WHERE CreateDate = ''")
-
-    def deduper_setup(self, settings_file, training_file, field_list, selection, sample):
+    @staticmethod
+    def deduper_setup(settings_file, training_file, field_list, selection, sample):
         """
         Trains (if training and settings files do not exist) otherwise set up deduper object
         :param settings_file: settings file name
@@ -79,7 +31,6 @@ class Match:
         :param sample: sample size of data to be used for training
         :return: deduper object
         """
-
         if os.path.exists(settings_file):
             print('Reading from ', settings_file)
             with open(settings_file, 'rb') as sf:
@@ -122,11 +73,11 @@ class Match:
 
         return deduper
 
-    def block(self, deduper, selection):
+    @staticmethod
+    def block(deduper, selection):
         """
         :param deduper: deduper object created in training
         :param selection: sql statement selecting all relevant columns to use in deduplication
-        from the processed venture table
         :return: None
         """
         # If dedupe learned a Index Predicate, we have to take a pass
@@ -140,12 +91,11 @@ class Match:
 
         # Now we are ready to write our blocking map table by creating a
         # generator that yields unique `(BlockKey, ID)` tuples.
-
         db.execute("DELETE FROM MDC_DEV.dbo.BlockingMap")
 
         df = db.pandas_read(selection).set_index('ID').to_dict('index')
         b_data = deduper.blocker(df)
-        sql = 'INSERT INTO MDC_DEV.dbo.BlockingMap values (?,?)'
+        sql = 'INSERT INTO MDC_DEV.dbo.BlockingMap VALUES (?,?)'
 
         print('Populating BlockingMap... ')
         # Chunk the blocked data into groups of 30,000 blocks to be inserted in the BlockingMap
@@ -158,12 +108,12 @@ class Match:
 
         deduper.blocker.resetIndices()
 
-    def prematch_processing(self):
+    @staticmethod
+    def prematch_processing():
         """
         Organize the data by passing it through the processing tables
         :return: None
         """
-
         # Many BlockKeys will only form blocks that contain a single
         # record. Since there are no comparisons possible within such a
         # singleton ID we can ignore them.
@@ -215,13 +165,13 @@ class Match:
 
         return None
 
-    def candidates_gen(self, result_set):
+    @staticmethod
+    def candidates_gen(result_set):
         """
         Helper method for clustering
         :return: generator of records used for clustering
         """
         lset = set
-
         blockKey = None
         records = []
         i = 0
@@ -229,23 +179,17 @@ class Match:
             if value['BlockKey'] != blockKey:
                 if records:
                     yield records
-
                 blockKey = value['BlockKey']
                 records = []
                 i += 1
-
                 if i % 10000 == 0:
                     print(i, "blocks")
-
             smallerKeys = value['SmallerKeys']
-
             if smallerKeys:
                 smallerKeys = lset(smallerKeys.split(','))
             else:
                 smallerKeys = lset([])
-
             records.append((value['ID'], value, smallerKeys))
-
         if records:
             yield records
 
@@ -253,7 +197,7 @@ class Match:
         """
         Cluster potential record matches
         :param deduper: deduper object
-        :return: list of clustered tuples (ID, score)
+        :return: list of clustered tuples ((ID1, ID2), (confidence_score1, confidence_score2))
         """
         entity_dict = db.pandas_read("SELECT b.ID, b.Name, b.AlternateName, b.BatchID, b.DateFounded, "
                                      "b.DateOfIncorporation, b.Description, b.Website, b.Email, b.Phone, "
@@ -261,17 +205,17 @@ class Match:
                                      "AS a INNER JOIN MDC_DEV.dbo.ProcessedVenture AS b "
                                      "ON a.ID = b.ID ORDER BY a.BlockKey").to_dict('index')
 
-        print('Clustering... May take a while.')
+        print('Clustering...')
         clustered_dupes = deduper.matchBlocks(self.candidates_gen(entity_dict),
                                               threshold=0.5)
 
         # matchBlocks returns a generator. Turn it into a list
-        clustered_dupes_list = list(clustered_dupes)
-        return clustered_dupes_list
+        return list(clustered_dupes)
 
-    def write_results(self, clustered_dupes_list):
+    @staticmethod
+    def write_results(clustered_dupes_list):
         """
-        Load finalized clusters into EntityMap table, print number of clustered duplicates
+        Load finalized clusters into EntityMap table
         :param clustered_dupes_list: list of tuples returned from clustering
         :return: number of duplicate sets
         """
@@ -298,3 +242,32 @@ class Match:
                    "ON a.ID = p.ID")
 
         return len(clustered_dupes_list)
+
+    @staticmethod
+    def remove_false_positives():
+        """
+        Consult MatchingFalsePositives and remove known false positive clusters from EntityMap
+        :return: None
+        """
+        db.execute("SELECT * FROM MDC_DEV.dbo.EntityMap ORDER BY CanonID")
+        entity_map = db.pandas_read("SELECT * FROM MDC_DEV.dbo.EntityMap").set_index('ID').to_dict('index')
+        clusters = []
+        for index1, val1 in entity_map.items():
+            for index2, val2 in entity_map.items():
+                if val1['CanonID'] == val2['CanonID'] and index1 != index2:
+                    clusters.append([index1, index2])
+                    break
+
+        fal_pos = db.pandas_read("SELECT * FROM MDC_DEV.dbo.MatchingFalsePositives").to_dict('index')
+        remove = []
+        for cluster in clusters:
+            for i, v in fal_pos.items():
+                if cluster[0] == v['ID'] and cluster[1] == v['FalseID']:
+                    remove.append([cluster[0]])
+                    remove.append([cluster[1]])
+                    break
+                else:
+                    continue
+
+        sql = 'DELETE FROM MDC_DEV.dbo.EntityMap WHERE ID = (?)'
+        db.bulk_insert(sql, remove)

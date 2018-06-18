@@ -2,14 +2,20 @@ from Shared.db import DB as db
 from Shared.common import Common as common
 class New:
     @staticmethod
-    def create_new(new_venture, source_table):
+    def create_new(new_venture, second_venture, source_table):
+        venture = [[new_venture['Name'], new_venture['BatchID'], new_venture['Description'], new_venture['Website'],
+                    new_venture['Email'], new_venture['Phone'], new_venture['Address']]]
         sql = 'INSERT INTO MDC_DEV.dbo.Venture (Name, BatchID, Description, Website, Email, Phone, Address) VALUES (?,?,?,?,?,?,?)'
-        db.bulk_insert(sql,new_venture)
+        db.bulk_insert(sql, venture)
 
-        # Update ID to match Venture Table in the given source table
+        # Update ID to match Venture Table in the given source table for both records
         if source_table is not None:
-            sql = 'UPDATE ' + source_table + ' SET ID = b.ID FROM ' + source_table + 'as a INNER JOIN MDC_DEV.dbo.Venture AS b ON a.Name = b.Name'
+            sql = 'UPDATE ' + source_table + ' SET ID = b.ID FROM ' + source_table + ' AS a INNER JOIN MDC_DEV.dbo.Venture AS b ON a.Name = b.Name'
             db.execute(sql)
+            sql = "UPDATE " + source_table + " SET ID = b.ID FROM " + source_table + " AS a INNER JOIN MDC_DEV.dbo.Venture AS b ON " \
+                   "a.Name = '{Name1}' AND b.Name = '{Name2}'".format(Name1=(str(second_venture['Name'])),Name2=(str(new_venture['Name'])))
+            db.execute(sql)
+
 
     @staticmethod
     def nomatch_create_new(source_table):

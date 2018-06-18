@@ -1,4 +1,5 @@
 from Shared.db import DB as db
+from Shared.common import Common as common
 from VentureMatch.update_record import Update as update
 from VentureMatch.new_venture import New as new
 
@@ -16,7 +17,6 @@ This is where you can validate the results of the EntityMap
 
 class Validate:
 
-    @classmethod
     def val(self, source_table):
         """ Validate the results of the dedupe program """
         print('Starting validation')
@@ -32,7 +32,12 @@ class Validate:
             if row1 % 2 == 0:
                 for row2, value2 in clustered_data.items():
                     if value1['CanonID'] == value2['CanonID'] and value1['ID'] != value2['ID']:
-                        print('\n','Are these duplicates?', '\n', value1, '\n', value2)
+                        c = common.df_list(db.pandas_read("SELECT COUNT(*) FROM MDC_DEV.dbo.EntityMap"))
+                        count = int(c[0][0] / 2)
+
+                        print('\nNumber of duplicates left to validate: ', count)
+                        print('Are these duplicates?', '\n', value1, '\n', value2)
+
                         while True:
                             choice = input('(y)es (n)o or (u)nsure \n')
                             if choice.lower() not in ('y', 'n', 'u'):
@@ -51,8 +56,11 @@ class Validate:
                             elif value1['ID'] > value2['ID'] and value1['ID'] > 0:
                                 self.duplicate_existing_new(value1, value2, source_table)
                             else:
-                                self.duplicate_new(value1,value2, source_table)
-
+                                # Assign record with longest name as 'main record'
+                                if len(value1['Name']) > len(value2['Name']):
+                                    self.duplicate_new(value1,value2, source_table)
+                                else:
+                                    self.duplicate_new(value2, value1, source_table)
                             sql = 'DELETE FROM MDC_DEV.dbo.EntityMap WHERE ID = (?)'
                             values = [[value1['ID']], [value2['ID']]]
                             db.bulk_insert(sql, values)
@@ -101,8 +109,9 @@ class Validate:
             db.execute(sql)
 
         # Insert duplicates of existing records into DuplicateVenture
-        duplicate_records = [[record1['ID'],record2['ID'],record1['Name'],record2['Name']]]
-        sql = 'INSERT INTO MDC_DEV.dbo.DuplicateVenture (CompanyID,DuplicateCompanyID,Name,DuplicateName) VALUES (?,?,?,?)'
+        duplicate_records = [[record1['ID'],record2['ID'],record1['ID'],record2['ID'],record1['Name'],record2['Name']]]
+        sql = 'IF NOT EXISTS (SELECT * FROM MDC_DEV.DBO.DuplicateVenture WHERE CompanyID = (?) AND DuplicateCompanyID = (?)) ' \
+              'INSERT INTO MDC_DEV.dbo.DuplicateVenture (CompanyID,DuplicateCompanyID,Name,DuplicateName) VALUES (?,?,?,?)'
         db.bulk_insert(sql, duplicate_records)
 
 
@@ -140,11 +149,10 @@ class Validate:
     @staticmethod
     def duplicate_new(record1, record2, source_table):
         """Matching ventures but both records are from new data (both have -ve ID)"""
-
         # Fill any missing dimensions to create a "full" record
         record1 = update.update_blanks(record1, record2)
         # Insert record into Venture Table
-        new.create_new(source_table)
+        new.create_new(record1, record2, source_table)
         return record1
 
     @staticmethod

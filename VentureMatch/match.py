@@ -245,10 +245,8 @@ class Match:
 
     @staticmethod
     def remove_false_positives():
-        """
-        Consult MatchingFalsePositives and remove known false positive clusters from EntityMap
-        :return: None
-        """
+        """Consult MatchingFalsePositives and remove known false positive clusters from EntityMap"""
+
         db.execute("SELECT * FROM MDC_DEV.dbo.EntityMap ORDER BY CanonID")
         entity_map = db.pandas_read("SELECT * FROM MDC_DEV.dbo.EntityMap").set_index('ID').to_dict('index')
         clusters = []
@@ -269,5 +267,30 @@ class Match:
                 else:
                     continue
 
+        sql = 'DELETE FROM MDC_DEV.dbo.EntityMap WHERE ID = (?)'
+        db.bulk_insert(sql, remove)
+
+    @staticmethod
+    def remove_discovered_matches():
+        db.execute("SELECT * FROM MDC_DEV.dbo.EntityMap ORDER BY CanonID")
+        entity_map = db.pandas_read("SELECT * FROM MDC_DEV.dbo.EntityMap").set_index('ID').to_dict('index')
+        clusters = []
+        for index1, val1 in entity_map.items():
+            for index2, val2 in entity_map.items():
+                if val1['CanonID'] == val2['CanonID'] and index1 != index2:
+                    clusters.append([index1, index2])
+                    break
+
+        d_matches = db.pandas_read("SELECT * FROM MDC_DEV.dbo.DuplicateVenture").to_dict('index')
+        remove = []
+        for cluster in clusters:
+            for i, v in d_matches.items():
+                if (cluster[0] == v['CompanyID'] and cluster[1] == v['DuplicateCompanyID']) or \
+                        (cluster[1] == v['CompanyID'] and cluster[0] == v['DuplicateCompanyID']):
+                    remove.append([cluster[0]])
+                    remove.append([cluster[1]])
+                    break
+                else:
+                    continue
         sql = 'DELETE FROM MDC_DEV.dbo.EntityMap WHERE ID = (?)'
         db.bulk_insert(sql, remove)

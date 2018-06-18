@@ -800,7 +800,7 @@ class menu_actions():
             batch_id = x.iloc[-1][0]
 
             # add batchID to end of df
-            df['BatchID'] = int(batch_id)#1000001
+            df['BatchID'] = int(batch_id)
 
             self.df_to_db(df, "insert_survey_entry")
 

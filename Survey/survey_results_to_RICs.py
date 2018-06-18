@@ -210,6 +210,7 @@ def _main_():
 
     # separate process for Communitech shared ventures
     # 1. get list of Communitech shared client answers
+    print("Reading Communitech shared clients")
     comm_sql = CM.get_config("config_sql.ini", "ann_survey_18", "sel_communitech_shared")
     comm_ans = DB.pandas_read(comm_sql)
     # 2. concat with rest of answers (?)
@@ -248,9 +249,9 @@ def _main_():
 
         # ric_survey_results.dropna(subset=['Answer'])
         print("Pivot into datasheet for {}".format(ric))
-        ric_datasheet = ric_survey_results[['resp_id', 'Company_ID', 'col_title', 'Answer', 'page_pipe']].drop_duplicates()
+        ric_datasheet = ric_survey_results[['resp_id', 'CompanyID', 'col_title', 'Answer', 'page_pipe']].drop_duplicates()
         ric_datasheet['col_title'] = ric_datasheet['col_title'] + ' ' + ric_datasheet['page_pipe'].astype(str)
-        ric_datasheet['rid_cid'] = ric_datasheet['resp_id'].astype(float).astype(str) + '-' + ric_datasheet['Company_ID'].astype(str)
+        ric_datasheet['rid_cid'] = ric_datasheet['resp_id'].astype(float).astype(str) + '-' + ric_datasheet['CompanyID'].astype(str)
         ric_datasheet = ric_datasheet[['rid_cid', 'col_title', 'Answer']]
 
         try:
@@ -259,7 +260,7 @@ def _main_():
 
             ric_datasheet.reset_index(inplace=True)
 
-            ric_datasheet['resp_id'], ric_datasheet['Company_ID'] = ric_datasheet['rid_cid'].str.split('-', 1).str
+            ric_datasheet['resp_id'], ric_datasheet['CompanyID'] = ric_datasheet['rid_cid'].str.split('-', 1).str
             ric_datasheet.drop('rid_cid', axis=1, inplace=True)
             ric_datasheet = ric_datasheet.apply(pd.to_numeric, errors='ignore')
 

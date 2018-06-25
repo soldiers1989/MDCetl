@@ -20,8 +20,10 @@ class Match:
                 log_level = logging.DEBUG
         logging.getLogger().setLevel(log_level)
 
-    @staticmethod
-    def deduper_setup(settings_file, training_file, field_list, selection, sample):
+        self.deduper = None
+
+
+    def deduper_setup(self,settings_file, training_file, field_list, selection, sample):
         """
         Trains (if training and settings files do not exist) otherwise set up deduper object
         :param settings_file: settings file name
@@ -34,7 +36,7 @@ class Match:
         if os.path.exists(settings_file):
             print('Reading from ', settings_file)
             with open(settings_file, 'rb') as sf:
-                deduper = dedupe.StaticDedupe(sf, num_cores=4)
+                self.deduper = dedupe.StaticDedupe(sf, num_cores=4)
         else:
             # Define the fields dedupe will pay attention to
             fields = []
@@ -42,39 +44,38 @@ class Match:
                 fields.append({'field': field[0], 'type': field[1], 'has missing': field[2]})
 
             # Create a new deduper object and pass our data model to it.
-            deduper = dedupe.Dedupe(fields, num_cores=4)
+            self.deduper = dedupe.Dedupe(fields, num_cores=4)
 
             data = db.pandas_read(selection).to_dict('index')
 
             print('Collecting sample data for active learning... this may take a while.')
-            deduper.sample(data, sample)
+            self.deduper.sample(data, sample)
 
             if os.path.exists(training_file):
                 print('Reading labeled examples from ', training_file)
                 with open(training_file) as tf:
-                    deduper.readTraining(tf)
+                    self.deduper.readTraining(tf)
 
             print('Starting active labeling...')
-            dedupe.convenience.consoleLabel(deduper)
+            dedupe.convenience.consoleLabel(self.deduper)
 
             # When finished, save our labeled, training pairs to disk
             with open(training_file, 'w') as tf:
-                deduper.writeTraining(tf)
+                self.deduper.writeTraining(tf)
 
             # `recall` is the proportion of true dupes pairs that the learned
             # rules must cover. You may want to reduce this if your are making
             # too many blocks and too many comparisons.
-            deduper.train(recall=0.90)
+            self.deduper.train(recall=0.90)
 
             with open(settings_file, 'wb') as sf:
-                deduper.writeSettings(sf)
+                self.deduper.writeSettings(sf)
 
-            deduper.cleanupTraining()
+            self.deduper.cleanupTraining()
 
-        return deduper
+        #return deduper
 
-    @staticmethod
-    def block(deduper, selection):
+    def block(self, selection):
         """
         :param deduper: deduper object created in training
         :param selection: sql statement selecting all relevant columns to use in deduplication
@@ -82,31 +83,32 @@ class Match:
         """
         # If dedupe learned a Index Predicate, we have to take a pass
         # through the data and create indices.
-        for field in deduper.blocker.index_fields:
+        for field in self.deduper.blocker.index_fields:
             df = db.pandas_read("SELECT DISTINCT {field} FROM MDC_DEV.dbo.ProcessedVenture "
                                 "WHERE {field} IS NOT NULL".format(field=field))
             dataset = [tuple(x) for x in df.values]
             field_data = set(row[0] for row in dataset)
-            deduper.blocker.index(field_data, field)
+            self.deduper.blocker.index(field_data, field)
 
         # Now we are ready to write our blocking map table by creating a
         # generator that yields unique `(BlockKey, ID)` tuples.
         db.execute("DELETE FROM MDC_DEV.dbo.BlockingMap")
 
         df = db.pandas_read(selection).set_index('ID').to_dict('index')
-        b_data = deduper.blocker(df)
+        b_data = self.deduper.blocker(df)
         sql = 'INSERT INTO MDC_DEV.dbo.BlockingMap VALUES (?,?)'
 
         print('Populating BlockingMap... ')
         # Chunk the blocked data into groups of 30,000 blocks to be inserted in the BlockingMap
         size = 30000
         main_list = list(b_data)
+        b_data = None
         chunks = [main_list[x:x + size] for x in range(0, len(main_list), size)]
-
+        main_list = None
         for chunk in chunks:
             db.bulk_insert(sql, chunk)
 
-        deduper.blocker.resetIndices()
+        self.deduper.blocker.resetIndices()
 
     @staticmethod
     def prematch_processing():
@@ -193,7 +195,7 @@ class Match:
         if records:
             yield records
 
-    def clustering(self, deduper):
+    def clustering(self):
         """
         Cluster potential record matches
         :param deduper: deduper object
@@ -206,7 +208,7 @@ class Match:
                                      "ON a.ID = b.ID ORDER BY a.BlockKey").to_dict('index')
 
         print('Clustering...')
-        clustered_dupes = deduper.matchBlocks(self.candidates_gen(entity_dict),
+        clustered_dupes = self.deduper.matchBlocks(self.candidates_gen(entity_dict),
                                               threshold=0.5)
 
         # matchBlocks returns a generator. Turn it into a list

@@ -10,11 +10,14 @@ class Update:
         :return:
         """
         for index, field in record1.items():
-            try:
-                if field is None and record2[index] is not None:
+            #try:
+            if index =='ID' or index == 'Name' or index == 'BatchID':
+                continue
+            else:
+                if record2[index] is not None:
                     record1[index] = record2[index]
-            except:
-                pass
+            # except:
+            #     pass
         return record1
 
     @staticmethod

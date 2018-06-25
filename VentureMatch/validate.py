@@ -16,17 +16,32 @@ This is where you can validate the results of the EntityMap
 
 
 class Validate:
+    def __init__(self):
+        self.source_table = 'MDC_DEV.dbo.SourceTable'
+        self.sql_delete_entitymap = 'DELETE FROM MDC_DEV.dbo.EntityMap WHERE ID = (?)'
+        self.new = new()
 
-    def val(self, source_table):
+    def val(self):
         """ Validate the results of the dedupe program """
         print('Starting validation')
 
         # Create IDs for all unmatched companies
-        new.nomatch_create_new(source_table)
+        print('Creating IDs for new companies...')
+        self.new.nomatch_create_new()
 
         db.execute("SELECT * FROM MDC_DEV.dbo.EntityMap ORDER BY CanonID")
         clustered_data = db.pandas_read("SELECT * FROM MDC_DEV.dbo.EntityMap").to_dict(
             'index')
+        while True:
+            choice = input('Would you like to turn update mode on? (y)es or (n)o \n')
+            if choice.lower() not in ('y', 'n'):
+                continue
+            else:
+                break
+        if choice is 'y':
+            update_mode = True
+        else:
+            update_mode = False
 
         for row1, value1 in clustered_data.items():
             if row1 % 2 == 0:
@@ -48,34 +63,32 @@ class Validate:
                         # from EntityMap table
                         if choice is 'y':
                             if value2['ID'] > value1['ID'] > 0:
-                                self.deduplicate_existing(value1, value2)
+                                self.deduplicate_existing(value1, value2, update_mode)
                             elif value1['ID'] > value2['ID'] > 0:
-                                self.deduplicate_existing(value2, value1)
+                                self.deduplicate_existing(value2, value1, update_mode)
                             elif value2['ID'] > value1['ID'] and value2['ID'] > 0:
-                                self.duplicate_existing_new(value2, value1, source_table)
+                                self.duplicate_existing_new(value2, value1, update_mode)
                             elif value1['ID'] > value2['ID'] and value1['ID'] > 0:
-                                self.duplicate_existing_new(value1, value2, source_table)
+                                self.duplicate_existing_new(value1, value2, update_mode)
                             else:
                                 # Assign record with longest name as 'main record'
                                 if len(value1['Name']) > len(value2['Name']):
-                                    self.duplicate_new(value1,value2, source_table)
+                                    self.duplicate_new(value1, value2)
                                 else:
-                                    self.duplicate_new(value2, value1, source_table)
-                            sql = 'DELETE FROM MDC_DEV.dbo.EntityMap WHERE ID = (?)'
+                                    self.duplicate_new(value2, value1)
                             values = [[value1['ID']], [value2['ID']]]
-                            db.bulk_insert(sql, values)
+                            db.bulk_insert(self.sql_delete_entitymap, values)
 
                         # If no, add both records to false positives list and remove both records from the EntityMap
                         # table
                         if choice is 'n':
-                            self.false_positive(value1,value2)
-                            sql = 'DELETE FROM MDC_DEV.dbo.EntityMap WHERE ID = (?)'
+                            self.false_positive(value1, value2)
                             values = [[value1['ID']], [value2['ID']]]
-                            db.bulk_insert(sql, values)
+                            db.bulk_insert(self.sql_delete_entitymap, values)
                             # If a new company is found to be part of a false-positive match, add it to the venture
                             # table as a new record
                             if value1['ID'] < 0 or value2['ID'] < 0:
-                                    new.fp_create_new(source_table)
+                                self.new.fp_create_new()
                         # If unsure, continue loop and keep both records in entitymap table for future validation
                         else:
                             break
@@ -84,84 +97,86 @@ class Validate:
             else:
                 continue
 
-    @staticmethod
-    def deduplicate_existing(record1, record2):
+    def deduplicate_existing(self, record1, record2, update_on):
         """
         Both records are already in the database
         :param record1: Historic record
         :param record2: Duplicate record
         :return:
         """
-        merged = update.update_blanks(record1, record2)
-        print('Both records already exist in database!\nMerged record preview:\n',merged)
-        while True:
-            choice = input('Would you like to merge? (y)es or (n)o \n')
-            if choice.lower() not in ('y', 'n'):
-                continue
-            else:
-                break
-        if choice is 'y':
-            # Update record and push the changes to venture table
-            record1 = merged
-            sql = 'UPDATE MDC_DEV.dbo.Venture SET Name = ' + record1['Name'] + ' BatchID = ' + record1['BatchID'] + ' Description = ' + record1['Description'] + \
-                  ' Website = ' + record1['Website'] + 'Email = ' + record1['Email'] + ' Phone = ' + record1['Phone'] + ' Address = ' + record1['Address'] + \
-                  ' WHERE ID = ' + record1['ID']
-            db.execute(sql)
+        if update_on:
+            merged = update.update_blanks(record1, record2)
+            print('Both records already exist in database!\nMerged record preview:\n', merged)
+            while True:
+                choice = input('Would you like to merge? (y)es or (n)o \n')
+                if choice.lower() not in ('y', 'n'):
+                    continue
+                else:
+                    break
+            if choice is 'y':
+                record1 = merged
+                self.update(record1)
 
         # Insert duplicates of existing records into DuplicateVenture
-        duplicate_records = [[record1['ID'],record2['ID'],record1['ID'],record2['ID'],record1['Name'],record2['Name']]]
-        sql = 'IF NOT EXISTS (SELECT * FROM MDC_DEV.DBO.DuplicateVenture WHERE CompanyID = (?) AND DuplicateCompanyID = (?)) ' \
-              'INSERT INTO MDC_DEV.dbo.DuplicateVenture (CompanyID,DuplicateCompanyID,Name,DuplicateName) VALUES (?,?,?,?)'
+        duplicate_records = [
+            [record1['ID'], record2['ID'], record1['ID'], record2['ID'], record1['Name'], record2['Name']]]
+        sql = "IF NOT EXISTS (SELECT * FROM MDC_DEV.DBO.DuplicateVenture WHERE CompanyID = (?) AND DuplicateCompanyID = (?)) " \
+              "INSERT INTO MDC_DEV.dbo.DuplicateVenture (CompanyID,DuplicateCompanyID,Name,DuplicateName) VALUES (?,?,?,?)"
         db.bulk_insert(sql, duplicate_records)
 
-
-    @staticmethod
-    def duplicate_existing_new(record1, record2, source_table):
+    def duplicate_existing_new(self, record1, record2, update_on):
         """
         One record is in the database and the other is not in the database (-ve ID)
         :param record1: Historic record
         :param record2: Secondary source record
         """
-        merged = update.update_blanks(record1, record2)
-        print('One record is from secondary source!\nMerged record preview:\n', merged)
-        while True:
-            choice = input('Would you like to update database? (y)es or (n)o \n')
-            if choice.lower() not in ('y', 'n'):
-                continue
-            else:
-                break
-        if choice is 'y':
-            # Update record and push the changes to venture table
-            record1 = merged
-            sql = 'UPDATE MDC_DEV.dbo.Venture SET Name = ' + record1['Name'] + ' BatchID = ' + record1['BatchID'] + ' Description = '+ record1['Description']+ \
-             ' Website = ' + record1['Website'] + 'Email = ' + record1['Email'] + ' Phone = ' + record1['Phone'] + ' Address = ' + record1['Address'] + \
-             ' WHERE ID = ' + record1['ID']
-            db.execute(sql)
+        if update_on:
+            merged = update.update_blanks(record1, record2)
+            print('One record is from secondary source!\nMerged record preview:\n', merged)
+            while True:
+                choice = input('Would you like to merge? (y)es or (n)o \n')
+                if choice.lower() not in ('y', 'n'):
+                    continue
+                else:
+                    break
+            if choice is 'y':
+                record1 = merged
+                self.update(record1)
+
         record2['ID'] = record1['ID']
-
         # Update source table with new ID
-        if source_table is not None:
-            sql = "UPDATE " + source_table + " SET ID = " + str(record2['ID']) + " FROM " + source_table +\
-                  " WHERE Name = '{Name}'".format(Name=str(record2['Name']))
-            db.execute(sql)
-        return record2
+        record2['Name'] = str(record2['Name']).replace("'","''")
+        sql = '''UPDATE %s SET ID = %s FROM %s WHERE Name = '%s' ''' % (self.source_table ,str(record2['ID']), self.source_table, record2['Name'])  # + str(record2["Name"]) + " "
+        db.execute(sql)
 
-    @staticmethod
-    def duplicate_new(record1, record2, source_table):
+
+    def duplicate_new(self, record1, record2):
         """Matching ventures but both records are from new data (both have -ve ID)"""
         # Fill any missing dimensions to create a "full" record
         record1 = update.update_blanks(record1, record2)
         # Insert record into Venture Table
-        new.create_new(record1, record2, source_table)
-        return record1
+        self.new.create_new(record1, record2)
+
 
     @staticmethod
     def false_positive(record1, record2):
         """Add 2 records into MatchingFalsePositives table"""
         values = [
-            [record1['ID'], record2['ID'], record1['ID'], record1['Name'], record2['ID'], record2['Name'], record1['ClusterScore']],
-            [record2['ID'], record1['ID'], record2['ID'], record2['Name'], record1['ID'], record1['Name'], record2['ClusterScore']]
+            [record1['ID'], record2['ID'], record1['ID'], record1['Name'], record2['ID'], record2['Name'],
+             record1['ClusterScore']],
+            [record2['ID'], record1['ID'], record2['ID'], record2['Name'], record1['ID'], record1['Name'],
+             record2['ClusterScore']]
         ]
-        sql = 'IF NOT EXISTS (SELECT * FROM MDC_DEV.DBO.MatchingFalsePositives WHERE ID = (?) AND FalseID = (?)) ' \
-              'INSERT INTO MDC_DEV.dbo.MatchingFalsePositives VALUES (?, ?, ?, ?, ?)'
+        sql = "IF NOT EXISTS (SELECT * FROM MDC_DEV.DBO.MatchingFalsePositives WHERE ID = (?) AND FalseID = (?)) " \
+              "INSERT INTO MDC_DEV.dbo.MatchingFalsePositives VALUES (?, ?, ?, ?, ?)"
         db.bulk_insert(sql, values)
+
+    @staticmethod
+    def update(record1):
+        # Update record and push the changes to venture table
+        record1['ID'] = int(record1['ID'])
+        sql = "UPDATE MDC_DEV.dbo.Venture SET Name = " + str(record1["Name"]) + " BatchID = " + record1['BatchID'] + \
+              ' Description = ' + str(record1["Description"]) + ' Website = ' + record1["Website"] + 'Email = ' + \
+              record1['Email'] + ' Phone = ' + str(record1['Phone']) + ' Address = ' + str(record1["Address"]) + \
+              ' WHERE ID = ' + str(record1['ID'])
+        db.execute(sql)

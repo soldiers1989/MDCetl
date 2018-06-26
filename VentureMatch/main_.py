@@ -21,8 +21,8 @@ db.execute("INSERT INTO MDC_DEV.dbo.ProcessedVenture SELECT * FROM MDC_DEV.dbo.V
 db.execute("DELETE FROM MDC_DEV.dbo.SourceTable")
 # sql = 'INSERT INTO MDC_DEV.dbo.SourceTable (ID,Name,Email,Phone) VALUES (?,?,?,?)' ## Edit based on dataset
 # db.bulk_insert(sql, vals_to_insert)
-db.execute('INSERT INTO MDC_DEV.dbo.SourceTable (SourceID, Name, BasicName, Website, Description, BatchID) '
-           'SELECT ID,CompanyName, BasicName, URL,CompanyDescription,BatchID FROM MDC_DEV.dbo.CBINSIGHTS_Funding')
+db.execute('INSERT INTO MDC_DEV.dbo.SourceTable (SourceID, Name, BasicName, Website, Address, BatchID) '
+           'SELECT ID,CompanyName, BasicName, Website, City, BatchID FROM MDCRaw.BAP.QuarterlyCompanyData')
 
 
 source = common.df_list(db.pandas_read("SELECT SourceID FROM MDC_DEV.dbo.SourceTable"))
@@ -38,9 +38,11 @@ sql = 'UPDATE MDC_DEV.dbo.SourceTable SET ID = ? WHERE SourceID = ?'
 db.bulk_insert(sql, vals)
 
 print('Starting exact matching')
-e = exact()
+e1 = exact()
 stime = time.time()
-e.match()
+e1.match()
+e2 = exact()
+e2.alternate_name_match()
 print(time.time() - stime)
 
 # FUZZY MATCHING

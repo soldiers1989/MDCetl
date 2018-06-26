@@ -18,7 +18,7 @@ This is where you can validate the results of the EntityMap
 class Validate:
     def __init__(self):
         self.source_table = 'MDC_DEV.dbo.SourceTable'
-        self.sql_delete_entitymap = 'DELETE FROM MDC_DEV.dbo.EntityMap WHERE ID = (?)'
+        self.sql_delete_entitymap = 'DELETE FROM MDC_DEV.dbo.EntityMap WHERE ID = (?) AND CanonID = (?)'
         self.new = new()
 
     def val(self):
@@ -30,7 +30,7 @@ class Validate:
         self.new.nomatch_create_new()
 
         db.execute("SELECT * FROM MDC_DEV.dbo.EntityMap ORDER BY CanonID")
-        clustered_data = db.pandas_read("SELECT * FROM MDC_DEV.dbo.EntityMap").to_dict(
+        clustered_data = db.pandas_read("SELECT * FROM MDC_DEV.dbo.EntityMap WHERE ClusterScore > 0.8").to_dict(
             'index')
         while True:
             choice = input('Would you like to turn update mode on? (y)es or (n)o \n')
@@ -76,14 +76,14 @@ class Validate:
                                     self.duplicate_new(value1, value2)
                                 else:
                                     self.duplicate_new(value2, value1)
-                            values = [[value1['ID']], [value2['ID']]]
+                            values = [[value1['ID'], value1['CanonID']], [value2['ID'],value2['CanonID']]]
                             db.bulk_insert(self.sql_delete_entitymap, values)
 
                         # If no, add both records to false positives list and remove both records from the EntityMap
                         # table
                         if choice is 'n':
                             self.false_positive(value1, value2)
-                            values = [[value1['ID']], [value2['ID']]]
+                            values = [[value1['ID'], value1['CanonID']], [value2['ID'], value2['CanonID']]]
                             db.bulk_insert(self.sql_delete_entitymap, values)
                             # If a new company is found to be part of a false-positive match, add it to the venture
                             # table as a new record
@@ -105,7 +105,7 @@ class Validate:
         :return:
         """
         if update_on:
-            merged = update.update_blanks(record1, record2)
+            merged = update.update(record1, record2)
             print('Both records already exist in database!\nMerged record preview:\n', merged)
             while True:
                 choice = input('Would you like to merge? (y)es or (n)o \n')
@@ -131,7 +131,7 @@ class Validate:
         :param record2: Secondary source record
         """
         if update_on:
-            merged = update.update_blanks(record1, record2)
+            merged = update.update(record1, record2)
             print('One record is from secondary source!\nMerged record preview:\n', merged)
             while True:
                 choice = input('Would you like to merge? (y)es or (n)o \n')
@@ -145,18 +145,18 @@ class Validate:
 
         record2['ID'] = record1['ID']
         # Update source table with new ID
-        record2['Name'] = str(record2['Name']).replace("'","''")
-        sql = '''UPDATE %s SET ID = %s FROM %s WHERE Name = '%s' ''' % (self.source_table ,str(record2['ID']), self.source_table, record2['Name'])  # + str(record2["Name"]) + " "
+        record2['Name'] = str(record2['Name']).replace("'", "''")
+        sql = '''UPDATE %s SET ID = %s FROM %s WHERE Name = '%s' ''' % (self.source_table, str(record2['ID']),
+                                                                        self.source_table,
+                                                                        record2['Name'])  # + str(record2["Name"]) + " "
         db.execute(sql)
-
 
     def duplicate_new(self, record1, record2):
         """Matching ventures but both records are from new data (both have -ve ID)"""
         # Fill any missing dimensions to create a "full" record
-        record1 = update.update_blanks(record1, record2)
+        record1 = update.update(record1, record2)
         # Insert record into Venture Table
         self.new.create_new(record1, record2)
-
 
     @staticmethod
     def false_positive(record1, record2):
@@ -174,9 +174,14 @@ class Validate:
     @staticmethod
     def update(record1):
         # Update record and push the changes to venture table
-        record1['ID'] = int(record1['ID'])
-        sql = "UPDATE MDC_DEV.dbo.Venture SET Name = " + str(record1["Name"]) + " BatchID = " + record1['BatchID'] + \
-              ' Description = ' + str(record1["Description"]) + ' Website = ' + record1["Website"] + 'Email = ' + \
-              record1['Email'] + ' Phone = ' + str(record1['Phone']) + ' Address = ' + str(record1["Address"]) + \
-              ' WHERE ID = ' + str(record1['ID'])
+        record1['Name'] = str(record1['Name']).replace("'", "''")
+        record1['Description'] = str(record1['Description']).replace("'", "''")
+        sql = '''UPDATE MDC_DEV.dbo.Venture SET Name = '%s',BatchID = %s,Description = '%s' ,Website = '%s',
+                 Email = '%s',Phone = '%s' ,Address = '%s' WHERE ID = '%s' ''' % (str(record1['Name']),
+                                                                                  record1['BatchID'],
+                                                                                  str(record1['Description']),
+                                                                                  record1['Website'], record1['Email'],
+                                                                                  str(record1['Phone']),
+                                                                                  str(record1["Address"]),
+                                                                                  str(record1['ID']))
         db.execute(sql)

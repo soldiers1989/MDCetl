@@ -1,11 +1,11 @@
 import plotly as py
 import plotly.graph_objs as go
-from BAP.bap_quarterly_validation import BAP_Quarterly_Validation as valid
+from BAP.bap_quarterly_validation import BAP_Quarterly_Validation as validate
 
 
 class Validation_Viewer:
     def __init__(self):
-        self.test = valid()
+        self.test = validate()
         self.results_dict = {
             'Advisory Services': [self.test.advisory_services_test1(), self.test.advisory_services_test2(),
                                   self.test.advisory_services_test3(), self.test.advisory_services_test4(),
@@ -32,7 +32,6 @@ class Validation_Viewer:
             'data': [
                 {
                     'name': 'Advisory Services',
-                    'text': 'test text',
                     'labels': ['Clients assisted: Youth advisors > 0', 'Advisory hours: Youth advisors > 0',
                                'Youth advisors: Advisory hours > 0', 'Clients assisted : Advisory hours > 0',
                                'Youth advisors: Clients assisted > 0', 'Advisory hours: Clients assisted > 0'],
@@ -40,126 +39,118 @@ class Validation_Viewer:
                     'type': 'pie',
                     'marker': {'colors': self.colour_generator('Advisory Services'),
                                'line': {'color': 'rgb(255,255,255)', 'width': 1}},
-                    # 'passed': self.results_dict['Advisory Services'],
                     'domain': {'x': [0, 0.2],
                                'y': [0.2, 0.4]},
-                    'hoverinfo': 'label+name+text',
-                    'hovertext': ['Test: ' + self.results_dict['Advisory Services'][0],
-                                  'Test: ' + self.results_dict['Advisory Services'][1],
-                                  'Test: ' + self.results_dict['Advisory Services'][2],
-                                  'Test: ' + self.results_dict['Advisory Services'][3],
-                                  'Test: ' + self.results_dict['Advisory Services'][4],
-                                  'Test: ' + self.results_dict['Advisory Services'][5]],
+                    'hoverinfo': 'name+text',
+                    'hovertext': ['If Number of clients assisted > 0 then Number of advisors assisting youth clients > 0<br>Test: '
+                                  + self.results_dict['Advisory Services'][0],
+                                  'If Number of advisory hours this quarter > 0 then Number of advisors assisting youth clients > 0<br>Test: '
+                                  + self.results_dict['Advisory Services'][1],
+                                  'If Number of advisors assisting youth clients > 0 then Number of advisory hours this quarter > 0<br>Test: '
+                                  + self.results_dict['Advisory Services'][2],
+                                  'If Number of clients assisted > 0 then Number of advisory hours this quarter > 0<br>Test: '
+                                  + self.results_dict['Advisory Services'][3],
+                                  'If Number of advisors assisting youth clients > 0 then Number of clients assisted > 0<br>Test: '
+                                  + self.results_dict['Advisory Services'][4],
+                                  'If Number of advisory hours this quarter > 0 then Number of clients assisted > 0<br>Test: '
+                                  + self.results_dict['Advisory Services'][5]],
                     'textinfo': 'none'
                 },
                 {
                     'name': 'Client Service Activity',
-                    'text': 'Client Service Activity',
                     'labels': ['Number of clients (YTD) vs. Client advisory services'],
                     'values': [1],
                     'type': 'pie',
                     'marker': {'colors': self.colour_generator('Client Service Activity'),
                                'line': {'color': 'rgb(255,255,255)', 'width': 1}},
-                    # 'passed': self.results_dict['Client Service Activity'],
                     'domain': {'x': [0.2, 0.4],
                                'y': [0.2, 0.4]},
-                    'hoverinfo': 'label+name+text',
-                    'hovertext': ['Test: ' + self.results_dict['Client Service Activity'][0]],
+                    'hoverinfo': 'name+text',
+                    'hovertext': ["If it's Q1: Clients receiving advisory services this quarter = total unique "
+                                  "clients (YTD)<br>Else Clients receiving advisory services this quarter <  total "
+                                  "unique clients (YTD)<br>Test: " + self.results_dict['Client Service Activity'][0]],
                     'textinfo': 'none'
                 },
                 {
                     'name': 'Firm Age',
-                    'text': 'Firm Age',
                     'labels': ['Number of clients (YTD) vs. Firm age'],
                     'values': [1],
                     'type': 'pie',
                     'marker': {'colors': self.colour_generator('Firm Age'),
                                'line': {'color': 'rgb(255,255,255)', 'width': 1}},
-                    # 'passed': self.results_dict['Firm Age'],
                     'domain': {'x': [0.4, 0.6],
                                'y': [0.2, 0.4]},
-                    'hoverinfo': 'label+name+text',
-                    'hovertext': ['Test: ' + self.results_dict['Firm Age'][0]],
+                    'hoverinfo': 'name+text',
+                    'hovertext': ['Total firms = total unique clients (YTD)<br>Test: ' + self.results_dict['Firm Age'][0]],
                     'textinfo': 'none'
                 },
                 {
                     'name': 'Firm Industry',
-                    'text': 'Firm Industry',
                     'labels': ['Number of clients (YTD) vs. Firm industry'],
                     'values': [1],
                     'type': 'pie',
                     'marker': {'colors': self.colour_generator('Firm Industry'),
                                'line': {'color': 'rgb(255,255,255)', 'width': 1}},
-                    # 'passed': self.results_dict['Firm Industry'],
                     'domain': {'x': [0.6, 0.8],
                                'y': [0.2, 0.4]},
-                    'hoverinfo': 'label+name+text',
-                    'hovertext': ['Test: ' + self.results_dict['Firm Industry'][0]],
+                    'hoverinfo': 'name+text',
+                    'hovertext': ['Total firms = total unique clients (YTD)<br>Test: ' + self.results_dict['Firm Industry'][0]],
                     'textinfo': 'none'
                 },
                 {
                     'name': 'Firm Stage',
-                    'text': 'Firm Stage',
                     'labels': ['Number of clients (YTD) vs. Firm stage'],
                     'values': [1],
                     'type': 'pie',
                     'marker': {'colors': self.colour_generator('Firm Stage'),
                                'line': {'color': 'rgb(255,255,255)', 'width': 1}},
-                    # 'passed': self.results_dict['Firm Stage'],
                     'domain': {'x': [0.8, 1],
                                'y': [0.2, 0.4]},
-                    'hoverinfo': 'label+name+text',
-                    'hovertext': ['Test: ' + self.results_dict['Firm Stage'][0]],
+                    'hoverinfo': 'name+text',
+                    'hovertext': ['Total firms = total unique clients (YTD)<br>Test: ' + self.results_dict['Firm Stage'][0]],
                     'textinfo': 'none'
                 },
                 {
                     'name': 'New Clients Employees',
-                    'text': 'New Clients Employees',
                     'labels': ['Number of clients (YTD) vs. Client employees'],
                     'values': [1],
                     'type': 'pie',
                     'marker': {'colors': self.colour_generator('New Clients Employees'),
                                'line': {'color': 'rgb(255,255,255)', 'width': 1}},
-                    # 'passed': self.results_dict['New Clients Employees'],
                     'domain': {'x': [0, .2],
                                'y': [0.6, 0.8]},
                     'hoverinfo': 'label+name+text',
-                    'hovertext': ['Test: ' + self.results_dict['New Clients Employees'][0]],
+                    'hovertext': ['Total firms = total unique clients (YTD)<br>Test: ' + self.results_dict['New Clients Employees'][0]],
                     'textinfo': 'none'
                 },
                 {
                     'name': 'New Clients Funding',
-                    'text': 'New Clients Funding',
                     'labels': ['Number of clients (YTD) vs. Client funding'],
                     'values': [1],
                     'type': 'pie',
                     'marker': {'colors': self.colour_generator('New Clients Funding'),
                                'line': {'color': 'rgb(255,255,255)', 'width': 1}},
-                    # 'passed': self.results_dict['New Clients Funding'],
                     'domain': {'x': [.2, .4],
                                'y': [0.6, 0.8]},
-                    'hoverinfo': 'label+name+text',
-                    'hovertext': ['Test: ' + self.results_dict['New Clients Funding'][0]],
+                    'hoverinfo': 'name+text',
+                    'hovertext': ['Total firms = total unique clients (YTD)<br>Test: ' + self.results_dict['New Clients Funding'][0]],
                     'textinfo': 'none'
                 },
                 {
                     'name': 'New Clients Revenue',
-                    'text': 'New Clients Revenue',
                     'labels': ['Number of clients (YTD) vs. Client revenue'],
                     'values': [1],
                     'type': 'pie',
                     'marker': {'colors': self.colour_generator('New Clients Revenue'),
                                'line': {'color': 'rgb(255,255,255)', 'width': 1}},
-                    # 'passed': self.results_dict['New Clients Revenue'],
                     'domain': {'x': [.4, 0.6],
                                'y': [0.6, 0.8]},
-                    'hoverinfo': 'label+name+text',
-                    'hovertext': ['Test: ' + self.results_dict['New Clients Revenue'][0]],
+                    'hoverinfo': 'name+text',
+                    'hovertext': ['Total firms = total unique clients (YTD)<br>Test: ' + self.results_dict['New Clients Revenue'][0]],
                     'textinfo': 'none'
                 },
                 {
                     'name': 'Client Outreach',
-                    'text': 'Client Outreach',
                     'labels': ['Number of events: Number of event attendees > 0',
                                'Number of events > Events with community partners',
                                'Number of events > Events with  ONE Partners'],
@@ -167,18 +158,19 @@ class Validation_Viewer:
                     'type': 'pie',
                     'marker': {'colors': self.colour_generator('Client Outreach'),
                                'line': {'color': 'rgb(255,255,255)', 'width': 1}},
-                    # 'passed': self.results_dict['Client Outreach'],
                     'domain': {'x': [0.6, 0.8],
                                'y': [0.6, 0.8]},
-                    'hoverinfo': 'label+name+text',
-                    'hovertext': ['Test: ' + self.results_dict['Client Outreach'][0],
-                                  'Test: ' + self.results_dict['Client Outreach'][1],
-                                  'Test: ' + self.results_dict['Client Outreach'][2]],
+                    'hoverinfo': 'name+text',
+                    'hovertext': ['If Number of events > 0 then Number of event attendees > 0<br>Test: '
+                                  + self.results_dict['Client Outreach'][0],
+                                  'Number of events >= Number of events co-hosted with community partners<br>Test: '
+                                  + self.results_dict['Client Outreach'][1],
+                                  'Number of events >= Number of events co-hosted with ONE partners<br>Test: '
+                                  + self.results_dict['Client Outreach'][2]],
                     'textinfo': 'none'
                 },
                 {
                     'name': 'Volunteer Mentor Network',
-                    'text': 'Volunteer Mentor Network',
                     'labels': ['Mentors assisting: Mentor hours > 0', 'Mentor clients: Mentor hours > 0',
                                'Mentor hours: Mentor clients > 0', 'Mentors assisting: Mentor clients > 0',
                                'Mentor hours: Mentors assisting > 0', 'Mentor clients: Mentors assisting > 0'],
@@ -186,21 +178,25 @@ class Validation_Viewer:
                     'type': 'pie',
                     'marker': {'colors': self.colour_generator('Volunteer Mentor Network'),
                                'line': {'color': 'rgb(255,255,255)', 'width': 1}},
-                    # 'passed': self.results_dict['Volunteer Mentor Network'],
                     'domain': {'x': [.8, 1],
                                'y': [0.6, 0.8]},
-                    'hoverinfo': 'label+name+text',
-                    'hovertext': ['Test: ' + self.results_dict['Volunteer Mentor Network'][0],
-                                  'Test: ' + self.results_dict['Volunteer Mentor Network'][1],
-                                  'Test: ' + self.results_dict['Volunteer Mentor Network'][2],
-                                  'Test: ' + self.results_dict['Volunteer Mentor Network'][3],
-                                  'Test: ' + self.results_dict['Volunteer Mentor Network'][4],
-                                  'Test: ' + self.results_dict['Volunteer Mentor Network'][5]],
-
+                    'hoverinfo': 'name+text',
+                    'hovertext': ['If Volunteer mentors > 0 then Volunteer hours > 0<br>Test: '
+                                  + self.results_dict['Volunteer Mentor Network'][0],
+                                  'If Volunteer mentor clients > 0 then Volunteer hours > 0<br>Test: '
+                                  + self.results_dict['Volunteer Mentor Network'][1],
+                                  'If Volunteer hours > 0 then Volunteer mentor clients > 0<br>Test: '
+                                  + self.results_dict['Volunteer Mentor Network'][2],
+                                  'If Volunteer mentors assisting clients in the period > 0 then Volunteer mentor clients > 0<br>Test: '
+                                  + self.results_dict['Volunteer Mentor Network'][3],
+                                  'If Volunteer hours > 0 then Volunteer mentors assisting clients in the period > 0<br>Test: '
+                                  + self.results_dict['Volunteer Mentor Network'][4],
+                                  'If Volunteer mentor clients > 0 then Volunteer mentors assisting clients in the period > 0<br>Test: '
+                                  + self.results_dict['Volunteer Mentor Network'][5]],
                     'textinfo': 'none'
                 }
             ],
-            'layout': {'title': 'BAP Quarterly QA Test Results - ' + self.test.ric + ' ' + self.test.quarter + ' ' +
+            'layout': {'title': 'BAP Quarterly QA Test Results<br>' + self.test.ric + '<br>' + self.test.quarter + ' ' +
                                 self.test.year, 'showlegend': False, 'annotations': [
                 {'text': 'Advisory Services', 'showarrow': False, 'align': 'center', 'x': 0.05, 'y': 0.15},
                 {'text': 'Client Service Activity', 'showarrow': False, 'align': 'center', 'x': 0.242, 'y': 0.15},
@@ -226,4 +222,4 @@ class Validation_Viewer:
         return colours
 
     def plot_generator(self):
-        py.offline.plot(self.plots(), filename='BAP Quarterly QA Test Results')
+        py.offline.plot(self.plots(), filename='BAP Quarterly QA Test Results.html')

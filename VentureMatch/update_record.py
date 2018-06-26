@@ -1,7 +1,7 @@
 class Update:
 
     @staticmethod
-    def update_blanks(record1, record2):
+    def update(record1, record2):
         """
         Update existing record in database where fields are null with new info in fields
 
@@ -10,22 +10,19 @@ class Update:
         :return:
         """
         for index, field in record1.items():
-            #try:
-            if index =='ID' or index == 'Name' or index == 'BatchID':
+            if index == 'ID' or index == 'Name' or index == 'BatchID':
                 continue
             else:
                 if record2[index] is not None:
-                    record1[index] = record2[index]
-            # except:
-            #     pass
+                    if index == 'AlternateName':
+                        record1[index] = record1[index] + '|' + record2[index]
+                    else:
+                        record1[index] = record2[index]
         return record1
 
     @staticmethod
     def update_all(record1, record2):
         # Update  update all the fields of existing record in database where record2 has data
-        for index, field in enumerate(record1):
-            try:
-                record1[index] = record2[index]
-            except:
-                pass
+        for index, field in record1.items():
+            record1[index] = record2[index]
         return record1

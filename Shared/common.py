@@ -128,6 +128,11 @@ class Common:
 		return df
 
 	@staticmethod
+	def split_string(text, splitter=' '):
+		return text.split(splitter)
+
+
+	@staticmethod
 	def get_cvca_deal_types(deal_types):
 		delas_sector = None
 		deal = deal_types.lower()# if deal_types is not None else ''
@@ -662,5 +667,41 @@ class Common:
 			return True
 		except ValueError:
 			return False
+
+	@staticmethod
+	def convert_mars_program(program):
+		prg = str(program).lower()
+		mars_program = None
+		if prg == 'start':
+			mars_program = 1
+		elif prg == 'grow':
+			mars_program = 2
+		elif prg == 'scale':
+			mars_program = 3
+		elif prg == 'repaid':
+			mars_program = 5
+		elif prg == 'exit':
+			mars_program = 5
+		elif prg == 'failed':
+			mars_program = 6
+
+		return mars_program
+
+	@staticmethod
+	def convert_mars_sector(sector):
+		sec = str(sector).lower()
+		mars_sector = None
+		if 'cleantech' in sec:
+			mars_sector = 1
+		elif 'finance' in sec or 'commerce' in sec:
+			mars_sector = 2
+		elif 'health' in sec:
+			mars_sector = 3
+		elif 'work' in sec or 'learning' in sec:
+			mars_sector = 4
+		elif 'other' in sec:
+			mars_sector = 5
+
+		return mars_sector
 
 

@@ -64,11 +64,9 @@ class DB:
 		while i < total_size:
 			print('From {} to {}'.format(i, j))
 			df_insert = df.iloc[i:j]
-			# df_insert['name'] = df_insert.apply(lambda dfs: Common.sql_compliant(dfs['name']), axis=1)
-			# df_insert['short_description'] = df_insert.apply(lambda dfs: Common.sql_compliant(dfs.short_description), axis=1)
-			# print(df_insert.head())
 			values = Common.df_list(df_insert)
 			DB.bulk_insert(sql_insert, values)
+			print('-' * 150)
 			i, j = i + chunk_size, j + chunk_size
 			if j > total_size:
 				j = total_size

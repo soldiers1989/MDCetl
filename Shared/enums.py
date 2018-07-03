@@ -186,6 +186,7 @@ class MDCDataSource(Enum):
 	TR = 9
 	WS = 10
 	OTHER = 11
+	EPP = 12
 
 
 class WorkSheet(Enum):
@@ -720,6 +721,7 @@ class SQL(Enum):
 	sql_iaf_summary_basic_name = 'SELECT ID, Venture_Name FROM IAF.IAFSummary'
 	sql_iaf_summary_update = 'UPDATE MDCRaw.IAF.IAFSummary SET BasicName = \'{}\' WHERE ID = {}'
 	sql_iaf_detail_insert = 'INSERT INTO MDCRaw.IAF.IAFDetail VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_iaf_metadata_insert = '''INSERT INTO MDCRaw.IAF.IAFMetaData VALUES(?,?,?,?,?,?)'''
 
 	sql_cvca_deals = 'INSERT INTO MDCRaw.CVCA.VCPEDeals VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 	sql_cvca_exits = 'INSERT INTO MDCRaw.CVCA.Exits VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
@@ -776,7 +778,7 @@ class SQL(Enum):
 
 	sql_tdw_basic_company = '''SELECT DISTINCT ID, legal_name FROM MDCRaw.TDW.Companies'''
 	sql_tdw_basic_company_update = '''UPDATE MDCRaw.TDW.Companies SET BasicName = \'{}\' WHERE ID = {}'''
-	sql_cb_basic_company = '''SELECT org_uuid, name FROM MDCRaw.CRUNCHBASE.Organization '''
+	sql_cb_basic_company = '''SELECT org_uuid, name FROM MDCRaw.CRUNCHBASE.Organization WHERE company_id = 0 '''
 	sql_cb_basic_company_update = '''UPDATE MDCRaw.CRUNCHBASE.Organization SET BasicName = \'{}\' WHERE org_uuid = \'{}\''''
 	sql_cvca_basic_company = '''SELECT ID, CompanyName FROM MDCRaw.CVCA.Exits WHERE BasicName = '' '''
 	sql_cvca_basic_company_update = '''UPDATE MDCRaw.CVCA.Exits SET BasicName = \'{}\' WHERE ID = {}'''
@@ -816,6 +818,12 @@ class SQL(Enum):
 	sql_marsmetadata_new_ventures = '''SELECT VentureName as Name, BasicName, BatchID FROM MDCReport.BD.MaRSMetadata WHERE CompanyID IS NULL'''
 	sql_marsmetadata_double_name = '''SELECT ID, VentureName, BasicName FROM MaRS.MaRSMetadata WHERE VentureName LIKE '%(%' '''
 	sql_marsmetadata_double_name_update = '''UPDATE MDCRaw.MaRS.MaRSMetadata SET VentureName = \'{}\', BasicName = \'{}\' WHERE ID = {}'''
+
+	sql_mars_supplemental_insert = '''INSERT INTO MDCRaw.MaRS.MaRSSupplemental VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
+
+
+	sql_census_population_insert = '''INSERT INTO MDCRaw.EPP.CensusPopulation Values(?,?,?,?,?,?,?)'''
+	sql_census_median_income_insert = '''INSERT INTO MDCRaw.EPP.CensusMedianIncome Values(?,?,?,?,?,?,?)'''
 
 
 class Columns(Enum):
@@ -921,11 +929,13 @@ class Combine(Enum):
 
 
 class FilePath(Enum):
+	path_default = '/Users'
 	path_iaf_source = 'Box Sync/IAF-MDC_Shared'
 	path_cbinsight_source = ''
 	path_bap_source = ''
 	path_missing_bap_etl = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q3/for ETL/Missing data Reports'
 	path_iaf = 'Box Sync/Workbench/IAF/ETL Prep/2017/ETL'
+	path_iaf_metadata= 'https://marsdd.box.com/s/bierupn1b1wi4c86lc5ro4sfm3fkqj8t'
 	path_cvca = 'Box Sync/Workbench/CVCA/ETL/2017'
 	path_venture_dedupe = 'Box Sync/Workbench/Venture_Dedupe'
 	path_namara = 'Box Sync/Workbench/Think data Works/Namara'
@@ -934,7 +944,9 @@ class FilePath(Enum):
 	path_bap_combined = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q4/ETL/01 Combined'
 	path_bap_combined_dest = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q4/ETL/01 Combined/00 QA'
 	path_mars_metadata = 'Box Sync/WorkBench/BAP/Annual Survey FY2018/MaRS Metadata'
+	path_mars_supplemental = 'Box Sync/WorkBench/BAP/Annual Survey FY2018/MaRS Supplemental'
 	path_communitech_shared = 'Box Sync/WorkBench/BAP/Annual Survey FY2018/Communitech'
+	path_statscan_census = 'Box Sync/Workbench/statsCAN/statsCAN'
 
 
 class DealType(Enum):
@@ -992,26 +1004,26 @@ class CAIPStatus(Enum):
 
 
 class FundingType(Enum):
-    CROWDFUNDING = 1
-    DEBT = 2
-    EQUITY = 3
-    GRANT = 4
-    NON_EQUITY = 5
-    UNDISCLOSED = 6
-    ANGEL = 7
-    SEED = 8
-    DEBT_FINANCING = 9
-    PRIVATE_EQUITY = 10
-    INITIAL_COIN_OFFERING = 11
-    PRODUCT_CROWDFUNDING = 12
-    VENTURE = 13
-    NON_EQUITY_ASSISTANCE = 14
-    EQUITY_CROWDFUNDING = 15
-    CONVERTIBLE_NOTE = 16
-    SECONDARY_MARKET = 17
-    POST_IPO_DEBT = 18
-    POST_IPO_EQUITY = 19
-    CORPORATE_ROUND = 20
+	CROWDFUNDING = 1
+	DEBT = 2
+	EQUITY = 3
+	GRANT = 4
+	NON_EQUITY = 5
+	UNDISCLOSED = 6
+	ANGEL = 7
+	SEED = 8
+	DEBT_FINANCING = 9
+	PRIVATE_EQUITY = 10
+	INITIAL_COIN_OFFERING = 11
+	PRODUCT_CROWDFUNDING = 12
+	VENTURE = 13
+	NON_EQUITY_ASSISTANCE = 14
+	EQUITY_CROWDFUNDING = 15
+	CONVERTIBLE_NOTE = 16
+	SECONDARY_MARKET = 17
+	POST_IPO_DEBT = 18
+	POST_IPO_EQUITY = 19
+	CORPORATE_ROUND = 20
 
 
 

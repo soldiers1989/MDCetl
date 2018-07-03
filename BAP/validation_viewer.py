@@ -5,9 +5,21 @@ from plotly import tools
 
 
 class Validation_Viewer:
-    def __init__(self, choice):
+    def __init__(self):
+        print(
+            '1: NORCAT\n2: WEtech\n3: SSMIC\n4:Communitech\n5: IION\n6: TechAlliance\n'
+            '7: MaRS Discovery District\n8: HalTech\n9: RIC Centre\n10: Spark Centre\n11: ventureLAB\n'
+            '12: Innovation Factory\n13: Launch Lab\n14: NWOIC\n15: Innovation Guelph\n16: Invest Ottawa\n'
+            '17: Innovate Niagara\nall: All RICS')
+        while True:
+            choice = input('What RIC would you like to see?\n')
+            if choice.lower() not in (
+                    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', 'all'):
+                continue
+            else:
+                break
         self.test = validate()
-        self.test.ric = choice
+        self.test.ric = self.ric_selection(choice)
         self.test.path_finder()
         self.results_dict = {
             'Advisory Services': [self.test.advisory_services_test1(), self.test.advisory_services_test2(),
@@ -33,6 +45,45 @@ class Validation_Viewer:
             'Industry Roll Up': self.test.industry_rollup_qa(),
             'Total Clients Roll Up': [self.test.total_clients_rollup_qa()]
         }
+
+    @staticmethod
+    def ric_selection(choice):
+        if choice == '1':
+            return 'NORCAT'
+        elif choice == '2':
+            return 'WEtech'
+        elif choice == '3':
+            return 'SSMIC'
+        elif choice == '4':
+            return 'Communitech'
+        elif choice == '5':
+            return 'IION'
+        elif choice == '6':
+            return 'TechAlliance'
+        elif choice == '7':
+            return 'MaRS Discovery District'
+        elif choice == '8':
+            return 'HalTech'
+        elif choice == '9':
+            return 'RIC Centre'
+        elif choice == '10':
+            return 'Spark Centre'
+        elif choice == '11':
+            return 'ventureLAB'
+        elif choice == '12':
+            return 'Innovation Factory'
+        elif choice == '13':
+            return 'Launch Lab'
+        elif choice == '14':
+            return 'NWOIC'
+        elif choice == '15':
+            return 'Innovation Guelph'
+        elif choice == '16':
+            return 'Invest Ottawa'
+        elif choice == '17':
+            return 'Innovate Niagara'
+        else:
+            return 'ALL'
 
     def plots(self):
         """Return the test results figure"""
@@ -193,39 +244,43 @@ class Validation_Viewer:
                        self.colour_generator('Volunteer Mentor Network')[0]]
 
             trace0 = go.Bar(x=['<b>Progress</b>'], y=[1], text='Advisory Services', textposition='auto', opacity=.8,
-                            textfont=dict(color='#ffffff'), xaxis='x4',yaxis='y4', marker=dict(color=colours[0],line=dict(
-                                                        color='#ffffff', width=1)))
-            trace1 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Client Service Activity',opacity=.8,
+                            textfont=dict(color='#ffffff'), xaxis='x4', yaxis='y4',
+                            marker=dict(color=colours[0], line=dict(
+                                color='#ffffff', width=0.5)))
+            trace1 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Client Service Activity',
+                            opacity=.8,
                             textfont=dict(color='#ffffff'), marker=dict(color=colours[1],
                                                                         line=dict(
-                                                                            color='#ffffff', width=1)))
-            trace2 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Firm Age',opacity=.8,
+                                                                            color='#ffffff', width=0.5)))
+            trace2 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Firm Age', opacity=.8,
                             textfont=dict(color='#ffffff'), marker=dict(color=colours[2], line=dict(
                     color='#ffffff', width=1)))
-            trace3 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Firm Industry',opacity=.8,
+            trace3 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Firm Industry', opacity=.8,
                             textfont=dict(color='#ffffff'), marker=dict(color=colours[3], line=dict(
-                    color='#ffffff', width=1)))
-            trace4 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Firm Stage',opacity=.8,
+                    color='#ffffff', width=0.5)))
+            trace4 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Firm Stage', opacity=.8,
                             textfont=dict(color='#ffffff'), marker=dict(color=colours[4], line=dict(
-                    color='#ffffff', width=1)))
-            trace5 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='New Clients Employees',opacity=.8,
+                    color='#ffffff', width=0.5)))
+            trace5 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='New Clients Employees', opacity=.8,
                             textfont=dict(color='#ffffff'), marker=dict(color=colours[5],
                                                                         line=dict(
-                                                                            color='#ffffff', width=1)))
-            trace6 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='New Clients Funding',opacity=.8,
+                                                                            color='#ffffff', width=0.5)))
+            trace6 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='New Clients Funding', opacity=.8,
                             textfont=dict(color='#ffffff'), marker=dict(color=colours[6],
                                                                         line=dict(
-                                                                            color='#ffffff', width=1)))
-            trace7 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='New Clients Revenue',opacity=.8,
+                                                                            color='#ffffff', width=0.5)))
+            trace7 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='New Clients Revenue', opacity=.8,
                             textfont=dict(color='#ffffff'), marker=dict(color=colours[7],
                                                                         line=dict(
-                                                                            color='#ffffff', width=1)))
-            trace8 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Client Outreach',opacity=.8,
+                                                                            color='#ffffff', width=0.5)))
+            trace8 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Client Outreach', opacity=.8,
                             textfont=dict(color='#ffffff'), marker=dict(color=colours[8],
                                                                         line=dict(
-                                                                            color='#ffffff', width=1)))
-            trace9 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Volunteer Mentor Network',opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[9]))
+                                                                            color='#ffffff', width=0.5)))
+            trace9 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Volunteer Mentor Network',
+                            opacity=.8,
+                            textfont=dict(color='#ffffff'), marker=dict(color=colours[9],line=dict(
+                                                                            color='#ffffff', width=0.5)))
 
             fig = tools.make_subplots(rows=12, cols=2,
                                       specs=[[{}, {}],
@@ -312,7 +367,6 @@ class Validation_Viewer:
 
                     dict(text='Last quarter path: ' + self.test.last_quarter_name, showarrow=False, x=1, y=-0.08,
                          xref='paper', yref='paper')])
-
 
         return fig
 

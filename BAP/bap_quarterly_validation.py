@@ -34,8 +34,8 @@ class BAP_Quarterly_Validation:
         self.second_quarter_xl_path = '/Users/ssimmons/Documents/'
         self.second_quarter_xl_file = None#'BAP_Q2_Test.xlsx'
         self.third_quarter_xl_path = '/Users/ssimmons/Documents/'
-        self.third_quarter_xl_file = None#'BAP_Q3_Test.xlsx'
-        self.forth_quarter_xl_path = None#'/Users/ssimmons/Documents/'
+        self.third_quarter_xl_file = None  # 'BAP_Q3_Test.xlsx'
+        self.forth_quarter_xl_path = None  # '/Users/ssimmons/Documents/'
         self.forth_quarter_xl_file = None
 
         self.test_dict = {
@@ -148,7 +148,8 @@ class BAP_Quarterly_Validation:
             if self.ric == 'ALL':
                 for ind, each in enumerate(self.ric_list):
                     l_tuc = self.last_quarter_df[(self.last_quarter_df.Friendly == 'Total unique clients(YTD)') &
-                                                 (self.last_quarter_df.RICFriendlyName == each)][['Value']].sum()['Value']
+                                                 (self.last_quarter_df.RICFriendlyName == each)][['Value']].sum()[
+                        'Value']
                     total_unique_clients = \
                         self.current_quarter_df[(self.current_quarter_df.Friendly == 'Total unique clients (YTD)') & (
                                 self.current_quarter_df.RICFriendlyName == each)][['Value']].sum()['Value']
@@ -159,7 +160,8 @@ class BAP_Quarterly_Validation:
                 return 'Passed'
             else:
                 l_tuc = self.last_quarter_df[(self.last_quarter_df.Friendly == 'Total unique clients(YTD)') &
-                                             (self.last_quarter_df.RICFriendlyName == self.ric)][['Value']].sum()['Value']
+                                             (self.last_quarter_df.RICFriendlyName == self.ric)][['Value']].sum()[
+                    'Value']
 
                 if self.total_unique_clients >= l_tuc:
                     return 'Passed'
@@ -197,8 +199,10 @@ class BAP_Quarterly_Validation:
             pass
         else:
             results = []
-            industries = ['Advanced Materials & Manufacturing', 'Agriculture', 'Clean Technologies', 'Digital Media & ICT',
-                          'Education', 'Financial Services', 'Food & Beverage', 'Forestry', 'Healthcare', 'Mining', 'Other',
+            industries = ['Advanced Materials & Manufacturing', 'Agriculture', 'Clean Technologies',
+                          'Digital Media & ICT',
+                          'Education', 'Financial Services', 'Food & Beverage', 'Forestry', 'Healthcare', 'Mining',
+                          'Other',
                           'Tourism and Culture']
             if self.ric == 'ALL':
                 for i, industry in enumerate(industries):
@@ -216,10 +220,12 @@ class BAP_Quarterly_Validation:
                         else:
                             if h % 2 == 0:
                                 results.append(
-                                    'Failed. ERROR: ' + self.ric_list[int(h / 2)])# + '<br>SEE: ' + self.current_quarter_name)
+                                    'Failed. ERROR: ' + self.ric_list[
+                                        int(h / 2)])  # + '<br>SEE: ' + self.current_quarter_name)
                             else:
                                 results.append(
-                                    'Failed. ERROR: ' + self.ric_list[int(h / 2)])# + '<br>SEE: ' + self.last_quarter_name)
+                                    'Failed. ERROR: ' + self.ric_list[
+                                        int(h / 2)])  # + '<br>SEE: ' + self.last_quarter_name)
                             break
 
             else:
@@ -505,11 +511,10 @@ class BAP_Quarterly_Validation:
                 self.current_quarter_df[
                     (self.current_quarter_df.Friendly == 'Clients receiving advisory services this quarter') & (
                             self.current_quarter_df.RICFriendlyName == self.ric)][['Value']].sum()['Value']
-            if clients_receiving_service> 0:
+            if clients_receiving_service > 0:
                 return 'Passed'
             else:
                 return 'Warning'
-
 
     def firm_age(self):
         """Total firms = total unique clients (YTD)"""
@@ -725,8 +730,8 @@ class BAP_Quarterly_Validation:
         if self.ric == 'ALL':
             for ind, each in enumerate(self.ric_list):
                 number_events = \
-                self.current_quarter_df[(self.current_quarter_df.Friendly == 'Number of events') & (
-                        self.current_quarter_df.RICFriendlyName == each)][['Value']].sum()['Value']
+                    self.current_quarter_df[(self.current_quarter_df.Friendly == 'Number of events') & (
+                            self.current_quarter_df.RICFriendlyName == each)][['Value']].sum()['Value']
                 if number_events > 0:
                     continue
                 else:

@@ -30,7 +30,7 @@ class Validate:
         self.new.nomatch_create_new()
 
         db.execute("SELECT * FROM MDC_DEV.dbo.EntityMap ORDER BY CanonID")
-        clustered_data = db.pandas_read("SELECT * FROM MDC_DEV.dbo.EntityMap WHERE ClusterScore > 0.8").to_dict(
+        clustered_data = db.pandas_read("SELECT * FROM MDC_DEV.dbo.EntityMap WHERE ClusterScore").to_dict(
             'index')
         while True:
             choice = input('Would you like to turn update mode on? (y)es or (n)o \n')
@@ -182,6 +182,6 @@ class Validate:
                                                                                   str(record1['Description']),
                                                                                   record1['Website'], record1['Email'],
                                                                                   str(record1['Phone']),
-                                                                                  str(record1["Address"]),
+                                                                                  str(record1['Address']),
                                                                                   str(record1['ID']))
         db.execute(sql)

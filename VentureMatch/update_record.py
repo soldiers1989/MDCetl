@@ -15,7 +15,7 @@ class Update:
             else:
                 if record2[index] is not None:
                     if index == 'AlternateName':
-                        record1[index] = record1[index] + '|' + record2[index]
+                        record1[index] = str(record1[index]) + '|' + str(record2[index])
                     else:
                         record1[index] = record2[index]
         return record1

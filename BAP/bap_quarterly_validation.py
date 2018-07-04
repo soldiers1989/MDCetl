@@ -1,13 +1,10 @@
-import os
-
 from Shared.common import Common as common
-
 
 #  # Guide to RICs
 # 1: NORCAT
 # 2: WEtech
 # 3: SSMIC
-# 4:Communitech
+# 4: Communitech
 # 5: IION
 # 6: TechAlliance
 # 7: MaRS Discovery District
@@ -32,7 +29,7 @@ class BAP_Quarterly_Validation:
         self.first_quarter_xl_path = '/Users/ssimmons/Documents/'
         self.first_quarter_xl_file = 'BAP_Q1_Test.xlsx'
         self.second_quarter_xl_path = '/Users/ssimmons/Documents/'
-        self.second_quarter_xl_file = None#'BAP_Q2_Test.xlsx'
+        self.second_quarter_xl_file = 'BAP_Q2_Test.xlsx'
         self.third_quarter_xl_path = '/Users/ssimmons/Documents/'
         self.third_quarter_xl_file = None  # 'BAP_Q3_Test.xlsx'
         self.forth_quarter_xl_path = None  # '/Users/ssimmons/Documents/'
@@ -93,6 +90,7 @@ class BAP_Quarterly_Validation:
         if self.second_quarter_xl_file is not None:
             if self.third_quarter_xl_file is not None:
                 if self.forth_quarter_xl_file is not None:
+                    # Current quarter: Q4, Last quarter: Q3
                     self.current_quarter_df = common.xl_to_dfs(self.forth_quarter_xl_path, self.forth_quarter_xl_file)[
                         'DATA']
                     self.last_quarter_df = common.xl_to_dfs(self.third_quarter_xl_path, self.third_quarter_xl_file)[
@@ -101,6 +99,7 @@ class BAP_Quarterly_Validation:
                     self.last_quarter_name = self.third_quarter_xl_path + self.third_quarter_xl_file
                     self.quarter = 'Q4'
                 else:
+                    # Current quarter: Q3, Last quarter: Q2
                     self.current_quarter_df = common.xl_to_dfs(self.third_quarter_xl_path, self.third_quarter_xl_file)[
                         'DATA']
                     self.last_quarter_df = common.xl_to_dfs(self.second_quarter_xl_path, self.second_quarter_xl_file)[
@@ -109,6 +108,7 @@ class BAP_Quarterly_Validation:
                     self.last_quarter_name = self.second_quarter_xl_path + self.second_quarter_xl_file
                     self.quarter = 'Q3'
             else:
+                # Current quarter: Q2, Last quarter: Q1
                 self.current_quarter_df = common.xl_to_dfs(self.second_quarter_xl_path, self.second_quarter_xl_file)[
                     'DATA']
                 self.last_quarter_df = common.xl_to_dfs(self.first_quarter_xl_path, self.first_quarter_xl_file)['DATA']
@@ -116,11 +116,12 @@ class BAP_Quarterly_Validation:
                 self.last_quarter_name = self.first_quarter_xl_path + self.first_quarter_xl_file
                 self.quarter = 'Q2'
         else:
+            # Current quarter is Q1, not able to do quarter-to-quarter tests
             self.current_quarter_df = common.xl_to_dfs(self.first_quarter_xl_path, self.first_quarter_xl_file)['DATA']
             self.current_quarter_name = self.first_quarter_xl_path + self.first_quarter_xl_file
             self.quarter = 'Q1'
             self.last_quarter_df = None
-            self.last_quarter_name = 'Not Active'
+            self.last_quarter_name = 'Not available'
 
         if self.ric == 'ALL':
             self.total_unique_clients = \
@@ -172,6 +173,7 @@ class BAP_Quarterly_Validation:
         """Return values for each venture industry"""
         ind_vals = []
         if self.ric == 'ALL':
+            # Iterate through all the RICs to make sure each pass the test
             for ind, each in enumerate(self.ric_list):
                 current_industry = self.current_quarter_df[
                     (self.current_quarter_df['Friendly'].str.contains(industry)) & (
@@ -218,20 +220,14 @@ class BAP_Quarterly_Validation:
                             k += 2
                             continue
                         else:
-                            if h % 2 == 0:
-                                results.append(
-                                    'Failed. ERROR: ' + self.ric_list[
-                                        int(h / 2)])  # + '<br>SEE: ' + self.current_quarter_name)
-                            else:
-                                results.append(
-                                    'Failed. ERROR: ' + self.ric_list[
-                                        int(h / 2)])  # + '<br>SEE: ' + self.last_quarter_name)
+                            results.append(
+                                'Failed. ERROR: ' + self.ric_list[int(h / 2)])
                             break
 
             else:
                 for i, industry in enumerate(industries):
                     if self.industry_values(industry)[0] < self.industry_values(industry)[1]:
-                        results.append('Failed')  # , industry: ' + industry
+                        results.append('Failed')
                     else:
                         results.append('Passed')
             return results
@@ -471,7 +467,7 @@ class BAP_Quarterly_Validation:
                 return 'Failed'
 
     def client_service_activity_test2(self):
-        """Total new clients (QTD) > 0"""
+        """Warning: Total new clients (QTD) > 0"""
         if self.ric == 'ALL':
             for ind, each in enumerate(self.ric_list):
                 new_clients = \
@@ -494,7 +490,7 @@ class BAP_Quarterly_Validation:
                 return 'Warning'
 
     def client_service_activity_test3(self):
-        """TClients receiving advisory services this quarter > 0"""
+        """Warning: Clients receiving advisory services this quarter > 0"""
         if self.ric == 'ALL':
             for ind, each in enumerate(self.ric_list):
                 clients_receiving_service = \
@@ -726,7 +722,7 @@ class BAP_Quarterly_Validation:
                 return 'Failed'
 
     def client_outreach_test4(self):
-        """Number of events > 0"""
+        """Warning: Number of events > 0"""
         if self.ric == 'ALL':
             for ind, each in enumerate(self.ric_list):
                 number_events = \

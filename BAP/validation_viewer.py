@@ -87,6 +87,7 @@ class Validation_Viewer:
 
     def plots(self):
         """Return the test results figure"""
+        # Create figure including quarter-to-quarter testing when it's not Q1
         if self.test.quarter != 'Q1':
             ## Bar Graph of total clients
             current_quarter_clients = self.test.total_unique_clients
@@ -102,7 +103,7 @@ class Validation_Viewer:
                                  y=[last_quarter_clients, current_quarter_clients],
                                  marker=dict(color=self.colour_generator('Total Clients Roll Up')))
 
-            ## Bar Graph of industry numbers
+            ## Bar Graph of ventures by industry
             advanced_materials_manufacturing = self.industry_values('Advanced Materials & Manufacturing')
             agriculture = self.industry_values('Agriculture')
             clean_tech = self.industry_values('Clean Technologies')
@@ -115,6 +116,7 @@ class Validation_Viewer:
             mining = self.industry_values('Mining')
             other = self.industry_values('Other')
             tourism_culture = self.industry_values('Tourism and Culture')
+
             industry_colours = self.colour_generator('Industry Roll Up')
 
             ind_bar0 = go.Bar(
@@ -232,9 +234,10 @@ class Validation_Viewer:
 
                     dict(text='Last quarter path: ' + self.test.last_quarter_name, showarrow=False, x=1, y=-0.08,
                          xref='paper', yref='paper')])
-        # Quarter 1
-        else:
 
+        # Figure that displays test results from within the first quarter only
+        else:
+            # Collect colours for bar chart
             colours = [self.colour_generator('Advisory Services')[0],
                        self.colour_generator('Client Service Activity')[0],
                        self.colour_generator('Firm Age')[0], self.colour_generator('Firm Industry')[0],
@@ -243,15 +246,14 @@ class Validation_Viewer:
                        self.colour_generator('Client Outreach')[0],
                        self.colour_generator('Volunteer Mentor Network')[0]]
 
+            # Create a progress bar
             trace0 = go.Bar(x=['<b>Progress</b>'], y=[1], text='Advisory Services', textposition='auto', opacity=.8,
                             textfont=dict(color='#ffffff'), xaxis='x4', yaxis='y4',
                             marker=dict(color=colours[0], line=dict(
                                 color='#ffffff', width=0.5)))
             trace1 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Client Service Activity',
-                            opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[1],
-                                                                        line=dict(
-                                                                            color='#ffffff', width=0.5)))
+                            opacity=.8, textfont=dict(color='#ffffff'), marker=dict(color=colours[1], line=dict(
+                    color='#ffffff', width=0.5)))
             trace2 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Firm Age', opacity=.8,
                             textfont=dict(color='#ffffff'), marker=dict(color=colours[2], line=dict(
                     color='#ffffff', width=1)))
@@ -262,26 +264,22 @@ class Validation_Viewer:
                             textfont=dict(color='#ffffff'), marker=dict(color=colours[4], line=dict(
                     color='#ffffff', width=0.5)))
             trace5 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='New Clients Employees', opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[5],
-                                                                        line=dict(
-                                                                            color='#ffffff', width=0.5)))
+                            textfont=dict(color='#ffffff'), marker=dict(color=colours[5], line=dict(
+                    color='#ffffff', width=0.5)))
             trace6 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='New Clients Funding', opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[6],
-                                                                        line=dict(
-                                                                            color='#ffffff', width=0.5)))
+                            textfont=dict(color='#ffffff'), marker=dict(color=colours[6], line=dict(
+                    color='#ffffff', width=0.5)))
             trace7 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='New Clients Revenue', opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[7],
-                                                                        line=dict(
-                                                                            color='#ffffff', width=0.5)))
+                            textfont=dict(color='#ffffff'), marker=dict(color=colours[7], line=dict(
+                    color='#ffffff', width=0.5)))
             trace8 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Client Outreach', opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[8],
-                                                                        line=dict(
-                                                                            color='#ffffff', width=0.5)))
+                            textfont=dict(color='#ffffff'), marker=dict(color=colours[8], line=dict(
+                    color='#ffffff', width=0.5)))
             trace9 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Volunteer Mentor Network',
                             opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[9],line=dict(
-                                                                            color='#ffffff', width=0.5)))
-
+                            textfont=dict(color='#ffffff'), marker=dict(color=colours[9], line=dict(
+                    color='#ffffff', width=0.5)))
+            # Create subplots
             fig = tools.make_subplots(rows=12, cols=2,
                                       specs=[[{}, {}],
                                              [{}, {'rowspan': 10}],
@@ -295,6 +293,7 @@ class Validation_Viewer:
                                              [{}, {}],
                                              [{}, {}],
                                              [{}, {}]])
+            # Add all the bar graph traces to the figure
             fig.append_trace(trace9, 2, 2)
             fig.append_trace(trace8, 2, 2)
             fig.append_trace(trace7, 2, 2)
@@ -320,47 +319,47 @@ class Validation_Viewer:
 
                     dict(text='<b>Advisory Services</b><br>' + self.result_message('Advisory Services'), align='left',
                          showarrow=False, x=-0.02, y=.94, xref='paper', yref='paper',
-                         font=dict(color=self.colour_generator('Advisory Services')[0])),
+                         font=dict(color=colours[0])),
 
                     dict(text='<b>Client Service Activity</b><br>' + self.result_message('Client Service Activity'),
                          align='left', showarrow=False, x=-0.02,
                          y=.8, xref='paper', yref='paper',
-                         font=dict(color=self.colour_generator('Client Service Activity')[0])),
+                         font=dict(color=colours[1])),
 
                     dict(text='<b>Firm Age</b><br>' + self.result_message('Firm Age'), align='left', showarrow=False,
                          x=-0.02, y=.68, xref='paper', yref='paper',
-                         font=dict(color=self.colour_generator('Firm Age')[0])),
+                         font=dict(color=colours[2])),
 
                     dict(text='<b>Firm Industry</b><br>' + self.results_dict['Firm Industry'][0] + '<br>', align='left',
                          showarrow=False, x=-0.02, y=.56, xref='paper', yref='paper',
-                         font=dict(color=self.colour_generator('Firm Industry')[0])),
+                         font=dict(color=colours[3])),
 
                     dict(text='<b>Firm Stage</b><br>' + self.result_message('Firm Stage'), align='left',
                          showarrow=False, x=-0.02, y=0.48, xref='paper', yref='paper',
-                         font=dict(color=self.colour_generator('Firm Stage')[0])),
+                         font=dict(color=colours[4])),
 
                     dict(text='<b>New Clients Employees</b><br>' + self.result_message('New Clients Employees'),
                          align='left', showarrow=False, x=-0.02,
                          y=.38, xref='paper', yref='paper',
-                         font=dict(color=self.colour_generator('New Clients Employees')[0])),
+                         font=dict(color=colours[5])),
 
                     dict(text='<b>New Clients Funding</b><br>' + self.result_message('New Clients Funding'),
                          align='left', showarrow=False, x=-0.02,
                          y=.24, xref='paper', yref='paper',
-                         font=dict(color=self.colour_generator('New Clients Funding')[0])),
+                         font=dict(color=colours[6])),
 
                     dict(text='<b>New Clients Revenue</b><br>' + self.result_message('New Clients Revenue'),
                          align='left', showarrow=False, x=-0.02, y=0.14, xref='paper', yref='paper',
-                         font=dict(color=self.colour_generator('New Clients Revenue')[0])),
+                         font=dict(color=colours[7])),
 
                     dict(text='<b>Client Outreach</b><br>' + self.result_message('Client Outreach'), align='left',
                          showarrow=False, x=-0.02, y=0, xref='paper', yref='paper',
-                         font=dict(color=self.colour_generator('Client Outreach')[0])),
+                         font=dict(color=colours[8])),
 
                     dict(text='<b>Volunteer Mentor Network</b><br>' + self.result_message('Volunteer Mentor Network'),
                          align='left', showarrow=False, x=-0.02,
                          y=-0.1, xref='paper', yref='paper',
-                         font=dict(color=self.colour_generator('Volunteer Mentor Network')[0])),
+                         font=dict(color=colours[9])),
 
                     dict(text='Current quarter path: ' + self.test.current_quarter_name, showarrow=False, x=1, y=-0.05,
                          xref='paper', yref='paper'),
@@ -372,14 +371,17 @@ class Validation_Viewer:
 
     def result_message(self, test_name):
         """Generate message to display test results"""
+        # Iterate through the test results until 'Failed' or 'Warning' is found
         for ind, each in enumerate(self.results_dict[test_name]):
             if each == 'Passed':
                 continue
             else:
                 if self.test.ric == 'ALL':
+                    # Return the test name + the result of the test with the name of the RIC that's failing the test
                     return self.test.test_dict[test_name + ' ' + str(ind)] + '<br>' + \
                            self.results_dict[test_name][ind]
                 else:
+                    # Return the test name + the result of the test
                     if 'Warning' in self.results_dict[test_name][ind]:
                         return 'Warning: ' + self.test.test_dict[test_name + ' ' + str(ind)]
                     else:
@@ -409,11 +411,11 @@ class Validation_Viewer:
         if test_name == 'Industry Roll Up' or test_name == 'Total Clients Roll Up':
             for ind, each in enumerate(self.results_dict[test_name]):
                 if each == 'Passed':
-                    colours.append('#d8ef9f')  # Light green
-                    colours.append('#bce458')  # Dark green
+                    colours.append('#d8ef9f')  # Light green (last quarter)
+                    colours.append('#bce458')  # Dark green (current quarter)
                 else:
-                    colours.append('#ea867b')  # Light red
-                    colours.append('#e25e50')  # Dark red
+                    colours.append('#ea867b')  # Light red (last quarter)
+                    colours.append('#e25e50')  # Dark red (current quarter)
         else:
             # Current quarter test results
             for ind, each in enumerate(self.results_dict[test_name]):
@@ -424,7 +426,7 @@ class Validation_Viewer:
                     colours.append('#ffcc00')  # Orange
                 else:
                     continue
-            colours.append('#bae255')  # Green
+            colours.append('#bae255')  # Green always added to the end of the colour list but only used if it's index 0
         return colours
 
     def plot_generator(self):

@@ -29,7 +29,7 @@ class BAP_Quarterly_Validation:
         self.first_quarter_xl_path = '/Users/ssimmons/Documents/'
         self.first_quarter_xl_file = 'BAP_Q1_Test.xlsx'
         self.second_quarter_xl_path = '/Users/ssimmons/Documents/'
-        self.second_quarter_xl_file = 'BAP_Q2_Test.xlsx'
+        self.second_quarter_xl_file = None#'BAP_Q2_Test.xlsx'
         self.third_quarter_xl_path = '/Users/ssimmons/Documents/'
         self.third_quarter_xl_file = None  # 'BAP_Q3_Test.xlsx'
         self.forth_quarter_xl_path = None  # '/Users/ssimmons/Documents/'

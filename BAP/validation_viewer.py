@@ -247,38 +247,54 @@ class Validation_Viewer:
                        self.colour_generator('Volunteer Mentor Network')[0]]
 
             # Create a progress bar
-            trace0 = go.Bar(x=['<b>Progress</b>'], y=[1], text='Advisory Services', textposition='auto', opacity=.8,
-                            textfont=dict(color='#ffffff'), xaxis='x4', yaxis='y4',
-                            marker=dict(color=colours[0], line=dict(
+            trace0 = go.Bar(x=['<b>Progress</b>'], y=[1], name='Advisory Services', opacity=.8,
+                            textfont=dict(color='#ffffff'), xaxis='x4', yaxis='y4',textposition='auto',
+                            hoverinfo='name', marker=dict(color=colours[0], line=dict(
+                    color='#ffffff', width=0.5)))
+            trace1 = go.Bar(x=['<b>Progress</b>'], y=[1], hoverinfo='name', name='Client Service Activity',
+                            textposition='auto', opacity=.8, textfont=dict(color='#ffffff'),
+                            marker=dict(color=colours[1], line=dict(
                                 color='#ffffff', width=0.5)))
-            trace1 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Client Service Activity',
-                            opacity=.8, textfont=dict(color='#ffffff'), marker=dict(color=colours[1], line=dict(
-                    color='#ffffff', width=0.5)))
-            trace2 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Firm Age', opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[2], line=dict(
-                    color='#ffffff', width=1)))
-            trace3 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Firm Industry', opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[3], line=dict(
-                    color='#ffffff', width=0.5)))
-            trace4 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Firm Stage', opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[4], line=dict(
-                    color='#ffffff', width=0.5)))
-            trace5 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='New Clients Employees', opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[5], line=dict(
-                    color='#ffffff', width=0.5)))
-            trace6 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='New Clients Funding', opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[6], line=dict(
-                    color='#ffffff', width=0.5)))
-            trace7 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='New Clients Revenue', opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[7], line=dict(
-                    color='#ffffff', width=0.5)))
-            trace8 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Client Outreach', opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[8], line=dict(
-                    color='#ffffff', width=0.5)))
-            trace9 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto', text='Volunteer Mentor Network',
-                            opacity=.8,
-                            textfont=dict(color='#ffffff'), marker=dict(color=colours[9], line=dict(
-                    color='#ffffff', width=0.5)))
+            trace2 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto',
+                            name='Firm Age', opacity=.8,
+                            textfont=dict(color='#ffffff'), hoverinfo='name',
+                            marker=dict(color=colours[2], line=dict(
+                                color='#ffffff', width=1)))
+            trace3 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto',
+                            name='Firm Industry', opacity=.8,
+                            textfont=dict(color='#ffffff'), hoverinfo='name',
+                            marker=dict(color=colours[3], line=dict(
+                                color='#ffffff', width=0.5)))
+            trace4 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto',
+                            name='Firm Stage', opacity=.8,
+                            textfont=dict(color='#ffffff'), hoverinfo='name',
+                            marker=dict(color=colours[4], line=dict(
+                                color='#ffffff', width=0.5)))
+            trace5 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto',
+                            name='New Clients Employees', opacity=.8,
+                            textfont=dict(color='#ffffff'), hoverinfo='name',
+                            marker=dict(color=colours[5], line=dict(
+                                color='#ffffff', width=0.5)))
+            trace6 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto',
+                            name='New Clients Funding', opacity=.8,
+                            textfont=dict(color='#ffffff'), hoverinfo='name',
+                            marker=dict(color=colours[6], line=dict(
+                                color='#ffffff', width=0.5)))
+            trace7 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto',
+                            name='New Clients Revenue', opacity=.8,
+                            textfont=dict(color='#ffffff'), hoverinfo='name',
+                            marker=dict(color=colours[7], line=dict(
+                                color='#ffffff', width=0.5)))
+            trace8 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto',
+                            name='Client Outreach', opacity=.8,
+                            textfont=dict(color='#ffffff'), hoverinfo='name',
+                            marker=dict(color=colours[8], line=dict(
+                                color='#ffffff', width=0.5)))
+            trace9 = go.Bar(x=['<b>Progress</b>'], y=[1], textposition='auto',
+                            name='Volunteer Mentor Network',
+                            opacity=.8, textfont=dict(color='#ffffff'), hoverinfo='name',
+                            marker=dict(color=colours[9],
+                                        line=dict(color='#ffffff', width=0.5)))
             # Create subplots
             fig = tools.make_subplots(rows=12, cols=2,
                                       specs=[[{}, {}],

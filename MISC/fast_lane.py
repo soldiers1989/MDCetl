@@ -8,13 +8,15 @@ import datetime as dt
 
 from datetime import datetime
 from dateutil import parser
+from dateutil.parser import parse
 
 import turtle
+import uuid
 
 
 class TargetList(ds.DataSource):
 	def __init__(self):
-		super().__init__('box_file_path', 'path_other', enum.DataSourceType.DATA_CATALYST)
+		super().__init__('', '', enum.DataSourceType.DATA_CATALYST)
 
 		self.column = [ 'BatchID', 'CompanyID', 'Path', 'FileName', 'WorkSheet', 'DataSource', 'Email', 'Invite_First_Name',
 						'Invite_Last_Name', 'Venture_Name', 'Venture_basic_name', 'Previous_Venture_Name', 'Date_left_RIC',
@@ -523,8 +525,273 @@ class TargetList(ds.DataSource):
 		print(df.head(25))
 		print(len(df))
 
+	def fact_ric_company_hours_rollup_ar(self):
+		df = self.db.pandas_read('SELECT DISTINCT AnnualRevenue FROM MDCReport.BAPQ.FactRICCompanyHoursRollUp')
+		update = 'UPDATE MDCReport.BAPQ.FactRICCompanyHoursRollUp SET AnnualRevenue = {} WHERE AnnualRevenue = \'{}\''
+		for i, row in df.iterrows():
+			if row[0] is not None:
+				update_sql= update.format(float(row[0]), row[0])
+				print(update_sql)
+				self.db.execute(update_sql)
 
-class MaRSMetadata(ds.DataSource):
+	def fact_ric_company_hours_rollup_fundingToDate(self):
+		df = self.db.pandas_read('SELECT DISTINCT FundingToDate FROM MDCReport.BAPQ.FactRICCompanyHoursRollUp')
+		update = 'UPDATE MDCReport.BAPQ.FactRICCompanyHoursRollUp SET FundingToDate = {} WHERE FundingToDate = \'{}\''
+		for i, row in df.iterrows():
+			if row[0] is not None:
+				update_sql = update.format(float(row[0]), row[0])
+				print(update_sql)
+				self.db.execute(update_sql)
+
+	def fact_ric_company_hours_rollup_intakeDate(self):
+		df = self.db.pandas_read('SELECT DISTINCT TOP 64IntakeDate FROM MDCReport.BAPQ.FactRICCompanyHoursRollUp ORDER BY 1 DESC')
+		update = 'UPDATE MDCReport.BAPQ.FactRICCompanyHoursRollUp SET IntakeDate = \'{}\' WHERE IntakeDate = \'{}\''
+		# dfs = df['IntakeDate'].astype(float)
+		for i, row in df.iterrows():
+			if row[0] is not None:
+				new_date = str(parser.parse(row[0]))[:10] #-- Aug 1 2010 12:00AM
+				# new_date = str(parse(row[0]))
+				update_sql = update.format(new_date, row[0])
+				print(update_sql)
+				# self.db.execute(update_sql)
+
+	def fact_ric_company_hours_rollup_float_intakeDate(self):
+		update = 'UPDATE MDCReport.BAPQ.FactRICCompanyHoursRollUp SET IntakeDate = \'{}\' WHERE IntakeDate = \'{}\''
+		intake_dates = [
+			[42714, '2016-12-10'],
+			[42713, '2016-12-09'],
+			[42712, '2016-12-08'],
+			[42676.667361, '2016-11-02'],
+			[42675.502083, '2016-11-01'],
+			[42589, '2016-08-07'],
+			[42585.710417, '2016-08-03'],
+			[42560, '2016-07-09'],
+			[42552.523611, '2016-07-01'],
+			[42524.582639, '2016-06-03'],
+			[42495.611111, '2016-05-05'],
+			[42492.7375, '2016-05-02'],
+			[42467.48125, '2016-04-07'],
+			[42465.46875, '2016-04-05'],
+			[42464.513889, '2016-04-04'],
+			[42461.480556, '2016-04-01'],
+			[42434.70625, '2016-03-05'],
+			[42434.393056, '2016-03-05'],
+			[42408, '2016-02-08'],
+			[42371.729167, '2016-01-02'],
+			[42371.423611, '2016-01-02'],
+			[42341.614583, '2015-12-03'],
+			[42339.480556, '2015-12-01'],
+			[42318.119444, '2015-11-10'],
+			[42316.084028, '2015-11-08'],
+			[42285.594444, '2015-10-08'],
+			[42259.616667, '2015-09-12'],
+			[42228.845139, '2015-08-12'],
+			[42225.724306, '2015-08-09'],
+			[42225.352778, '2015-08-09'],
+			[42192.71875, '2015-07-07'],
+			[42167.490278, '2015-06-12'],
+			[42162.664583, '2015-06-07'],
+			[42160.629861, '2015-06-05'],
+			[42132.594444, '2015-05-08'],
+			[42131.002083, '2015-05-07'],
+			[42126.740972, '2015-05-02'],
+			[42106.840972, '2015-04-12'],
+			[42066.573611, '2015-03-03'],
+			[41982.586111, '2014-12-09'],
+			[41950.452083, '2014-11-07'],
+			[41947.626389, '2014-11-04'],
+			[41921.417361, '2014-10-09'],
+			[41888.641667, '2014-09-06'],
+			[41830.394444, '2014-07-10'],
+			[41791.551389, '2014-06-01'],
+			[41791.514583, '2014-06-01'],
+			[41710.553472, '2014-03-12'],
+			[41705.751389, '2014-03-07'],
+			[41649.579167, '2014-01-10'],
+			[41649.438194, '2014-01-10'],
+			[41581.5875, '2013-11-03'],
+			[41400.626389, '2013-05-06'],
+			[41400.595833, '2013-05-06'],
+			[41345.622222, '2013-03-12'],
+			[41345.621528, '2013-03-12'],
+			[41255.415972, '2012-12-12'],
+			[41009.918056, '2012-04-10'],
+			[40912.365278, '2012-01-04'],
+			[40795.654861, '2011-09-09'],
+			[40759.447917, '2011-08-04'],
+			[40704.756944, '2011-06-10'],
+			[40548.638889, '2011-01-05'],
+			[40157.973611, '2009-12-1']]
+		for date in intake_dates:
+				update_sql = update.format(date[1], date[0])
+				print(update_sql)
+				self.db.execute(update_sql)
+
+	def communitech_bap_annual_sheet_update(self):
+		path = 'Box Sync/mnadew/BAP Related'
+		cols = ['id','Inv. Federal',	'Inv. Provincial',	'Inv. VC',	'Inv. Angel',	'Inv. Other']
+		self.common.change_working_directory(path)
+		self.data = pd.read_excel('Portfolio BAP-Q3-Rob-Pulled-July10-2018.xlsx', 'Sheet1')
+		self.data = self.data[cols]
+		self.data = self.data.where(pd.notnull(self.data), None)
+		print(self.data.head(5))
+		print(len(self.data))
+		print('....')
+		self.data.columns = ['Company','Federal', 'Provincial', 'VC', 'Angel', 'Other']
+		print(self.data.head(5))
+		for j, row in self.data.iterrows():
+			print(row['Company'])
+			if row['Federal'] is not None:
+				print('Federal: {}'.format(row['Federal']))
+			if row['Provincial'] is not None:
+				print('Provincial: {}'.format(row['Provincial']))
+			if row['VC'] is not None:
+				print('VC: {}'.format(row['VC']))
+			if row['Angel'] is not None:
+				print('Angel: {}'.format(row['Angel']))
+			if row['Other'] is not None:
+				print('Other: {}'.format(row['Other']))
+			print('-------------------------------------')
+
+	def get_comm_company_id(self, company_name, df):
+		company_id = df[df['Reference ID'] == company_name]['CompanyID'].values[0]
+		if company_id is not None:
+			return company_id
+		else:
+			print(company_name)
+
+
+	def communitech_bap_annual_reupload(self):
+		path = 'Box Sync/Workbench/BAP/BAP_FY18/FY18_Q3/Communitech_New_Annual_Data_20180712'
+		self.common.change_working_directory(path)
+		self.data = pd.read_excel('Portfolio BAP-Q3-Annual-Tab-Rob-Pulled-July10-2018.xlsx', 'Sheet1')
+		self.data['CompanyID'] = None
+		self.data['QuarterCollected'] = 3
+		self.data['Year'] = 2018
+		self.data['BatchID'] = 3918
+		self.data['FileID'] = str(uuid.uuid4())
+		self.data['FileName'] = 'Portfolio BAP-Q3-Annual-Tab-Rob-Pulled-July10-2018.xlsx'
+		self.data['Path'] = path
+		self.data['DataSource'] = 4
+		self.data['SourceSystem'] = 49
+		self.data['Reference ID'] = self.data['id']
+		self.data['Company Name'] = self.data['id']
+		df = self.db.pandas_read('SELECT CompanyID, [Reference ID] FROM MDCRaw.BAP.AnnualCompanyData WHERE DataSource = 4')
+		print(self.data.columns)
+		cols = ['CompanyID', 'BatchID','FileID','FileName','Path','DataSource','SourceSystem','Reference ID','Company Name',  'Website', 'Revenue?', 'Revenue Can', 'Revenue Int',
+				'Full Time Start Cal Year', 'Full Time End Cal Year', 'Part Time Start Cal Year', 'Part Time End Cal Year', 'Total Payroll',
+				'Inv. Federal', 'Inv. Provincial', 'Inv. VC', 'Inv. Angel', 'Inv. Other', 'QuarterCollected','Year']
+		self.data = self.data[cols]
+		print(self.data.head(25))
+		# self.file.save_as_csv(self.data, 'Communitech Annual Reupload Generated.xlsx', os.getcwd(),
+		# 			  'Communitech Annual Reupload')
+		# i = 0
+		# print('id,name,companyid')
+		# for j, row in self.data.iterrows():
+		# 	i=i+1
+		# 	if len(df[df['Reference ID'] == row['Company Name']]) >= 1:
+		# 		companyID = df[df['Reference ID'] == row['Company Name']]['CompanyID'].values[0]
+		# 		if companyID is not None:
+		# 			print('{},{},{}'.format(i,row['Company Name'], companyID))
+		# 		else:
+		# 			print('{},MissingI,{}'.format(i,row['Company Name']))
+		# 	else:
+		# 		print('{},MissingII,{}'.format(i,row['Company Name']))
+
+
+		values = self.common.df_list(self.data)
+		self.db.bulk_insert(enum.SQL.sql_bap_annual_insert.value, values)
+
+	def update_communitech_reupload_companyID(self):
+		path = 'Box Sync/Workbench/BAP/BAP_FY18/FY18_Q3/Communitech_New_Annual_Data_20180712'
+		self.common.change_working_directory(path)
+		self.data = pd.read_csv('Communitech_Annual_Company_IDs.csv')
+		print(self.data.head(10))
+		print('Done')
+		update = 'UPDATE MDCRaw.BAP.AnnualCompanyData SET CompanyID = {} WHERE [Company Name] = \'{}\''
+		i = 0
+		for _, row in self.data.iterrows():
+			if 'Missing' not in row['name']:
+				i+=1
+				print(update.format(row['companyid'], row['name']))
+				self.db.execute(update.format(row['companyid'], row['name']))
+
+	def communitech_bap_annual_reupload_funding(self):
+		path = 'Box Sync/Workbench/BAP/BAP_FY18/FY18_Q3/Communitech_New_Annual_Data_20180712'
+		self.common.change_working_directory(path)
+		self.data = pd.read_excel('Portfolio BAP-Q3-Rob-Pulled-July10-2018.xlsx', 'Sheet1')
+		cols = ['Company Name', 'id', 'Alternate', 'CRA Number', 'Street', 'City', 'Province', 'Postal',
+				'Website', 'Stage', 'Revenue (new clients)', 'Employees (new clients)',
+				'Funding (to date - new clients)', 'Incorporated', 'Inc Month', 'Inc Year',
+				'Founders', 'Founders Youth', 'Founders Canadian Born', 'Founders First Venture',
+				'Founders Female', 'HiPo', 'Intake Date', 'Industry', 'Advisory Hours', 'Volunteer Hours',
+				'Youth', 'Social', 'Inv. Raised?', 'Seeking Amount',
+				'Inv. Federal', 'Inv. Provincial', 'Inv. VC', 'Inv. Angel', 'Inv. Other', 'Valuation']
+		new_cols = ['id','Inv. Federal', 'Inv. Provincial', 'Inv. VC', 'Inv. Angel', 'Inv. Other']
+		self.data = self.data[new_cols]
+		readable_cols = ['Name', 'Federal', 'Provincial', 'VC', 'Angel', 'Other']
+		self.data.columns = readable_cols
+		self.data = self.data.where(pd.notnull(self.data), None)
+		print(self.data.head(5))
+		for _, row in self.data.iterrows():
+			if row['Federal'] is not None:
+				update = 'UPDATE MDCRaw.BAP.AnnualCompanyData SET FederalInvestment = {} WHERE [Company Name] LIKE \'{}\''
+				# self.db.execute(update.format(row['Federal'], row['Name']))
+				print(update.format(float(row['Federal']), row['Name']))
+			if row['Provincial'] is not None:
+				update = 'UPDATE MDCRaw.BAP.AnnualCompanyData SET ProvincialInvestment = {} WHERE [Company Name] LIKE \'{}\''
+				# self.db.execute(update.format(row['Provincial'], row['Name']))
+				print(update.format(float(row['Provincial']), row['Name']))
+			if row['VC'] is not None:
+				update = 'UPDATE MDCRaw.BAP.AnnualCompanyData SET VCInvestment = {} WHERE [Company Name] LIKE \'{}\''
+				# self.db.execute(update.format(row['VC'], row['Name']))
+				print(update.format(float(row['VC']), row['Name']))
+			if row['Angel'] is not None:
+				update = 'UPDATE MDCRaw.BAP.AnnualCompanyData SET AngelInvestment = {} WHERE [Company Name] LIKE \'{}\''
+				# self.db.execute(update.format(row['Angel'], row['Name']))
+				print(update.format(float(row['Angel']), row['Name']))
+			if row['Other'] is not None:
+				update = 'UPDATE MDCRaw.BAP.AnnualCompanyData SET OtherInvestment = {} WHERE [Company Name] LIKE \'{}\''
+				# self.db.execute(update.format(row['Other'], row['Name']))
+				print(update.format(float(row['Other']), row['Name']))
+
+	def re_insert_old_communitech_annual_reupload(self):
+		try:
+			path = 'Box Sync/Workbench/BAP/BAP_FY18/FY18_Q3/CommunitechAnnual_OLD_DB'
+			self.common.change_working_directory(path)
+			self.data = pd.read_csv('Communitech_Annual_from_db.csv')
+		except Exception as ex:
+			print(ex)
+		cols =  ['ID','CompanyID',                                               'BatchID',
+				 'FileID',                                                  'FileName',
+				 'Path',                                                    'DataSource',
+				 'SourceSystem',                                            '[Company Name]',
+				 '[Reference ID]',                                        'Website',
+				 '[Was there sales revenue generated this calendar year?]', '[Sales revenue from Canadian sources $CAN]',
+				 '[Sales revenue from international sources $CAN]',        '[Full-time employees at start of calendar year]',
+				 '[Full-time employees at end of calendar year]',         '[Part-time employees at start of year]',
+				 '[Part-time employees at end of year]',                  '[Total payroll for calendar year $CAN]',
+				 'FederalInvestment',                                      'ProvincialInvestment',
+				 'VCInvestment',                                           'AngelInvestment',
+				 'OtherInvestment',                                        'QuarterCollected',
+				 'Year' ]
+		self.data.columns = cols
+		val=[]
+		df = self.db.pandas_read(
+			'SELECT ID, [Company Name] FROM MDCRaw.BAP.AnnualCompanyData WHERE DataSource = 4')
+		for _, row in self.data.iterrows():
+			if len(df[df['Company Name'] == row['[Company Name]']]) == 0:
+				for i, j in enumerate(row.values):
+					if str(j) == 'nan':
+						row[i] = None
+				val.append(list(row.values[1:]))
+				print(list(row.values[1:]))
+		print('..'*280)
+		print(len(val[0]))
+		self.db.bulk_insert(enum.SQL.sql_bap_annual_insert.value, val)
+
+
+class MaRS(ds.DataSource):
 
 	def __init__(self):
 		super().__init__('','', enum.DataSourceType.MDC_SANDBOX_SURVEY)
@@ -535,6 +802,15 @@ class MaRSMetadata(ds.DataSource):
 		self.columns_db = ['BatchID', 'CompanyID', 'Program', 'Sector', 'MaRSPriority', 'CAIP',
 						'Organization Name','BasicName', 'Venture Start Date', 'RIC_Stage', 'Business Model Tags',
 						'Technology Tag', 'Cluster', 'Sub-cluster', 'CAIP Enrolment Date', 'CAIP Graduation Date']
+
+		self.supplemental_columns = ['Batch', 'CompanyID', 'Company Name', 'Date Submitted',
+									 'Funding Federal Government $CAN', 'Funding Provincial Government $CAN',
+									 'Funding Venture Capital $CAN', 'Funding Angel $CAN', 'Funding Private Other $CAN',
+									 'Funding Other - not Private $CAN',
+									 'Sales revenue from Canadian sources $CAN', 'Sales revenue from USA $CAN',
+									 'Sales revenue from international sources $CAN', 'Full-time employees at start of calendar year',
+									 'Full-time employees at end of calendar year', 'Part-time employees at start of year',
+									 'Part-time employees at end of year', 'Total payroll for calendar year $CAN', 'Year']
 
 	def load_mars_metadata(self):
 		self.common.change_working_directory(enum.FilePath.path_mars_metadata.value)
@@ -574,16 +850,33 @@ class MaRSMetadata(ds.DataSource):
 		self.db.bulk_insert(self.enum.SQL.sql_mars_meta_data_insert.value, values)
 		print(self.data.head())
 
+	def load_mars_supplemental(self):
+		self.common.change_working_directory(enum.FilePath.path_mars_supplemental.value)
+		self.data = pd.read_excel('MaRS_Additional_Venture_Data_2018-05-11.xlsx', sheet_name='ReadyForETL')
+		self.data['Batch'] = 3912
+		self.data['Year'] = 2017
+		self.data = self.data[self.supplemental_columns]
+		print(self.data.head(6))
+		values = self.common.df_list(self.data)
+		self.db.bulk_insert(enum.SQL.sql_mars_supplemental_insert.value, values)
+
 
 if __name__ == '__main__':
 	tl = TargetList()
-	mm = MaRSMetadata()
+	# mm = MaRS()
 	# tl.duplicate_ventures_for_second_pair_of_eye()
 	# tl.push_data_to_db()
 	# tl.final_mars_csv_tl_comparision()
 	# tl.update_targetlist_basic_name()
 	# mm.load_mars_metadata()
 	# tl.communitech_shared_ventures()
-	mm.load_five_missing_marsMetaData()
-
+	# mm.load_five_missing_marsMetaData()
+	# mm.load_mars_supplemental()
+	# tl.fact_ric_company_hours_rollup()
+	# tl.fact_ric_company_hours_rollup_fundingToDate()
+	# tl.fact_ric_company_hours_rollup_float_intakeDate()
+	# tl.communitech_bap_annual_sheet_update()
+	# tl.communitech_bap_annual_reupload()
+	# tl.communitech_bap_annual_reupload_funding()
+	tl.re_insert_old_communitech_annual_reupload()
 

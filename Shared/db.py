@@ -49,7 +49,7 @@ class DB:
 		con = DB.connect(dev=dev)
 		cursor = con.cursor()
 		try:
-			cursor.fast_executemany=True
+			# cursor.fast_executemany=True
 			cursor.executemany(sql, values)
 			cursor.commit()
 			print('Bulk Insert SUCCESSFUL !')

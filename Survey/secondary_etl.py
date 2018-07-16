@@ -158,7 +158,7 @@ class DBInteractions:
 
     @staticmethod
     def store_df(df, filename):
-        path = '/Users/gcree/Box Sync/Workbench/BAP/Annual Survey FY2018/DEV - Results to RICs/'
+        path = '/Users/gcree/Box Sync/Workbench/BAP/Annual Survey FY2018/DEV - Results to RICs/Missing_satisfaction/'
         misc.write_to_xl(df, filename, out_path=path)
 
     def load(self):
@@ -213,9 +213,12 @@ if __name__ == '__main__':
               "filter[field][0]=status&filter[operator][0]=!=&filter[value][0]": 'deleted',
               'page': 1}
     api = API(API_TOKEN, domain, v, survey, surveyid, resp, params)
+    print('Fetching data from API')
     data = api.get_data(test=False)
     j = Json(data, surveyid)
+    print('Storing json data in dataframes')
     all_ans = j.to_df()
     db_interactions = DBInteractions(all_ans)
-    # db_interactions.store_df(all_ans, 'secondary_etl_extra_ans')
-    db_interactions.etl()
+    print('Writing to file')
+    db_interactions.store_df(all_ans, 'secondary_etl_extra_ans')
+    # db_interactions.etl()

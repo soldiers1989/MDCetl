@@ -297,6 +297,7 @@ def _main_():
             # pull out social impact companies separately for use later in CII datasheet
             if ric == 'MaRS Discovery District':
                 soc_imp_df = ric_datasheet[ric_datasheet['social_impact - Motives '] == 'Yes']
+
             if ric != 'CII':
                 # save to disc
                 results_sheets = [ric_datasheet, ric_data_dicts[ric]]
@@ -310,7 +311,7 @@ def _main_():
                                   ric_data_dicts[ric],
                                   ric_data_dicts['MaRS Discovery District']]
                 sheetnames = ['CII_SurveyData',
-                              'MaRS_SocialImpact_SurveyData',
+                              'All_RICs_SocialImpact_SurveyData',
                               'CII_DataDict',
                               'MaRS_DataDict']
                 save_xls(results_sheets, save_path, sheetnames)

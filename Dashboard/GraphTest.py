@@ -29,6 +29,7 @@ def b_data():
                     name=i)
         traces.append(trace)
     return traces
+
     # data = [
     #             go.Scatter(
     #                 x=df[df['continent'] == i]['gdp per capita'],

@@ -221,8 +221,9 @@ def _main_():
             reports_list = []
             status_list = []
             campaigns_df = campaigns_df[campaigns_df['campaign_status'] != 'Deleted']
+            campaigns_df = campaigns_df[campaigns_df['link_type'] != 'link']
             for cid in campaigns_df["id"]:
-                print(cid)
+                print('Downloading data for campaign id: {}'.format(cid))
                 reports_df, status_df = menu_actions.get_resp_stats(survey_id, API_TOKEN, campaign_id=int(cid))
                 if len(reports_df) > 0:
                     reports_list.append(reports_df)
@@ -241,13 +242,13 @@ def _main_():
             # left join campaigns <- reports <- statuses dfs
             df1 = pd.merge(campaigns_df, reports_df, how='inner', left_on=["id"], right_on=["campaign_id"])
             all_resp_stats = pd.merge(df1, status_df, how='left', left_on='id_y', right_on='report_id')
-            all_resp_stats = all_resp_stats.drop('id_y', axis=1).drop('campaign_id', axis=1).drop('report_id', axis=1)
+            all_resp_stats = all_resp_stats.drop('id_y', axis=1).drop('campaign_id', axis=1).drop('report_id', axis=1).drop('primary_RIC', axis=1).drop('venture_id', axis=1)
             all_resp_stats = all_resp_stats.rename(columns={'id_x': "campaign_id"})
 
-            path_ini = CM.get_config("config.ini", "paths", "survey2018_response_stats")
+            path_ini = CM.get_config("config.ini", "paths", "sandbox")
             path = CM.change_working_directory(path_ini)
             print(path)
-            misc.write_to_xl(all_resp_stats, 'ResponseStatuses - '.format(survey_title), out_path=path, sheetname="response_statuses")
+            misc.write_to_xl(all_resp_stats, 'ResponseStatuses - {}'.format(survey_title), out_path=path, sheetname="response_statuses")
 
             # stat_table = 'MDCReport.Fact_Response_Status'
             # print('Truncating and writing to ' + stat_table)

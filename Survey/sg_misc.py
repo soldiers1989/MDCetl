@@ -11,8 +11,8 @@ class misc_funcs():
 
         # now = datetime.datetime.now()
         # timestamp = now.strftime("%b-%d-%Y-%I%M%p")
-        timestamp = ''
-        filename = out_path + filename + "-" + timestamp
+        # timestamp = ''
+        filename = out_path + filename  # + "-" + timestamp
 
         writer = pd.ExcelWriter(filename + ".xlsx", engine='xlsxwriter')
         df.to_excel(writer, sheet_name=sheetname, index=False)  # send df to writer

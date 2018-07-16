@@ -310,16 +310,16 @@ class menu_actions():
         print("\n", status_df, "\n")
 
         # insert stat reports into DB
-        if len(reports_df) > 0:
-            insert_report_sql = "insert_resp_reports"
-
-            self.df_to_db(reports_df, insert_report_sql, remove_single_quotes=False, clean_numeric_cols=True)
-
-        # insert resp statuses into DB
-        if len(status_df) > 0:
-            insert_stat_sql = "insert_resp_stats"
-
-            self.df_to_db(db_stats_df, insert_stat_sql, remove_single_quotes=False, clean_numeric_cols=True)
+        # if len(reports_df) > 0:
+        #     insert_report_sql = "insert_resp_reports"
+        #
+        #     self.df_to_db(reports_df, insert_report_sql, remove_single_quotes=False, clean_numeric_cols=True)
+        #
+        # # insert resp statuses into DB
+        # if len(status_df) > 0:
+        #     insert_stat_sql = "insert_resp_stats"
+        #
+        #     self.df_to_db(db_stats_df, insert_stat_sql, remove_single_quotes=False, clean_numeric_cols=True)
 
         return reports_df, status_df
 

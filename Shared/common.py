@@ -491,7 +491,8 @@ class Common:
 			df = dataframe.where(pd.notnull(dataframe), None)
 			values = df.values.tolist()
 			return values
-		except ValueError:
+		except ValueError as e:
+			print(e)
 			return None
 
 	@staticmethod

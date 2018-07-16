@@ -29,7 +29,7 @@ class DB:
 			cursor = con.cursor()
 			cursor.execute(sql)
 			cursor.commit()
-			print('Executed sucessfully.')
+			print('Query executed sucessfully.')
 		except Exception as ex:
 			print('Executing Exception: {}'.format(ex))
 			print(sql)

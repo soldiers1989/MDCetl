@@ -824,6 +824,7 @@ class SQL(Enum):
 
 	sql_census_population_insert = '''INSERT INTO MDCRaw.EPP.CensusPopulation Values(?,?,?,?,?,?,?)'''
 	sql_census_median_income_insert = '''INSERT INTO MDCRaw.EPP.CensusMedianIncome Values(?,?,?,?,?,?,?)'''
+	sql_bap_annual_insert = '''INSERT INTO MDCRaw.BAP.AnnualCompanyData VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
 
 
 class Columns(Enum):

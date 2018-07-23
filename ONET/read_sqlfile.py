@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from Shared.db import DB
 import pyodbc
+import json
 
 file_table_map = {
     '11_abilities.sql': 'abilities',
@@ -48,13 +49,29 @@ server = '10.101.2.74'
 database = 'MDC_DEV'
 username = 'gcree'
 password = 'GccSQL1'
-driver = '{/usr/local/lib/libmsodbcsql.13.dylib}'
+driver = '{/usr/local/lib/libmsodbcsql.17.dylib}'
 cs = 'DRIVER='+driver+';PORT=1433;SERVER='+server+';PORT=1443;DATABASE='+database+';UID='+username+';PWD='+ password
 
 
 def make_connection():
     cx = pyodbc.connect(cs)
     return cx
+
+
+def execute(sql):
+    try:
+        con = DB.connect()
+        cursor = con.cursor()
+        cursor.execute(sql)
+        cursor.commit()
+        msg = 'Query executed sucessfully.'
+        # print(msg)
+        return 'Success', msg
+    except Exception as ex:
+        msg = 'Executing Exception: {}'.format(ex)
+        # print(msg)
+        # print(sql)
+        return 'Error', msg
 
 
 def get_brackets(string, keyword, count_vals=False, list_vals=False):
@@ -134,31 +151,25 @@ def get_brackets(string, keyword, count_vals=False, list_vals=False):
 fill_these = ['career_changers_matrix'
                     ,'career_starters_matrix'
                     ,'dwa_reference'
-                    ,'education_training_experience'
                     ,'emerging_tasks'
                     ,'green_dwa_reference'
                     ,'green_occupations'
                     ,'green_task_statements'
-                    ,'interests'
                     ,'iwa_reference'
-                    ,'job_zones'
-                    ,'knowledge'
                     ,'sample_of_reported_titles'
-                    ,'skills'
-                    ,'task_ratings'
-                    ,'task_statements'
+                    # ,'task_statements'
                     ,'tasks_to_dwas'
                     ,'tasks_to_green_dwas'
                     ,'tools_and_technology'
                     ,'unspsc_reference'
-                    ,'work_activities'
                     ,'work_context'
                     ,'work_styles'
-                    ,'work_values'
-                    ,'abilities']
+                    ,'work_values']
 
 
 def _main_():
+    slow_insert = True
+    failed_cmds = {}
     dfs = []
     sheets_dir = os.path.expanduser('~/Box Sync/Innovation Economy/Projects/Employment Pathway - Google.org/Interactive Market Review and Report/EPP_Data collection/ONET Data/db_22_3_mssql/')
     os.chdir(sheets_dir)
@@ -184,62 +195,95 @@ def _main_():
             x = 0
             for i in range(len(sqlCommands)):
                 x += 1
-                if 'go' in sqlCommands[i].lower():
+                if 'go' in sqlCommands[i].lower()[:5]:
                     sqlCommands[i] = sqlCommands[i][4:].strip('\n')
                 else:
                     sqlCommands[i] = sqlCommands[i].strip('\n')
                 print("\tFixed command number {}.".format(x))
                 print("\tNow looks like: {}".format(sqlCommands[i]))
 
-            # parse one of the commands to get cloumn names and num question marks need for bulk insert sql construction
-            cols = get_brackets(sqlCommands[2], "INTO ", )
-            _, val_ct = get_brackets(sqlCommands[2], "VALUES ", count_vals=True)
-            q_marks = ''
-            for i in range(val_ct):  # construct question marks string for use in sql construction
-                q_marks = q_marks + "?, "
-            q_marks = q_marks[:-2]
+            cmd_cnt = len(sqlCommands)
+            y = 0
+            if slow_insert:
+                failed_cmds[file] = []
+                print('\nBeginning slow insert procedure for file: {}\n'.format(file))
+                for cmd in sqlCommands[1:]:
+                    y += 1
+                    prcnt_cmplete = round((y / cmd_cnt) * 100, 3)
+                    prog_msg = '\t\t\t\t\t\t\t\t\tCompletion: {}%  ({} of {})'.format(prcnt_cmplete, y, cmd_cnt)
+                    cmd = cmd.replace('INSERT INTO ', 'INSERT INTO MDC_DEV.ONET.')
+                    try:
+                        exec_result, msg = execute(cmd)
+                        if exec_result == 'Success':
+                            print('\t' + msg)
+                            print(prog_msg)
+                        elif exec_result == 'Error':
+                            failed_cmds[file].append(cmd)
+                            print('\tError: {}\n\tSkipped and appended command to dict of failed commands')
+                            print('\tFailed command: ' + str(cmd))
+                            print(prog_msg)
+                    except Exception as e:
+                        failed_cmds[file].append(cmd)
+                        print('\tError: {}\n\tSkipped and appended command to dict of failed commands'.format(e))
+                        print('\tFailed command: ' + str(cmd))
+                        print(prog_msg)
+            else:
 
-            # construct sql insert for bulk insert
-            sql = "INSERT INTO MDC_DEV.ONET." + tablename + " (" + cols + ") VALUES (" + q_marks + ");"
-            print("Constructing SQL INSERT statement for BulkInsert operation.\nSQL: " + str(sql))
+                print('\nBeginning bulk insert procedure for file: {}\n'.format(file))
+                # parse one of the commands to get cloumn names and num question marks need for bulk insert sql construction
+                cols = get_brackets(sqlCommands[2], "INTO ", )
+                _, val_ct = get_brackets(sqlCommands[2], "VALUES ", count_vals=True)
+                q_marks = ''
+                for i in range(val_ct):  # construct question marks string for use in sql construction
+                    q_marks = q_marks + "?, "
+                q_marks = q_marks[:-2]
 
-            # add values of commands to df, excluding create table and emptyspace
-            print('Adding values to list of lists for use in BulkInsert operation.')
-            l = []
-            for k in range(1, len(sqlCommands)):
-                try:
-                    # st_ix = sqlCommands[k].index("VALUES (")
-                    # open_bracket = sqlCommands[k][st_ix:].index("(")
-                    vals_str, vals_lst = get_brackets(sqlCommands[k], "VALUES ", list_vals=True)
+                # construct sql insert for bulk insert
+                sql = "INSERT INTO MDC_DEV.ONET." + tablename + " (" + cols + ") VALUES (" + q_marks + ");"
+                print("Constructing SQL INSERT statement for BulkInsert operation.\nSQL: " + str(sql))
 
-                    # for i in range(len(vals_lst)):
-                    #     vals_lst[i] = vals_lst[i].replace("'", '')
-    
-                    l.append(vals_lst)
-    
-                except ValueError:
-                    print('\tValueError for command at index {}.\n\tThe command {} does not contain the string "VALUES (".'.format(k, sqlCommands[k]))
-                    print("\tNo values from this command were added to the list of values.")
+                # add values of commands to df, excluding create table and emptyspace
+                print('Adding values to list of lists for use in BulkInsert operation.')
+                l = []
+                for k in range(1, len(sqlCommands)):
+                    try:
+                        # st_ix = sqlCommands[k].index("VALUES (")
+                        # open_bracket = sqlCommands[k][st_ix:].index("(")
+                        vals_str, vals_lst = get_brackets(sqlCommands[k], "VALUES ", list_vals=True)
 
-            # check quality of l
-            print("Checking to ensure correct number of parameters.")
-            k = 0
-            for element in l:
-                if len(element) != val_ct:
-                    print("\tWarning: element {} is wrong len. Should be len {}, is actually len {}".format(k, val_ct, len(element)))
-                    print("\tElement in question: " + str(element))
-                    print("\tOriginal command at index {}: {}".format(k, sqlCommands[k+1]))
-                    raise ValueError('Incorrect count of parameters')
-                k += 1
+                        print('\tCleaning NULLs')
+                        cnt = 0
+                        for i in range(len(vals_lst)):
+                            if vals_lst[i].strip().lower() == 'null':
+                                vals_lst[i] = None
+                                cnt += 1
+                        print('\tCleaned {} NULLs'.format(cnt))
 
-            print('Inserting values into table {}'.format(file_table_map[file]))
-            DB.bulk_insert(sql=sql, values=l)
+                        l.append(vals_lst)
+
+                    except ValueError:
+                        print('\tValueError for command at index {}.\n\tThe command {} does not contain the string "VALUES (".'.format(k, sqlCommands[k]))
+                        print("\tNo values from this command were added to the list of values.")
+
+                # check quality of l
+                print("Checking to ensure correct number of parameters.")
+                k = 0
+                for element in l:
+                    if len(element) != val_ct:
+                        print("\tWarning: element {} is wrong len. Should be len {}, is actually len {}".format(k, val_ct, len(element)))
+                        print("\tElement in question: " + str(element))
+                        print("\tOriginal command at index {}: {}".format(k, sqlCommands[k+1]))
+                        raise ValueError('Incorrect count of parameters')
+                    k += 1
+
+                print('Inserting values into table {}'.format(file_table_map[file]))
+                DB.bulk_insert(sql=sql, values=l)
 
             print('Finished with file {}\n'.format(file))
-            #     print("Round {}:\n Index of VALUES str: {}\n Open bracket index: {} \nVals: {}\nLen of l: {}".format(k, st_ix, open_bracket, vals, len(l)))
-    
-            # df = pd.DataFrame(l)
-            # dfs.append(df)
+    print('Dumping dict of failed cmds to json file')
+    out_path = os.path.expanduser("~/MDCetl/MDCetl/ONET/Failed_cmds/failed_cmds.json")
+    with open(out_path, 'w') as jsonFile:
+        json.dump(failed_cmds, jsonFile)
 
 
 if __name__ == '__main__':

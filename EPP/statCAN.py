@@ -2,6 +2,7 @@ from Shared.datasource import DataSource
 import Shared.enums as enum
 # import zipfile
 import pandas as pd
+from Shared.common import Common as CM
 # import os
 
 
@@ -19,6 +20,7 @@ class Census(DataSource):
                         'Guelph', 'London', 'Windsor', 'Barrie', 'Sudbury', 'Thunder Bay')
 
     def read_zipped_file(self):
+        fail_path_key = 'path_statscan_failed_chunks'
         try:
             for file in self.csv_files:
                 print(file.upper())
@@ -34,7 +36,7 @@ class Census(DataSource):
                 self.data = None
                 print(data_pop.head(25))
                 print(data_income.head(25))
-                self.db.save_data_chunk(data_pop, self.enum.SQL.sql_census_population_insert.value, chunk_size=100000)
+                self.db.save_data_chunk(data_pop, self.enum.SQL.sql_census_population_insert.value, chunk_size=100000, rtrn_msg=True, fail_path_key=fail_path_key)
                 self.db.save_data_chunk(data_income, self.enum.SQL.sql_census_median_income_insert.value, chunk_size=100000)
                 print('-' * 150)
 

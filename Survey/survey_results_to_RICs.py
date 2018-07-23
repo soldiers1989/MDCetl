@@ -226,108 +226,109 @@ def _main_():
     print("\nPer RIC df datasheet creation:")
     for ric in ric_qs:
 
-        # turn that RIC's qid list into df
-        print("\nRIC: {}".format(ric))
-        print("Creating df of questions for {}".format(ric))
-        qs_df = pd.DataFrame(ric_qs[ric], columns=['qid'])
-        qs_df['ric'] = rics[ric]['db_name']
+        if ric == 'MaRS Discovery District':
+            # turn that RIC's qid list into df
+            print("\nRIC: {}".format(ric))
+            print("Creating df of questions for {}".format(ric))
+            qs_df = pd.DataFrame(ric_qs[ric], columns=['qid'])
+            qs_df['ric'] = rics[ric]['db_name']
 
-        # left join that df with qsos df on qid
-        qs_df = pd.merge(qs_df, qsos, how='left', on='qid')
+            # left join that df with qsos df on qid
+            qs_df = pd.merge(qs_df, qsos, how='left', on='qid')
 
-        # left join resulting df with ans df
-        print("Left join qs with ans")
-        ric_survey_results = pd.merge(qs_df, ans,
-                                      how='left',
-                                      left_on=['qid', 'oid', 'ric'],
-                                      right_on=['QuestionID', 'OptionID', 'RIC_Program'])
+            # left join resulting df with ans df
+            print("Left join qs with ans")
+            ric_survey_results = pd.merge(qs_df, ans,
+                                          how='left',
+                                          left_on=['qid', 'oid', 'ric'],
+                                          right_on=['QuestionID', 'OptionID', 'RIC_Program'])
 
-        # drop empty answers and sort
-        print("Clean ans")
-        ric_survey_results = ric_survey_results[pd.notnull(ric_survey_results['Answer'])]
-        ric_survey_results.sort_values(by='q_num', inplace=True)
+            # drop empty answers and sort
+            print("Clean ans")
+            ric_survey_results = ric_survey_results[pd.notnull(ric_survey_results['Answer'])]
+            ric_survey_results.sort_values(by='q_num', inplace=True)
 
-        # ric_survey_results.dropna(subset=['Answer'])
-        print("Pivot into datasheet for {}".format(ric))
-        ric_datasheet = ric_survey_results[['resp_id', 'CompanyID', 'col_title', 'Answer', 'page_pipe']].drop_duplicates()
-        ric_datasheet['col_title'] = ric_datasheet['col_title'] + ' ' + ric_datasheet['page_pipe'].astype(str)
-        ric_datasheet['rid_cid'] = ric_datasheet['resp_id'].astype(float).astype(str) + '-' + ric_datasheet['CompanyID'].astype(str)
-        ric_datasheet = ric_datasheet[['rid_cid', 'col_title', 'Answer']]
+            # ric_survey_results.dropna(subset=['Answer'])
+            print("Pivot into datasheet for {}".format(ric))
+            ric_datasheet = ric_survey_results[['resp_id', 'CompanyID', 'col_title', 'Answer', 'page_pipe']].drop_duplicates()
+            ric_datasheet['col_title'] = ric_datasheet['col_title'] + ' ' + ric_datasheet['page_pipe'].astype(str)
+            ric_datasheet['rid_cid'] = ric_datasheet['resp_id'].astype(float).astype(str) + '-' + ric_datasheet['CompanyID'].astype(str)
+            ric_datasheet = ric_datasheet[['rid_cid', 'col_title', 'Answer']]
 
-        try:
-            ric_datasheet = ric_datasheet.pivot(index='rid_cid', columns='col_title', values='Answer')
-            # ric_datasheet = pd.pivot_table(ric_datasheet, values='Answer', columns='col_title', index='rid_cid')
+            try:
+                ric_datasheet = ric_datasheet.pivot(index='rid_cid', columns='col_title', values='Answer')
+                # ric_datasheet = pd.pivot_table(ric_datasheet, values='Answer', columns='col_title', index='rid_cid')
 
-            ric_datasheet.reset_index(inplace=True)
+                ric_datasheet.reset_index(inplace=True)
 
-            ric_datasheet['resp_id'], ric_datasheet['CompanyID'] = ric_datasheet['rid_cid'].str.split('-', 1).str
-            ric_datasheet.drop('rid_cid', axis=1, inplace=True)
-            ric_datasheet = ric_datasheet.apply(pd.to_numeric, errors='ignore')
+                ric_datasheet['resp_id'], ric_datasheet['CompanyID'] = ric_datasheet['rid_cid'].str.split('-', 1).str
+                ric_datasheet.drop('rid_cid', axis=1, inplace=True)
+                ric_datasheet = ric_datasheet.apply(pd.to_numeric, errors='ignore')
 
-            # remove non-consenting responses
-            for val in list(ric_datasheet):
-                if 'consent' in str(val.lower()):
-                    consent_col = val
-                    ric_datasheet[consent_col] = ric_datasheet[consent_col].str.replace(u"\u2019", "'")
-                    ric_datasheet = ric_datasheet[ric_datasheet[consent_col] != "I don't give consent"]
-                    consent_col = ''
-                    break
+                # remove non-consenting responses
+                for val in list(ric_datasheet):
+                    if 'consent' in str(val.lower()):
+                        consent_col = val
+                        ric_datasheet[consent_col] = ric_datasheet[consent_col].str.replace(u"\u2019", "'")
+                        ric_datasheet = ric_datasheet[ric_datasheet[consent_col] != "I don't give consent"]
+                        consent_col = ''
+                        break
 
-            # re-order columns to reflect q_num ordering
-            cols = list(ric_datasheet)
-            rid_cid = cols[-2:]
-            q_cols = cols[:-2]
-            ordered_q_cols = []
-            for q in q_cols:
-                if q[-2:] == '.0':
-                    ordered_q_cols.append([col_title_order[q[:-8]], q])
+                # re-order columns to reflect q_num ordering
+                cols = list(ric_datasheet)
+                rid_cid = cols[-2:]
+                q_cols = cols[:-2]
+                ordered_q_cols = []
+                for q in q_cols:
+                    if q[-2:] == '.0':
+                        ordered_q_cols.append([col_title_order[q[:-8]], q])
+                    else:
+                        ordered_q_cols.append([col_title_order[q.strip()], q])
+                ordered_q_cols.sort()
+                for i in range(len(ordered_q_cols)):
+                    ordered_q_cols[i] = ordered_q_cols[i][1]
+                cols = rid_cid + ordered_q_cols
+                ric_datasheet = ric_datasheet[cols]
+
+                save_path = path_xl(
+                    user_path=user_path,
+                    path_extension="Box Sync/Workbench/BAP/Annual Survey FY2018/DEV - Results to RICs/",
+                    filename=ric + '.xlsx')
+
+                # pull out social impact companies separately for use later in CII datasheet
+                if ric == 'MaRS Discovery District':
+                    soc_imp_df = ric_datasheet[ric_datasheet['social_impact - Motives '] == 'Yes']
+
+                if ric != 'CII':
+                    # save to disc
+                    results_sheets = [ric_datasheet, ric_data_dicts[ric]]
+                    sheetnames = ['SurveyData', 'DataDictionary']
+                    save_xls(results_sheets, save_path, sheetnames)
+                    print("Wrote to {}".format(save_path))
                 else:
-                    ordered_q_cols.append([col_title_order[q.strip()], q])
-            ordered_q_cols.sort()
-            for i in range(len(ordered_q_cols)):
-                ordered_q_cols[i] = ordered_q_cols[i][1]
-            cols = rid_cid + ordered_q_cols
-            ric_datasheet = ric_datasheet[cols]
+                    print('Add extra tabs to {} datasheet'.format(ric))
+                    results_sheets = [ric_datasheet,
+                                      soc_imp_df,
+                                      ric_data_dicts[ric],
+                                      ric_data_dicts['MaRS Discovery District']]
+                    sheetnames = ['CII_SurveyData',
+                                  'All_RICs_SocialImpact_SurveyData',
+                                  'CII_DataDict',
+                                  'MaRS_DataDict']
+                    save_xls(results_sheets, save_path, sheetnames)
+                    print("Wrote to {}".format(save_path))
 
-            save_path = path_xl(
-                user_path=user_path,
-                path_extension="Box Sync/Workbench/BAP/Annual Survey FY2018/DEV - Results to RICs/",
-                filename=ric + '.xlsx')
+            except ValueError as ex:
+                print("!\nERROR FOR {}: {}\n!\n".format(ric, ex))
 
-            # pull out social impact companies separately for use later in CII datasheet
-            if ric == 'MaRS Discovery District':
-                soc_imp_df = ric_datasheet[ric_datasheet['social_impact - Motives '] == 'Yes']
-
-            if ric != 'CII':
-                # save to disc
-                results_sheets = [ric_datasheet, ric_data_dicts[ric]]
-                sheetnames = ['SurveyData', 'DataDictionary']
-                save_xls(results_sheets, save_path, sheetnames)
-                print("Wrote to {}".format(save_path))
-            else:
-                print('Add extra tabs to {} datasheet'.format(ric))
-                results_sheets = [ric_datasheet,
-                                  soc_imp_df,
-                                  ric_data_dicts[ric],
-                                  ric_data_dicts['MaRS Discovery District']]
-                sheetnames = ['CII_SurveyData',
-                              'All_RICs_SocialImpact_SurveyData',
-                              'CII_DataDict',
-                              'MaRS_DataDict']
-                save_xls(results_sheets, save_path, sheetnames)
-                print("Wrote to {}".format(save_path))
-
-        except ValueError as ex:
-            print("!\nERROR FOR {}: {}\n!\n".format(ric, ex))
-
-            # save conflicting answer values when pivot fails
-            save_path = path_xl(
-                user_path=user_path,
-                path_extension="Box Sync/Workbench/BAP/Annual Survey FY2018/DEV - Results to RICs/__dupies/",
-                filename=ric + '_dupies' + '.xlsx')
-            save_xls([ric_datasheet[ric_datasheet.duplicated(['rid_cid', 'col_title'], keep=False)]], save_path, ['dupies'])
-            continue
-        pass
+                # save conflicting answer values when pivot fails
+                save_path = path_xl(
+                    user_path=user_path,
+                    path_extension="Box Sync/Workbench/BAP/Annual Survey FY2018/DEV - Results to RICs/__dupies/",
+                    filename=ric + '_dupies' + '.xlsx')
+                save_xls([ric_datasheet[ric_datasheet.duplicated(['rid_cid', 'col_title'], keep=False)]], save_path, ['dupies'])
+                continue
+            pass
 
 
 if __name__ == '__main__':

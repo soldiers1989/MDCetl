@@ -7,7 +7,8 @@ import os
 class IAF(ds.DataSource):
 
 	def __init__(self):
-		super().__init__('box_file_path', 'path_iaf', enum.DataSourceType.IAF)
+		# super().__init__('box_file_path', 'path_iaf', enum.DataSourceType.IAF,new_path='')
+		super().__init__('', '', enum.DataSourceType.IAF, new_path='')
 		self.iaf_columns = ['Date_supplied','Firm_name','Entrepreneur_name', 'Sector', 'Number_of_employees', 'Board_observer_rights','New_non_spin_off_or_existing_firm',
 							'Angel', 'VC', 'Amount_of_other_dilutive_financing','Total_investment_leverage','Follow_on_closed_cumulative',
 							'Term_loan','IRAP', 'FedDev','SRED', 'OCE', 'Non_Dilutive_Other','Total_non_dilutive','Non_dilutive_cumulative',
@@ -38,6 +39,9 @@ class IAF(ds.DataSource):
 						 'Current_number_of_employees', 'Number_of_employees_at_time_of_investment',
 						 'Follow_on_closed_and_non_dilutive', 'Follow_on_closed', 'Board_Observer_rights',
 						 'Date_of_last_filed_report', 'Company_name']
+
+		self.iaf_metadata_columns = ['BatchID', 'MDC Company ID', 'Venture Name', 'MaRS Program (Start/ Growth/ Scale)', 'MaRS Sector', 'Notes']
+		self.iaf_metadata_cols =  ['BatchID','CompanyID','Name','MaRSProgram', 'MaRSSector','Note']
 
 	def read_iaf_summary_files(self):
 		_, summary = self.file.read_source_file(enum.FileType.SPREAD_SHEET, enum.MDCDataSource.IAF, enum.Combine.FOR_NONE.value)
@@ -91,6 +95,24 @@ class IAF(ds.DataSource):
 		self.common.get_path()
 
 
+	def push_iaf_metadata_db(self):
+		self.common.change_working_directory('MDC')
+		dfMetaData = pd.read_excel('IAF-only-ventures confidential 20180615 IG_Final.xlsx')
+		dfMetaData['BatchID'] = 3916
+		print(dfMetaData.columns)
+		dfMetaData =  dfMetaData[self.iaf_metadata_columns]
+		dfMetaData.columns = self.iaf_metadata_cols
+		dfMetaData['Program'] = dfMetaData.apply(lambda dfs: self.common.convert_mars_program(dfs['MaRSProgram']),
+												 axis=1)
+		dfMetaData['Sector'] = dfMetaData.apply(lambda dfs: self.common.convert_mars_sector(dfs['MaRSSector']),
+												 axis=1)
+		dfMetaData = dfMetaData[['BatchID', 'CompanyID', 'Name', 'Program', 'Sector', 'Note']]
+		print(dfMetaData.head(75))
+		values = self.common.df_list(dfMetaData)
+		self.db.bulk_insert(self.enum.SQL.sql_iaf_metadata_insert.value, values)
+
+
+
 if __name__ == '__main__':
 	iaf = IAF()
 	# iaf.read_iaf_summary_files()
@@ -99,4 +121,5 @@ if __name__ == '__main__':
 	# iaf.read_iaf_per_company_files()
 	# iaf.push_iaf_detail_db()
 	# iaf.getpath()
-	iaf.push_iaf_detail_db()
+	# iaf.push_iaf_detail_db()
+	iaf.push_iaf_metadata_db()

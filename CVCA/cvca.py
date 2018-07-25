@@ -18,7 +18,7 @@ class CVCA(ds.DataSource):
 
     def read_cvca_file(self):
         self.common.change_working_directory(self.enum.FilePath.path_cvca.value)
-        cvls = pd.read_excel('2017 VC and PE data extract_MaRS Data Catalyst.xlsx', sheet_name=None)
+        cvls = pd.read_excel('2017 VC and PE data extract_MaRS data Catalyst.xlsx', sheet_name=None)
         for i in range(len(list(cvls.items()))):
             if i == 0:
                 df_deals = list(cvls.items())[i][1]
@@ -70,7 +70,7 @@ class CVCA(ds.DataSource):
     def cvca_type_qa_result(self):
         self.common.change_working_directory(self.enum.FilePath.path_cvca.value)
         print(os.getcwd())
-        dfc = pd.read_excel('UA_QA_Results_CompaniesWrongDealTypes - 2017 VC and PE data extract_MaRS Data Catalyst.xlsx', sheet_name='Companies with Incorrect Deals')
+        dfc = pd.read_excel('UA_QA_Results_CompaniesWrongDealTypes - 2017 VC and PE data extract_MaRS data Catalyst.xlsx', sheet_name='Companies with Incorrect Deals')
         for _, r in dfc.iterrows():
             self.db.execute(self.enum.SQL.sql_cvca_type_update.value.format(r.Deal_Type_ID, r.ID))
             print(self.enum.SQL.sql_cvca_type_update.value.format(r.Deal_Type_ID, r.ID))

@@ -19,6 +19,7 @@ from Shared.common import Common as common
 # 16: Invest Ottawa
 # 17: Innovate Niagara
 
+
 class BAP_Quarterly_Validation:
     def __init__(self):
         self.quarter = 'Q3'

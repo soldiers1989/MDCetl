@@ -1,4 +1,19 @@
+-- FactRICVenture
+SELECT CompanyID,DataSource,BatchID,'20180724' DATEID, [Date of Intake],
+  [Incorporate year (YYYY)]  +'-'+ [Incorporation month (MM)]+'-15' DateOfIncorporation,
+  [Number of advisory service hours provided], [Volunteer mentor hours], [AnnualRevenue(CAN)],
+  NumberOfEmployees, [Funding Raised to Date $CAN],NULL FundingCurrentQuarter,
+  Stage,[Industry Sector], Youth, [High Potential y/n], [Social Enterprise y/n],FiscalQuarter,
+  FiscalYear, GETDATE() CreateDate, GETDATE() ModifiedDate
+FROM MDCRaw.BAP.VentureQuarterlyData Q
+  LEFT JOIN MDCDim.dbo.DimStage S ON S.Name = Q.Stage
+  LEFT JOIN MDCDim.dbo.DimIndustry I ON I.Name = Q.[Industry Sector]
+  LEFT JOIN MDCDim.dbo.DimYouth Y ON Y.Name = Q.Youth
+  LEFT JOIN MDCDim.dbo.DimYesNo N ON N.Name = Q.[High Potential y/n]
+  LEFT JOIN MDCDim.dbo.DimYesNo K ON K.Name = Q.[Social Enterprise y/n]
+WHERE FiscalYear = 2019
 
+--======================================================================================================================
 SELECT F.BatchID, F.DataSourceID, F.CompanyID,F.CurrentDate as DateID, F.MinDate,
   F.VolunteerThisQuarter, F.VolunteerYTD, F.AdvisoryThisQuarter, F.AdvisoryHoursYTD,
   CASE

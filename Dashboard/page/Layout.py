@@ -1,37 +1,24 @@
 from Shared.common import Common as common
 from Dashboard.graph.Chart import Chart
-from dash.dependencies import Input, Output, State
+
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_table_experiments as dt
 import json
 import pandas as pd
 import datetime
+import dash
+from flask import Flask
+from flask_cors import CORS
 
 
 class HomePage:
+
+
 	def __init__(self, page_title, user_name):
 		self.title = page_title
 		self.user = user_name
 		self.chart = Chart()
-		self.COLORS = [
-			{
-				'background': '#fef0d9',
-				'text': 'rgb(30, 30, 30)'
-			},
-			{
-				'background': '#fdcc8a',
-				'text': 'rgb(30, 30, 30)'
-			},
-			{
-				'background': '#fc8d59',
-				'text': 'rgb(30, 30, 30)'
-			},
-			{
-				'background': '#d7301f',
-				'text': 'rgb(30, 30, 30)'
-			},
-		]
 
 	def index_page(self):
 		index = html.Div(style={'backgroundColor': 'black'}, children=[
@@ -42,13 +29,13 @@ class HomePage:
 			# MENU
 			self.page_menu(),
 			#DROPDOWN MENU
-			self.dropdown(),
+			self.chart_filter(),
 			# First half of the graph
 			self.upper_graph(),
 			# Second half of the graph
 			self.lower_graph(),
 			#Third lower graph
-			self.third_lower_graph(),
+			self.third_laayer_graph(),
 		],
 		className='ten columns offset-by-one' #'ten columns offset-by-one'
 		)
@@ -58,27 +45,26 @@ class HomePage:
 		menu = html.Div(
 			[
 				html.Div([
-					dcc.Link('BAP Quarterly  ', href='/bap', className="tab first"),
-					dcc.Link('Annual Survey   ', href='/annual-survey', className="tab"),
-					dcc.Link('Crunchbase   ', href='/crunchbase', className="tab"),
+					dcc.Link('BAP QUARTERLY  ', href='/bap', className="tab first"),
+					dcc.Link('ANNUAL SURVEY   ', href='/annual-survey', className="tab"),
+					dcc.Link('BOARD DECK   ', href='/board-deck', className="tab"),
+					dcc.Link('CRUNCHBASE   ', href='/crunchbase', className="tab"),
 					dcc.Link('EPP   ', href='/epp', className="tab"),
-					dcc.Link('Think Data Works   ', href='/tdw', className="tab"),
-					dcc.Link('Board Deck   ', href='/board-deck', className="tab"),
-
+					dcc.Link('TDW   ', href='/tdw', className="tab"),
 					dcc.Link('NRCAN   ', href='/bap', className="tab"),
 					dcc.Link('StatsCAN   ', href='/annual-survey', className="tab"),
-					dcc.Link('PitchBook   ', href='/crunchbase', className="tab"),
+					# dcc.Link('PitchBook   ', href='/crunchbase', className="tab"),
 					dcc.Link('EPP   ', href='/epp', className="tab"),
 					dcc.Link('SPARK   ', href='/aprk', className="tab"),
-					dcc.Link('Energy & Environment   ', href='/energyenvt', className="tab"),
+					dcc.Link('ENERGY & ENVIRONMENT   ', href='/energyenvt', className="tab"),
 
-					dcc.Link('Database Overview   ', href='/dboverview', className="tab"),
-					dcc.Link('Contact   ', href='/contact', className="tab"),
-					dcc.Link('About   ', href='/about', className="tab"),
+					dcc.Link('MDC DATABASE   ', href='/dboverview', className="tab"),
+					dcc.Link('CONTACT   ', href='/contact', className="tab"),
+					dcc.Link('ABOUT   ', href='/about', className="tab"),
 					], className="row ")
 				],
 			style={'margin-top': '5',
-				   'backgroundColor': 'grey',#e6eeff',
+				   'backgroundColor': '#f0f0f5',
 				   'color': 'blue',
 				   'font-weight': 'bold'}
 		)
@@ -89,10 +75,7 @@ class HomePage:
 			[
 				html.Div(
 					[
-						dcc.Graph(id='main_graph',
-								  figure=self.chart.alpha_graph('Revenue','Funding to Date','REVENUE', 'FundingTODate')
-								  )
-						# self.table('TEST FOR BAP DATA')
+						dcc.Graph(id='alpha_graph')
 					],
 					className='eight columns',
 					style={'margin-top': '20',  'backgroundColor':'grey'}
@@ -100,9 +83,7 @@ class HomePage:
 				html.Div(
 					[
 						dcc.Graph(
-							id='individual_graph',
-							figure=self.chart.beta_graph()
-						)
+							id='beta_graph')
 					],
 					className='four columns',
 					style={'margin-top': '20'}
@@ -117,27 +98,21 @@ class HomePage:
 			[
 				html.Div(
 					[
-						dcc.Graph(id='count_graph',
-								  figure=self.chart.gamma_graph()
-								  )
+						dcc.Graph(id='gamma_graph')
 					],
 					className='four columns',
 					style={'margin-top': '10'}
 				),
 				html.Div(
 					[
-						dcc.Graph(id='pie_graph',
-								  figure=self.chart.delta_graph()
-								  )
+						dcc.Graph(id='delta_graph')
 					],
 					className='four columns',
 					style={'margin-top': '10'}
 				),
 				html.Div(
 					[
-						dcc.Graph(id='aggregate_graph',
-								  figure=self.chart.epsilon_graph()
-						)
+						dcc.Graph(id='epsilon_graph')
 					],
 					className='four columns',
 					style={'margin-top': '10'}
@@ -147,32 +122,26 @@ class HomePage:
 		)
 		return l_graph
 
-	def third_lower_graph(self):
+	def third_laayer_graph(self):
 		tl_graph = html.Div(
 			[
 				html.Div(
 					[
-						dcc.Graph(id='tcount_graph',
-								  figure=self.chart.zeta_graph()
-								  )
+						dcc.Graph(id='zeta_graph')
 					],
 					className='four columns',
 					style={'margin-top': '10'}
 				),
 				html.Div(
 					[
-						dcc.Graph(id='tpie_graph',
-								  figure=self.chart.eta_graph()
-								  )
+						dcc.Graph(id='eta_graph')
 					],
 					className='four columns',
 					style={'margin-top': '10'}
 				),
 				html.Div(
 					[
-						dcc.Graph(id='taggregate_graph',
-								  figure=self.chart.theta_graph()
-						)
+						dcc.Graph(id='theta_graph')
 					],
 					className='four columns',
 					style={'margin-top': '10'}
@@ -182,39 +151,67 @@ class HomePage:
 		)
 		return tl_graph
 
-	def dropdown(self):
+	def chart_filter(self):
 		val = list(self.chart.dfRIC.FiscalYear.unique())
 		dd = html.Div(
 			[
 				html.Div(
 					[
-
 						dcc.Dropdown(
-							id='well_statuses',
+							id='mdc_metrics',
 							options=[{'label': 'Funding to Date', 'value': 'FundingTODate'},
 									 {'label': 'Revenue', 'value': 'REVENUE'},
 									 {'label': 'Employment', 'value': 'Employees'},
 									 {'label': 'Advisory Hours', 'value': 'AdvisoryHours'},
 									 {'label': 'Volunteer Hours', 'value': 'VolunteerHours'}],
 							multi=False,
-							value=['BAP'],
+							value='REVENUE',
 						),
 					],
 					className='six columns'
 				),
 				html.Div(
 					[
-						dcc.RangeSlider(
-							id='year_slider',
-							min=2015,
-							max=2018,
-							step=1,
-							value=val
+						dcc.Dropdown(
+							id='fiscal_year',
+							options=[{'label': 'FY 2015', 'value': 2015},
+									 {'label': 'FY 2016', 'value': 2016},
+									 {'label': 'FY 2017', 'value': 2017},
+									 {'label': 'FY 2018', 'value': 2018},
+									 {'label': 'FY 2019', 'value': 2019}],
+							multi=False,
+							value=2017,
 						),
 					],
-					className='six columns',
-					style={'backgroundColor':'none', 'padding-top':10}
+					className='three columns'
 				),
+				html.Div(
+					[
+						dcc.Dropdown(
+							id='fiscal_quarter',
+							options=[{'label': 'Q I', 'value': 1},
+									 {'label': 'Q II', 'value': 2},
+									 {'label': 'Q III', 'value': 4},
+									 {'label': 'Q IV', 'value': 5}],
+							multi=False,
+							value=1,
+						),
+					],
+					className='three columns'
+				),
+				# html.Div(
+				# 	[
+				# 		dcc.RangeSlider(
+				# 			id='year_slider',
+				# 			min=2015,
+				# 			max=2018,
+				# 			step=1,
+				# 			value=val
+				# 		),
+				# 	],
+				# 	className='six columns',
+				# 	style={'backgroundColor':'none', 'padding-top':10}
+				# ),
 			],
 			className='row',
 			style={'backgroundColor': ''}
@@ -240,9 +237,10 @@ class HomePage:
 		user = html.Div(
 			[
 				html.H5(
-					'[Demo Only!]',
+					'MDC eyes only',
 					id='well_text',
-					className='three columns'
+					className='three columns',
+					style={'font-style': 'italic', 'color':'white'}
 				),
 				html.H5(
 					str(datetime.date.today())[:15],
@@ -320,5 +318,6 @@ class HomePage:
 		common.change_working_directory('Box Sync/mnadew/IE/MDCetl/Dashboard/data')
 		df = pd.read_csv('geo.csv')
 		return self.chart.table(df)
+
 
 

@@ -72,17 +72,11 @@ class Chart:
 				)
 			)
 			traces.append(trace)
-		lon = 79.64
-		lat = 43.65
-		zoom = 7
-
 		return traces
 
 	def bubble_chart(self, df, x_value, y_value):
 		traces = []
 		for ric in self.dfRIC.Name.unique():
-			# dx = pd.Series(list(self.df.groupby(['Name'])[x_value].agg('sum')))
-			# dy = pd.Series(list(self.df.groupby(['Name'])[y_value].agg('sum')))
 			x = df[df['Name'] == ric][x_value].dropna()#pd.Series(df.Name.unique())#
 			y = df[df['Name'] == ric][y_value].dropna()
 			trace = go.Scatter(
@@ -104,7 +98,7 @@ class Chart:
 			traces.append(trace)
 		return traces
 
-	def scatter_chart(self, mode, graph_name,x_series, y_series, line_shape, smoothing=2, line_width=1, line_color='#fac1b7', line_symbol='diamond', opacity=1):
+	def scatter_chart(self, mode, graph_name,x_series, y_series, line_shape, smoothing=2, line_width=1, line_color='#fac1b7', line_symbol='circle', opacity=1):
 		graph = dict(
 				type='scatter',
 				mode=mode,
@@ -122,6 +116,25 @@ class Chart:
 				marker=dict(symbol=line_symbol)
 		)
 		return graph
+
+	def threeD_scatter_cahrt(self, x_value, y_value, z_value):
+		trace =  go.Scatter3d(
+			x=x_value,
+			y=y_value,
+			z=z_value,
+			mode='markers',
+			marker=dict(
+				size=12,
+				line=dict(
+					color='rgba(217, 217, 217, 0.14)',
+					width=0.5
+				)
+			),
+			opacity=0.8,
+			showlegend=False
+		)
+		return trace
+
 
 	def bar_graph(self, x, y, graph_name='Graph 1', colors=['rgb(192, 255, 245)']):
 		bar = dict(
@@ -157,17 +170,19 @@ class Chart:
 		layout_bubble = copy.deepcopy(self.layout())
 		layout_bubble['xaxis'] = dict(type='log', title=x_title)
 		layout_bubble['yaxis'] = dict(title=y_title)
-		# layout_bubble['legend'] = dict(x=0, y=1)
 		layout_bubble['hovermode'] = 'closest'
-		layout_bubble['title'] = 'Revenue Vs Funding Rasided by RIC'
+		layout_bubble['title'] = '{} Vs Funding Rasided by RIC'.format(x_title)
 		layout_bubble['margin'] = dict(l=65,r=35,b=35,t=45)
 		dff = self.dfRIC[self.dfRIC['FundingTODate'] < 10000000]
 
-		figure = dict(data=self.bubble_chart(dff, x_value, y_value), layout=layout_bubble)
+
+		data = self.bubble_chart(dff, x_value, y_value)
+
+		figure = dict(data=data, layout=layout_bubble)
 
 		return figure
 
-	def beta_graph(self):
+	def beta_graph(self, y_value):
 		layout_beta = copy.deepcopy(self.layout())
 		if self.dfRIC is None:
 			annotation = dict(
@@ -180,52 +195,44 @@ class Chart:
 				yref='paper'
 			)
 		else:
-			x = self.dfRIC.Name.unique()
+			x = self.dfRIC['Name'].unique()
+			y = self.dfRIC[y_value].dropna()
 			data = [
 
-				self.scatter_chart('lines+markers', 'Revenue', x,
-								   self.dfRIC.FundingTODate.dropna(), 'spline', 2, 1, '#fac1b7', 'diamond')
+				self.scatter_chart('lines+markers', 'Revenue', x,y,
+								   'spline', 2, 1, '#fac1b7', 'diamond')
 			]
-		layout_beta['title'] = 'FUNDING'
-		layout_beta['title'] = 'FUNDING'
+		layout_beta['title'] = str(y_value)
 		figure = dict(data=data, layout=layout_beta)
 		return figure
 
-	def gamma_graph(self): # Aggregate
+	def gamma_graph(self, y_value):
 		layout_gamma = copy.deepcopy(self.layout())
 		colors = ['skyblue','skyblue']
 
 		data = [self.bar_graph(self.dfRIC.Name.unique(),
-							   self.dfRIC.REVENUE.dropna(),# self.dfRIC[self.dfRIC.REVENUE < 40000000]['REVENUE'],
-							   'All RICS Revenue',
+							   self.dfRIC[y_value].dropna(),
+							   '',
 							   colors='skyblue')]
-		layout_gamma['title'] = 'Revenues by RIC'
+		layout_gamma['title'] = '{} by RIC'.format(str(y_value))
 		layout_gamma['dragmode'] = 'select'
 		layout_gamma['showlegend'] = False
 
 		figure= dict(data=data, layout=layout_gamma)
 		return figure
 
-	def delta_graph(self): # pie
+	def delta_graph(self, y_value):
 		layout_delta = copy.deepcopy(self.layout())
+		x = self.dfRIC.Name.unique()
 		data = [
-			self.pie_graph(list(self.dfRIC.Name.unique()),
-						   list(self.dfRIC.groupby(['Name'])['FundingTODate'].agg('sum')),
-						   'Revenue Distribution',
-						   list(self.dfRIC.Name.unique()), 0.5, {"x": [1.1, 1.55], 'y': [1.2, 0.8]},  #{"x": [0, .45], 'y': [0.2, 0.8]},
+			self.pie_graph(list(x),
+						   list(self.dfRIC.groupby(['Name'])[y_value].agg('sum')),
+						   '',
+						   list(self.dfRIC.Name.unique()), 0.3, {"x": [1.1, 1.55], 'y': [1.2, 0.8]},  #{"x": [0, .45], 'y': [0.2, 0.8]},
 						   ['#fac1b7', '#a9bb95', '#92d8d8']),
-			# self.pie_graph(list(self.df.Name.unique()),
-			# 			   list(self.df.groupby(['Name'])['Employees'].agg('sum')),
-			# 			   'Number of Employees Distribution',list(self.df.Name.unique())
-			# 			   , 0.5, {"x": [0.55, 1], 'y':[0.2, 0.8]},
-			# 			   ['#caf167', '#a90095', '#2aa45fd']),
-			# self.pie_graph(list(self.df.Name.unique()),
-			#                list(self.df.groupby(['Name'])['AdvisoryHours'].agg('sum')),
-			#                'Advisory Hours', list(self.df.Name.unique())
-			#                , 0.5, {"x": [1.1, 1.55], 'y': [1.2, 0.8]},
-			#                ['#caf167', '#a90095', '#2aa45fd'])
+
 		]
-		layout_delta['title'] = 'Funding to date by RICs'
+		layout_delta['title'] = '{} breakdown'.format(y_value)
 		layout_delta['font'] = dict(color='#777777')
 		layout_delta['showlegend'] = False
 		layout_delta['legend'] = dict(
@@ -235,52 +242,48 @@ class Chart:
 		figure = dict(data=data, layout=layout_delta)
 		return figure
 
-	def epsilon_graph(self):
+	def epsilon_graph(self, x_value, y_value, z_value):
 		layout_epsilon = copy.deepcopy(self.layout())
 		data = [
-			self.scatter_chart('lines+markers', 'Funding', self.dfRIC.Name.unique(),
-							   self.dfRIC.REVENUE.dropna(), 'spline', 2, 1, '#92d8d8', 'diamond')
-		]
-		layout_epsilon['title'] = 'REVENUE'
+			self.threeD_scatter_cahrt(self.dfRIC[x_value].unique(), self.dfRIC[y_value].dropna(), self.dfRIC[z_value].dropna())]
+		layout_epsilon['title'] = '{} | {} | {}'.format(str(x_value), y_value, z_value)
 		figure = dict(data=data, layout=layout_epsilon)
 		return figure
 
-	def zeta_graph(self):  # Aggregate
+	def zeta_graph(self, y_value):  # Aggregate
 		layout_zeta = copy.deepcopy(self.layout())
 		colors = ['skyblue', 'skyblue']
 
 		data = [self.bar_graph(self.dfStage.Name.unique(),
-							   self.dfStage.REVENUE.dropna(),
+							   self.dfStage[y_value].dropna(),
 							   'All RICS Revenue',
 							   colors='skyblue')]
-		layout_zeta['title'] = 'Gamma bar chart'
+		layout_zeta['title'] = '{} by RIC'.format(str(y_value))
 		layout_zeta['dragmode'] = 'select'
 		layout_zeta['showlegend'] = False
 
 		figure = dict(data=data, layout=layout_zeta)
 		return figure
 
-	def eta_graph(self):  # pie
+	def eta_graph(self, y_value):  # pie
 		layout_eta = copy.deepcopy(self.layout())
 		data = [
 			self.pie_graph(list(self.dfStage.Name.unique()),
-						   list(self.dfStage.groupby(['Name'])['REVENUE'].agg('sum')),
-						   'Revenue Distribution',
-						   list(self.dfRIC.Name.unique()), 0.5, {"x": [1.1, 1.55], 'y': [1.2, 0.8]},
-						   # {"x": [0, .45], 'y': [0.2, 0.8]},
+						   list(self.dfStage.groupby(['Name'])[y_value].agg('sum')),'',
+						   list(self.dfStage.Name.unique()), 0.5, {"x": [1.1, 1.55], 'y': [1.2, 0.8]},
 						   ['#fac1b7', '#a9bb95', '#92d8d8']),
 		]
-		layout_eta['title'] = 'Revenue and Employment by RICs'
+		layout_eta['title'] = '{} breakdown'.format(y_value)
 		layout_eta['font'] = dict(color='#777777')
-		layout_eta['showlegend'] = False
+		layout_eta['showlegend'] = True
 		layout_eta['legend'] = dict(
 			font=dict(color='#CCCCCC', size='10'),
-			orientation='h',
+			orientation='v',
 			bgcolor='rgba(0,0,0,0)')
 		figure = dict(data=data, layout=layout_eta)
 		return figure
 
-	def theta_graph(self):
+	def theta_graph(self, x_value, y_value, z_value):
 		layout_theta = copy.deepcopy(self.layout())
 		if self.dfRIC is None:
 			annotation = dict(
@@ -293,11 +296,7 @@ class Chart:
 				yref='paper'
 			)
 		else:
-			x = self.dfStage.Name.unique()
-			data = [
-				self.scatter_chart('lines+markers', 'Number of Employees', x,
-								   self.dfStage.Employees.dropna(), 'spline', 2, 1, '#a9bb95', 'diamond')
-			]
-		layout_theta['title'] = 'EMPLOYMENT'
+			data = [self.threeD_scatter_cahrt(self.dfStage[x_value].unique(), self.dfStage[y_value].dropna(), self.dfStage[z_value].dropna())]
+		layout_theta['title'] = '{} | {} | {}'.format(str(x_value), y_value, z_value)
 		figure = dict(data=data, layout=layout_theta)
 		return figure

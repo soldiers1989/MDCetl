@@ -1,4 +1,3 @@
-import numpy as np
 from Shared.datasource import DataSource
 from Dashboard.data.constants import SQL, Category
 import Shared.enums as enum
@@ -22,11 +21,4 @@ class ChartData(DataSource):
                 self.sql = SQL.bap_types.value.format('HighPotential', 'MDCDim.dbo.DimDataSource', 'DataSource', 'HighPotential')
         self.data = self.db.pandas_read(self.sql)
         return self.data
-
-
-if __name__ == '__main__':
-    ch = ChartData()
-    x = ch.bap_data(Category.DataSource, Category.Potential)
-    print(x.head(25))
-
 

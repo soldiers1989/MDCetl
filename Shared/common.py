@@ -705,4 +705,18 @@ class Common:
 
 		return mars_sector
 
-
+	@staticmethod
+	def save_as_excel(dfs, file_name, path_key):
+		path = Common.get_config('config.ini', 'box_file_path', path_key)
+		box_path = os.path.join(os.path.expanduser("~"), path)
+		os.chdir(box_path)
+		try:
+			writer = pd.ExcelWriter(file_name)
+			j = 0
+			for df in dfs:
+				j += j
+				sheet_name = 'SHEET {}'.format(j)
+				df.to_excel(writer, sheet_name, index=False)
+			writer.save()
+		except Exception as ex:
+			print(ex)

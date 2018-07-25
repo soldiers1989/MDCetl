@@ -2,7 +2,8 @@ import pyodbc
 import pandas as pd
 from Shared.common import Common
 from Shared.enums import SQL as sq
-from Shared.file_service import FileService as FS
+import time
+# from Shared.file_service import FileService as FS
 
 
 class DB:
@@ -62,21 +63,22 @@ class DB:
                 return 'FAILURE'
 
     @staticmethod
-    def save_data_chunk(df, sql_insert, chunk_size=1000, rtrn_msg=False, fail_path_key=''):
+    def save_data_chunk(df, sql_insert, chunk_size=1000, capture_fails=False, fail_path_key=''):
         i = 0
         j = i + chunk_size
         total_size = len(df) + 1
         while i < total_size:
+            now = int(round(time.time() * 1000))
             print('From {} to {}'.format(i, j))
             df_insert = df.iloc[i:j]
             values = Common.df_list(df_insert)
-            if rtrn_msg:
-                msg = DB.bulk_insert(sql_insert, values, rtrn_msg=rtrn_msg)
+            if capture_fails:
+                msg = DB.bulk_insert(sql_insert, values, rtrn_msg=True)
                 if msg == 'FAILURE':
-                    filename = 'Failed_chunk_{}_to_{}'.format(i, j)
+                    filename = '{}_fail_chunk_{}_to_{}.xlsx'.format(now, i, j)
                     if fail_path_key != '':
-                        FS.save_as_excel(dfs=[df_insert], file_name=filename, path_key=fail_path_key)
-                return msg
+                        Common.save_as_excel(dfs=[df_insert], file_name=filename, path_key=fail_path_key)
+                        print("\tCHUNK FAILED. SAVED TO {}".format(filename))
             else:
                 DB.bulk_insert(sql_insert, values)
             print('-' * 150)

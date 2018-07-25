@@ -75,6 +75,14 @@ def execute(sql):
 
 
 def get_brackets(string, keyword, count_vals=False, list_vals=False):
+    """This function takes a SQL string (eg. INSERT INTO ([columns]) VALUES ([values])
+    and a keyword and returns a string  contained in the set of brackets that dircetly follows
+    the provided keyword.
+
+    >>> get_brackets(string='INSERT INTO table (col1, col2) VALUES (val1, val2)' keyword='VALUES')
+    'val1, val2')
+
+    """
     keyword = keyword.lower()
     s_ix = string.lower().index(keyword)
     short_str = string[s_ix:]
@@ -148,23 +156,8 @@ def get_brackets(string, keyword, count_vals=False, list_vals=False):
         return bracket_vals, val_lst
     return bracket_vals
 
-fill_these = ['career_changers_matrix'
-                    ,'career_starters_matrix'
-                    ,'dwa_reference'
-                    ,'emerging_tasks'
-                    ,'green_dwa_reference'
-                    ,'green_occupations'
-                    ,'green_task_statements'
-                    ,'iwa_reference'
-                    ,'sample_of_reported_titles'
-                    # ,'task_statements'
-                    ,'tasks_to_dwas'
-                    ,'tasks_to_green_dwas'
-                    ,'tools_and_technology'
-                    ,'unspsc_reference'
-                    ,'work_context'
-                    ,'work_styles'
-                    ,'work_values']
+
+fill_these = ['task_statements']
 
 
 def _main_():
@@ -191,7 +184,7 @@ def _main_():
             sqlCommands = sqlFile.split(';')
 
             # clean commands
-            print("Clening SQL commands")
+            print("Cleaning SQL commands")
             x = 0
             for i in range(len(sqlCommands)):
                 x += 1

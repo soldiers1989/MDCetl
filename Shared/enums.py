@@ -826,6 +826,9 @@ class SQL(Enum):
 	sql_census_median_income_insert = '''INSERT INTO MDCRaw.EPP.CensusMedianIncome Values(?,?,?,?,?,?,?)'''
 	sql_bap_annual_insert = '''INSERT INTO MDCRaw.BAP.AnnualCompanyData VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'''
 
+	sql_statscan_test_pop = '''INSERT INTO MDC_DEV.dbo.STATSCANPopulation Values(?,?,?,?,?,?,?)'''
+	sql_statscan_test_income = '''INSERT INTO MDC_DEV.dbo.STATSCANIncome Values(?,?,?,?,?,?,?)'''
+
 
 class Columns(Enum):
 	ric_aggregation_id = 'RICAggregationID'
@@ -947,7 +950,7 @@ class FilePath(Enum):
 	path_mars_metadata = 'Box Sync/WorkBench/BAP/Annual Survey FY2018/MaRS Metadata'
 	path_mars_supplemental = 'Box Sync/WorkBench/BAP/Annual Survey FY2018/MaRS Supplemental'
 	path_communitech_shared = 'Box Sync/WorkBench/BAP/Annual Survey FY2018/Communitech'
-	path_statscan_census = 'Box Sync/Workbench/statsCAN/statsCAN'
+	path_statscan_census = 'Box Sync/Workbench/statsCAN'
 
 
 class DealType(Enum):

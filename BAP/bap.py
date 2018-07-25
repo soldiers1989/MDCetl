@@ -20,6 +20,7 @@ from dateutil import parser
 class BapQuarterly:
 	desired_width = 420
 	pd.set_option('display.width', desired_width)
+
 	year, quarter = COM.fiscal_year_quarter(datetime.datetime.utcnow())
 	quarter = quarter - 1
 	batch = BatchService()
@@ -27,21 +28,25 @@ class BapQuarterly:
 	bap_path_etl = COM.get_config('config.ini', 'box_file_path', 'path_bap_etl')
 	file = FileService(bap_path_source)
 	qa = BapQA()
-	season = '18_Q4'
+	season = '19_Q1'
 	company = CompanyService()
 
 	@staticmethod
 	def show_bap_quarterly_template():
 		BapQuarterly.file.show_source_file()
 
+	'''
+	Checks if all the RICs send the right template with all the columns exists.
+	'''
 	@staticmethod
 	def qa_bap_spread_sheet_by_ric():
-		BapQuarterly.qa.check_rics_file(pth.DATA)
+		BapQuarterly.qa.check_rics_file(fp.path_bap_etl, fp.path_bap_qa)
 
 	@staticmethod
 	def combine_rics_bap_quarterly(combine_for):
-		program, program_youth, company_quarterly, company_annually = BapQuarterly.file.read_source_file(FileType.SPREAD_SHEET.value, DS.BAP, combine_for, current_path=BapQuarterly.bap_path_etl)
-		file_name = '{}'.format(FN.bap_combined.value.format('18','4'))#(str(BapQuarterly.year - 1)[-2:], BapQuarterly.quarter))
+		program, program_youth, company_quarterly, company_annually = BapQuarterly.file.read_source_file(
+			FileType.SPREAD_SHEET.value, DS.BAP, combine_for, current_path=fp.path_bap_qa.value)
+		file_name = '{}'.format(FN.bap_combined.value.format('19','1'))#(str(BapQuarterly.year - 1)[-2:], BapQuarterly.quarter))
 		if combine_for == Combine.FOR_QA:
 			file_name = 'QA_' + file_name
 		else:
@@ -57,7 +62,8 @@ class BapQuarterly:
 		program.to_excel(writer, WS.bap_program.value, index=False)
 		program_youth.to_excel(writer, WS.bap_program_youth.value, index=False)
 		company_quarterly.to_excel(writer, WS.bap_company.value, index=False)
-		company_annually.to_excel(writer, WS.bap_company_annual.value, index=False)
+		if BapQuarterly.quarter == 3:
+			company_annually.to_excel(writer, WS.bap_company_annual.value, index=False)
 		writer.save()
 		
 		print('rics_spreasheet_combined.')
@@ -69,54 +75,48 @@ class BapQuarterly:
 	@staticmethod
 	def transfer_csv_program(dataframe):
 		val = COM.df_list(dataframe)
-		db.bulk_insert(sql.sql_program_insert.value, val)
+		db.bulk_insert(sql.sql_bap_ric_program_insert.value, val)
 	
 	@staticmethod
 	def transfer_csv_program_youth(dataframe):
 		val = COM.df_list(dataframe)
-		db.bulk_insert(sql.sql_program_youth_insert.value, val)
+		db.bulk_insert(sql.sql_bap_ric_program_youth_insert.value, val)
 	
 	@staticmethod
 	def bulk_insert_quarterly_data(dataframe):
 		val = COM.df_list(dataframe)
-		db.bulk_insert(sql.sql_bap_company_insert.value, val)
+		db.bulk_insert(sql.sql_bap_ric_venture_quarterly_insert.value, val)
 
 	@staticmethod
 	def bulk_insert_annual_data(dataframe):
 		val = COM.df_list(dataframe)
-		db.bulk_insert(sql.sql_bap_company_annual_insert.value, val)
+		db.bulk_insert(sql.sql_bap_ric_venture_annual_insert.value, val)
 
 	@staticmethod
 	def push_bap_quarterly_to_database():
 		COM.change_working_directory(fp.path_bap_combined.value)
 
-		bap = pd.read_excel('ETL_RICS_BAP_COMBINED_FY18Q4.xlsx', sheet_name=None)
+		bap = pd.read_excel('ETL_RICS_BAP_COMBINED_FY19Q1.xlsx', sheet_name=None)
 
-		BapQuarterly.transfer_csv_program(bap['csv_program16'])
-		BapQuarterly.transfer_csv_program_youth(bap['csv_program16_youth'])
-		BapQuarterly.bulk_insert_quarterly_data(bap['Quarterly Company data'])
+		# BapQuarterly.transfer_csv_program(bap['csv_program16'])
+		# BapQuarterly.transfer_csv_program_youth(bap['csv_program16_youth'])
+		BapQuarterly.bulk_insert_quarterly_data(bap['Quarterly Company Data'])
 		if BapQuarterly.quarter == 3:
 			BapQuarterly.bulk_insert_annual_data(bap['Annual Company data'])
 
 	@staticmethod
 	def create_bap_batch():
 		batch = BatchService()
-		program = db.pandas_read(sql.sql_bap_distinct_batch.value.format(tbl.company_program.value,'2018','4'))
-																		 # BapQuarterly.year,
-																		 # BapQuarterly.quarter))
-		program_youth = db.pandas_read(sql.sql_bap_distinct_batch.value.format(tbl.company_program_youth.value,'2018','4'))
-																			   # BapQuarterly.year,
-																			   # BapQuarterly.quarter))
-		company = db.pandas_read(sql.sql_bap_distinct_batch.value.format(tbl.company_data.value,'2018','4'))
-																		 # BapQuarterly.year,
-																		 # BapQuarterly.quarter))
-		comapny_annual = db.pandas_read(sql.sql_annual_bap_distinct_batch.value.format(tbl.company_annual.value,'2018','4'))
-																				# BapQuarterly.year))
-		# batch.create_bap_batch(program, 2018, 4, tbl.company_program.value, WS.bap_program.value, ss.RICPD_bap.value)
-		batch.create_bap_batch(program_youth, 2018, 4, tbl.company_program_youth.value, WS.bap_program_youth.value, ss.RICPDY_bap.value)
-		batch.create_bap_batch(company, 2018, 4, tbl.company_data.value, WS.bap_company.value, ss.RICCD_bap.value)
+		program = db.pandas_read(sql.sql_bap_distinct_batch.value.format(tbl.ric_program.value,BapQuarterly.year,BapQuarterly.quarter))
+		program_youth = db.pandas_read(sql.sql_bap_distinct_batch.value.format(tbl.ric_program_youth.value, BapQuarterly.year,BapQuarterly.quarter))
+		company = db.pandas_read(sql.sql_bap_distinct_batch.value.format(tbl.venture_data.value, BapQuarterly.year, BapQuarterly.quarter))
+		comapny_annual = db.pandas_read(sql.sql_annual_bap_distinct_batch.value.format(tbl.venture_annual.value,BapQuarterly.year))
+
+		# batch.create_bap_batch(program, BapQuarterly.year, BapQuarterly.quarter, tbl.ric_program.value, WS.bap_program.value, ss.RICPD_bap.value)
+		# batch.create_bap_batch(program_youth, BapQuarterly.year, BapQuarterly.quarter, tbl.ric_program_youth.value, WS.bap_program_youth.value, ss.RICPDY_bap.value)
+		batch.create_bap_batch(company, BapQuarterly.year, BapQuarterly.quarter, tbl.venture_data.value, WS.bap_company.value, ss.RICCD_bap.value)
 		if BapQuarterly.quarter == 3:
-			batch.create_bap_batch(comapny_annual, 2018, 4, tbl.company_annual.value, WS.bap_company_annual.value, ss.RICACD_bap.value)
+			batch.create_bap_batch(comapny_annual, BapQuarterly.year, BapQuarterly.quarter, tbl.venture_annual.value, WS.bap_company_annual.value, ss.RICACD_bap.value)
 	
 	@staticmethod
 	def transfer_bap_company():
@@ -560,8 +560,18 @@ if __name__ == '__main__':
 	# BapQuarterly.bap_company_basic_name()
 	# BapQuarterly.company.update_raw_company()
 	# BapQuarterly.transfer_fact_ric_company_data()
-	BapQuarterly.transfer_fact_ric_aggregation()
+	# BapQuarterly.transfer_fact_ric_aggregation()
 	# BapQuarterly.generate_bap_rolled_up()
 	# BapQuarterly.tech_alliance_intake_date_TEMP()
 	# BapQuarterly.combine_missing_data()
 	# BapQuarterly.push_bap_missing_data_to_temp_table()
+
+	# BapQuarterly.show_bap_quarterly_template()
+	# BapQuarterly.qa.check_columns_completeness()
+	# BapQuarterly.qa_bap_spread_sheet_by_ric()
+	# BapQuarterly.combine_rics_bap_quarterly(Combine.FOR_QA)
+	# BapQuarterly.combine_rics_bap_quarterly(Combine.FOR_ETL)
+	# BapQuarterly.push_bap_quarterly_to_database()
+	# BapQuarterly.create_bap_batch()
+	BapQuarterly.bap_company_basic_name()
+	## BapQuarterly.company.move_company_data()

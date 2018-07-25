@@ -192,8 +192,8 @@ class MDCDataSource(Enum):
 class WorkSheet(Enum):
 	bap_program = 'csv_program16'
 	bap_program_youth = 'csv_program16_youth'
-	bap_company = 'Quarterly Company data'
-	bap_company_annual = 'Annual Company data'
+	bap_company = 'Quarterly Company Data'
+	bap_company_annual = 'Annual Company Data'
 	bap_program_final = 'Program'
 	bap_program_youth_final = 'Program Youth'
 	bap_company_old = 'Company data'
@@ -205,22 +205,22 @@ class FileName(Enum):
 
 
 class Table(Enum):
-	company_program =       'MaRSDataCatalyst.BAP.ProgramData'
-	company_program_youth = 'MaRSDataCatalyst.BAP.ProgramDataYouth'
-	company_data =          'MaRSDataCatalyst.BAP.QuarterlyCompanyData'
-	company_annual =        'MaRSDataCatalyst.BAP.AnnualCompanyData'
+	ric_program =       'MDCRaw.BAP.RICProgram'
+	ric_program_youth = 'MDCRaw.BAP.RICProgramYouth'
+	venture_data = 	'MDCRaw.BAP.VentureQuarterlyData'
+	venture_annual =        'MDCRaw.BAP.AnnualCompanyData'
 
-	batch = 'Config.ImportBatch'
-	batch_log = 'Config.ImportBatchLog'
+	batch = 'MDCRaw.CONFIG.Batch'
 
-	fact_ric_aggregation = 'Reporting.FactRICAggregation'
+	fact_ric_aggregation = 'MDCReport.BAPQ.FactRICAggregation'
+	fact_ric_venture = 'MDCReport.BAPQ.FactRICVenture'
+	fact_ric_rollup = 'MDCReport.BAPQ.FactRICVentureRollUp'
 
 
 class SQL(Enum):
 	sql_entity_exists = '''SELECT * FROM {} WHERE {} LIKE \'{}\' '''
 	sql_annual_comapny_data_update = 'UPDATE BAP.AnnualCompanyData SET CompanyID = {} WHERE ID = {}'
 	sql_target_list_update = 'UPDATE MDCRaw.SURVEY.Targetlist SET CompanyID = {} WHERE ID = {}'
-	sql_batch_insert = 'INSERT INTO Config.ImportBatch VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 	sql_update = 'UPDATE {} SET {} = {} WHERE {} = {}'
 	sql_get_max_id = 'SELECT MAX({}) AS MaxID FROM {}'
 	sql_bap_quarterly_company = 'SELECT ID, [Company Name] as Name, [FileName], BatchID, Website, DataSource FROM BAP.QuarterlyCompanyData WHERE CompanyID = \'0\''
@@ -232,14 +232,16 @@ class SQL(Enum):
 	sql_dim_company_source = 'SELECT CompanyID, [Name] as [CompanyName] FROM {} WHERE[Name] IS NOT NULL'
 	sql_update_company_source ='UPDATE [Config].[CompanyDataRaw] SET CompanyID = {} WHERE ID = {}'
 
-	sql_batch_update = 'Update {} SET BatchId = {} WHERE SourceSystem = {} AND DataSource = {}'
-	sql_batch_select = 'SELECT DISTINCT DataSourceId, BatchID FROM Config.ImportBatch WHERE Year = {} AND Quarter = \'Q{}\' AND SourceSystemID = {}'
-	sql_program_insert = 'INSERT INTO MaRSDataCatalyst.[BAP].[ProgramData] Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
-	sql_program_youth_insert = 'INSERT INTO MaRSDataCatalyst.[BAP].[ProgramDataYouth] Values (?,?,?,?,?,?,?,?,?,?,?,?)'
-	sql_bap_company_insert = 'INSERT INTO MaRSDataCatalyst.[BAP].[QuarterlyCompanyData] Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
-	sql_bap_company_annual_insert = 'INSERT INTO MaRSDataCatalyst.[BAP].[AnnualCompanyData] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
-	sql_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\' AND Quarter = \'Q{}\''
-	sql_annual_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE Year = \'{}\''
+	sql_bap_schema_tabel_cols = '''SELECT * FROM MDCRaw.INFORMATION_SCHEMA.COLUMNS WHERE Table_Schema = 'BAP' ORDER BY ORDINAL_POSITION'''
+
+	#sql_batch_update = 'Update {} SET BatchId = {} WHERE SourceSystem = {} AND DataSource = {}'
+	sql_batch_select = 'SELECT DISTINCT DataSourceId, BatchID FROM MDCRaw.CONFIG.Batch WHERE Year = {} AND Quarter = \'Q{}\' AND SourceSystemID = {}'
+	sql_bap_ric_program_insert = 'INSERT INTO MDCRaw.BAP.RICProgram Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_bap_ric_program_youth_insert = 'INSERT INTO MDCRaw.BAP.RICProgramYouth Values (?,?,?,?,?,?,?,?,?,?,?)'
+	sql_bap_ric_venture_quarterly_insert = 'INSERT INTO MDCRaw.BAP.VentureQuarterlyData Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_bap_ric_venture_annual_insert = 'INSERT INTO MaRSDataCatalyst.[BAP].[AnnualCompanyData] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+	sql_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE FiscalYear = \'{}\' AND FiscalQuarter = \'Q{}\''
+	sql_annual_bap_distinct_batch = 'SELECT DISTINCT FileName,Path, SourceSystem, DataSource FROM {} WHERE FiscalYear = \'{}\''
 
 	sql_target_list_insert = 'INSERT INTO [SURVEY].[Targetlist] VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 
@@ -350,7 +352,8 @@ class SQL(Enum):
 	sql_industry_list_table = 'SELECT [Industry_Sector],[Lvl2IndustryName] FROM [RICSurveyFlat].[RICSurvey2016Industry]'
 
 	sql_columns = 'SELECT * FROM MaRSDataCatalyst.INFORMATION_SCHEMA.COLUMNS WHERE Table_Schema = \'{}\' ORDER BY ORDINAL_POSITION'
-	
+
+
 	sql_rollup_select = '''
 								SELECT DISTINCT 
 								DimCompany.CompanyName, 
@@ -794,18 +797,10 @@ class SQL(Enum):
 	sql_update_ventures_basic_name = '''SELECT ID, Name, BasicName FROM Venture WHERE Name LIKE \'%Tech%\' AND BasicName NOT LIKE \'%Tech%\''''
 	sql_cvca_type_update = '''UPDATE MDCRaw.CVCA.VCPEDeals SET Type = {} WHERE ID = {}'''
 
-	sql_bap_basic_name = '''SELECT ID, CompanyName FROM MaRSDataCatalyst.BAp.QuarterlyCompanyData WHERE CompanyID = 0 AND BasicName IS NULL'''
-	sql_bap_basic_name_update = '''UPDATE MaRSDataCatalyst.BAp.QuarterlyCompanyData SET BasicName = \'{}\' WHERE ID = {}'''
+	sql_bap_basic_name = '''SELECT ID, CompanyName FROM MDCRaw.BAP.VentureQuarterlyData WHERE CompanyID = 0 AND BasicName IS NULL'''
+	sql_bap_basic_name_update = '''UPDATE MDCRaw.BAP.VentureQuarterlyData SET BasicName = \'{}\' WHERE ID = {}'''
 
 	sql_communitech_venture_insert = '''INSERT INTO MDCRaw.SURVEY.Communitech_Ventures VALUES (?, ?, ?)'''
-	#sql_batch_selects = 'SELECT DISTINCT BatchID FROM Config.ImportBatch WHERE Year = {} AND Quarter = \'Q{}\' AND SourceSystemID = {}'
-	#sql_batch_insert = 'INSERT INTO CONFIG.ImportBATCH Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
-	#sql_batch_single_insert = 'INSERT INTO {} Values {}'
-	#sql_batch_update = 'Update {} SET BatchId = {} WHERE SourceSytemID = {} AND DataSource = {}'
-	#sql_batch_delete = 'DELETE FROM {} WHERE BatchID IN {}'
-	#sql_batch_table = 'SELECT BatchID FROM {} WHERE BatchID IN {}'
-	#sql_batch_count = 'SELECT COUNT(*) AS Total FROM {} WHERE BatchID IN {}'
-	#sql_batch_search = 'SELECT BatchID FROM {} WHERE {}'
 
 	sql_bap_new_company = '''
 			SELECT CompanyName, BasicName, BatchID , NULl as DateFounded, Date_of_Incorporation,NULL as VentureType,
@@ -828,6 +823,15 @@ class SQL(Enum):
 
 	sql_statscan_test_pop = '''INSERT INTO MDC_DEV.dbo.STATSCANPopulation Values(?,?,?,?,?,?,?)'''
 	sql_statscan_test_income = '''INSERT INTO MDC_DEV.dbo.STATSCANIncome Values(?,?,?,?,?,?,?)'''
+
+	sql_batch_select_bap = '''SELECT DISTINCT BatchID FROM MDCRaw.Config.Batch WHERE Year = {} AND Quarter = \'Q{}\' AND SourceSystemID = {}'''
+	sql_batch_insert = '''INSERT INTO MDCRaw.CONFIG.BATCH Values (?,?,?,?,?,?,?,?,?,?)'''
+	sql_batch_single_insert = '''INSERT INTO {} Values {}'''
+	sql_batch_update = '''Update {} SET BatchId = {} WHERE SourceSytemID = {} AND DataSource = {}'''
+	sql_batch_delete = '''DELETE FROM {} WHERE BatchID IN {}'''
+	sql_batch_table = '''SELECT BatchID FROM {} WHERE BatchID IN {}'''
+	sql_batch_count = '''SELECT COUNT(*) AS Total FROM {} WHERE BatchID IN {}'''
+	sql_batch_search = '''SELECT BatchID FROM {} WHERE {}'''
 
 
 class Columns(Enum):
@@ -943,10 +947,10 @@ class FilePath(Enum):
 	path_cvca = 'Box Sync/Workbench/CVCA/ETL/2017'
 	path_venture_dedupe = 'Box Sync/Workbench/Venture_Dedupe'
 	path_namara = 'Box Sync/Workbench/Think data Works/Namara'
-	path_bap_qa = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q4/ETL/00 QA'
-	path_bap_etl = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q4/ETL'
-	path_bap_combined = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q4/ETL/01 Combined'
-	path_bap_combined_dest = 'Box Sync/WorkBench/BAP/BAP_FY18/FY18_Q4/ETL/01 Combined/00 QA'
+	path_bap_qa = 'Box Sync/WorkBench/BAP/BAP_FY19/FY19_Q1/ETL/00 QA'
+	path_bap_etl = 'Box Sync/WorkBench/BAP/BAP_FY19/FY19_Q1/ETL'
+	path_bap_combined = 'Box Sync/WorkBench/BAP/BAP_FY19/FY19_Q1/ETL/01 Combined'
+	path_bap_combined_dest = 'Box Sync/WorkBench/BAP/BAP_FY19/FY19_Q1/ETL/01 Combined/00 QA'
 	path_mars_metadata = 'Box Sync/WorkBench/BAP/Annual Survey FY2018/MaRS Metadata'
 	path_mars_supplemental = 'Box Sync/WorkBench/BAP/Annual Survey FY2018/MaRS Supplemental'
 	path_communitech_shared = 'Box Sync/WorkBench/BAP/Annual Survey FY2018/Communitech'

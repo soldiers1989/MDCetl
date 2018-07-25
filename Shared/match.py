@@ -272,6 +272,15 @@ class CompanyService:
 		values = CM.df_list(data)
 		db.bulk_insert(sql.sql_venture_insert.value,values)
 
+	def split_venture_former_name(self):
+		df = db.pandas_read('SELECT ID, CompanyName, [Former / Alternate Names] FROM MDCRaw.BAP.VentureQuarterlyData WHERE CompanyName LIKE \'%(%\' AND FiscalYear = 2019')
+		for _, row in df.iterrows():
+			split = CM.venture_name_with_bracket_split(row['CompanyName'])
+			# print('Current: {}\nName: {}\nAlternate: {}'.format(row['CompanyName'],split[0], split[1].replace('(','').replace(')','')))
+			# print('-' * 100)
+			update = '''UPDATE MDCRaw.BAP.VentureQuarterlyData SET CompanyName = \'{}\' , [Former / Alternate Names] = \'{}\' WHERE ID = {} -- {}'''
+			print(update.format(split[0], split[1].replace('(','').replace(')','').replace('formerly',''),row['ID'],row['CompanyName']))
+
 
 if __name__ == '__main__':
 	com = CompanyService()
@@ -279,7 +288,8 @@ if __name__ == '__main__':
 	# com.move_annual_company_data()
 	# com.update_tdw_basic_company()
 	# com.update_cb_basic_company()
-	com.insert_new_venture()
+	# com.insert_new_venture()
+	com.split_venture_former_name()
 
 
 

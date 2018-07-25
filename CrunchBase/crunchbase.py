@@ -378,5 +378,5 @@ if __name__ == '__main__':
 	# crb.get_organizations()
 	# crb.save_organization_summary_data()
 	# crb.get_organization_api_url()
-	crb.get_organization_relationships()
-	# crb.update_cb_basic_name()
+	# crb.get_organization_relationships()
+	crb.update_cb_basic_name()

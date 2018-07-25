@@ -662,6 +662,7 @@ class TargetList(ds.DataSource):
 
 
 	def communitech_bap_annual_reupload(self):
+
 		path = 'Box Sync/Workbench/BAP/BAP_FY18/FY18_Q3/Communitech_New_Annual_Data_20180712'
 		self.common.change_working_directory(path)
 		self.data = pd.read_excel('Portfolio BAP-Q3-Annual-Tab-Rob-Pulled-July10-2018.xlsx', 'Sheet1')

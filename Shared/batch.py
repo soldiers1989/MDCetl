@@ -87,28 +87,20 @@ class BatchService:
 		values = []
 		for _, row in dataframe.iterrows():
 			val = []
-			data_source = row['DataSource']
-			val.append(0)
-			val.append(ImportStatus.COMPLETED.value)
-			val.append(row['FileName'])
 			val.append(row['Path'])
-			val.append(row['SourceSystem'])
+			val.append(row['FileName'])
 			val.append(sheet)
-			val.append(dt.datetime.now())
-			val.append(data_source)
-			val.append(dt.datetime.now())
-			val.append(dt.datetime.now())
-			val.append(len(dataframe))
-			val.append(len(dataframe))
-			val.append(len(dataframe))
-			val.append(0)
-			val.append(dt.datetime.now())
-			val.append(dt.datetime.now())
-			val.append(year)
+			val.append(row['SourceSystem'])
+			val.append(row['DataSource'])
+			val.append(ImportStatus.COMPLETED.value)
+			val.append(str(dt.datetime.now())[:23]) #DateCreated
+			val.append(str(dt.datetime.now())[:23]) #DateModified
 			val.append('Q{}'.format(quarter))
+			val.append(year)
 			values.append(val)
-		self.db.bulk_insert(self.sql_batch_insert, values)
-		self.update_source_batch(table, year, quarter, system_source)
+		if len(values) > 0:
+			self.db.bulk_insert(sql.sql_batch_insert.value, values)
+			# self.update_source_batch(table, year, quarter, system_source)
 
 	def create_batch(self, dataframe):
 		values = []

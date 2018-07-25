@@ -21,13 +21,14 @@ class BapQA:
 
 		self.okay = PatternFill(fgColor='E1F7DC', bgColor='C00000', fill_type='solid')
 		self.amber = PatternFill(fgColor='F4B042', bgColor='C00000', fill_type='solid')
-		self.header = PatternFill(fgColor='000000', bgColor='C00000', fill_type='solid')
-		self.empty = PatternFill(fgColor='F7F7F7', bgColor='C00000', fill_type='solid')
+		self.header = PatternFill(fgColor='218c04', bgColor='C00000', fill_type='solid')
+		self.empty = PatternFill(fgColor='f9462a', bgColor='C00000', fill_type='solid')
+		self.red = PatternFill(fgColor='f72f11', bgColor='C00000', fill_type='solid')
 
 		warnings.filterwarnings("ignore")
 
-		self.quarter = 'Q4'
-		self.year = '2018'
+		self.quarter = 'Q1'
+		self.year = '2019'
 		self.youth = 'Youth'
 		self.all_youth = 'ALL incl. youth'
 
@@ -56,6 +57,7 @@ class BapQA:
 			Common.change_location(p.DATA)
 			wb = openpyxl.load_workbook(fl, data_only=True)
 			ric_file_name = fl[:-5]
+			print('-' * 250)
 
 			program_sheet = wb.get_sheet_by_name(WS.bap_program.value)
 			df_ps = self.sheet_columns(program_sheet, ric_file_name, WS.bap_program.value)
@@ -72,7 +74,7 @@ class BapQA:
 			dfac = pd.concat([dfac, df_ac])
 
 
-		writer = pd.ExcelWriter('00 ALL_RIC_BAP_COLUMNS_FY18_Q4.xlsx')
+		writer = pd.ExcelWriter('00 ALL_RIC_BAP_COLUMNS_FY19_Q1.xlsx')
 		dfps.to_excel(writer, 'Program', index=False)
 		dfpys.to_excel(writer, 'Program Youth', index=False)
 		dfqc.to_excel(writer, 'Quarterly Company', index=False)
@@ -106,13 +108,13 @@ class BapQA:
 				self.rics_sheet_header(quarterly_company_sheet)
 				self.qa_quarterly_company_data_sheet(quarterly_company_sheet)
 				print('\tAnnual Company data')
-				if 'haltec' in fl.lower() or 'communitech' in fl.lower():
+				if self.quarter == 'Q3' and ('haltec' in fl.lower() or 'communitech' in fl.lower()):
 					annual_company_sheet = wb.get_sheet_by_name(WS.bap_company_annual.value)
 					self.qa_annual_company_data_sheet(annual_company_sheet)
 
 				Common.change_working_directory(dest.value)
-				wb.save('{}_Q4_QA.xlsx'.format(fl[:-5]))
-				print('\t\t[{}_Q4_QA] IS SAVED.'.format(fl[:-5]))
+				wb.save('{}_Q1_QA.xlsx'.format(fl[:-5]))
+				print('\t\t[{}_Q1_QA] IS SAVED.'.format(fl[:-5]))
 			except BaseException as ex:
 				print(ex)
 
@@ -121,7 +123,7 @@ class BapQA:
 			for c in cl:
 				if c.row > 1:
 					if c.value is None:
-						c.fill = self.empty
+						c.fill = self.amber
 
 	def qa_program_youth_sheet(self, sheet):
 		for cl in sheet.columns:
@@ -130,26 +132,20 @@ class BapQA:
 					c.fill = self.header
 				elif c.row > 1:
 					if c.column in ['A', 'B', 'C', 'H']:
-						if isinstance(c.value, int):
+						if isinstance(int(c.value), int):
 							c.fill = self.okay
 						else:
 							c.fill = self.amber
 					if c.column == 'D':
 						c.value = self.quarter
 						c.fill = self.okay
-						# if str(c.value) == self.quarter:
-						# 	c.fill = self.okay
-						# 	c.value = self.quarter
-						# else:
-						# 	c.fill = self.amber
+					else:
+						c.fill = self.amber
 					if c.column == 'E':
 						c.value = self.year
 						c.fill = self.okay
-						# if str(c.value) == self.year:
-						# 	c.fill = self.okay
-						# 	c.value = self.year
-						# else:
-						# 	c.fill = self.amber
+					else:
+						c.fill = self.amber
 					if c.column == 'F':
 						if str(c.value).lower() == self.youth.lower():
 							c.fill = self.okay
@@ -159,25 +155,33 @@ class BapQA:
 	def qa_program_sheet(self, sheet):
 		for cl in sheet.columns:
 			for c in cl:
-				if c.row == 1:
-					c.fill = self.header
-				elif c.row > 1:
-					if c.column in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'J', 'K', 'L', 'M', 'N']:
-						if isinstance(c.value, int):
+				try:
+					if c.row == 1:
+						c.fill = self.header
+					elif c.row > 1:
+						if c.column in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'I', 'J', 'K', 'L', 'M', 'N']:
+							if isinstance(int(c.value), int):
+								c.fill = self.okay
+							else:
+								c.fill = self.amber
+						if c.column == 'O':
+							c.value = self.quarter
 							c.fill = self.okay
 						else:
 							c.fill = self.amber
-					if c.column == 'O':
-						c.value = self.quarter
-						c.fill = self.okay
-					if c.column == 'P':
-						c.value = self.year
-						c.fill = self.okay
-					if c.column == 'Q':
-						if c.value.lower() == self.all_youth.lower():
+						if c.column == 'P':
+							c.value = self.year
 							c.fill = self.okay
 						else:
 							c.fill = self.amber
+						if c.column == 'Q':
+							if c.value.lower() == self.all_youth.lower():
+								c.fill = self.okay
+							else:
+								c.fill = self.amber
+				except Exception as ex:
+					c.fill = self.red
+					print('{} | {} | {} | {}'.format(c.column, c.row, c.value, ex))
 
 	def qa_quarterly_company_data_sheet(self, sheet):
 		for cl in sheet.columns:
@@ -248,13 +252,14 @@ class BapQA:
 								else:
 									c.fill = self.amber
 				except Exception as ex:
-					c.fill = self.amber
+					c.fill = self.red
 					print('{} | {} | {} | {}'.format(c.column, c.row, c.value, ex))
 
 	def qa_annual_company_data_sheet(self, sheet):
 		for cl in sheet.columns:
 			for c in cl:
-				if c.value is not None:
+				# if c.value is not None:
+				try:
 					if c.row == 1:
 						c.fill = self.header
 					elif c.row > 1:
@@ -276,9 +281,12 @@ class BapQA:
 						if c.column == 'L':
 							c.value = '--'
 						if c.column == 'M':
-							c.value = '2018'
-				else:
-					c.fill = self.amber
+							c.value = '2019'
+				except Exception as ex:
+					c.fill = self.red
+					print('{} | {} | {} | {}'.format(c.column, c.row, c.value, ex))
+				# else:
+				# 	c.fill = self.amber
 
 	def sheet_columns(self, sheet, ric, sheet_name):
 		lst = []

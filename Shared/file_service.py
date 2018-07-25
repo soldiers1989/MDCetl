@@ -54,16 +54,15 @@ class FileService:
 						ds = COM.set_datasource(str(fl))
 						print('{}. {}'.format(i, fl))
 						prg = pd.read_excel(fl, WS.bap_program.value)
+						prg.drop(prg.columns[[13]],inplace=True, axis=1)
 						prg.columns = self.program_columns
+
 						prg_youth = pd.read_excel(fl, WS.bap_program_youth.value)
+						prg_youth.drop(prg_youth.columns[2], inplace=True, axis=1)
 						prg_youth.columns = self.program_youth_columns
 						com = pd.read_excel(fl, WS.bap_company.value)
-						com['Date_of_Incorporation'] = None
-						# if fl == 'BAP FY 2018 Q4 Submitted Apr13-SPARK CENTRE_BAP_qtrly_perCompany_QTR 4.xlsx':
-						# 	com['Annual Revenue $CAN'] = None
-						# 	com['Number of Employees'] = None
 						com.columns = self.quarterly_company_columns
-						if ds in [DST.COMMUNI_TECH.value, DST.HAL_TECH.value]:
+						if ds in [DST.COMMUNI_TECH.value, DST.HAL_TECH.value] and self.quarter - 1 == 3:
 							com_a = pd.read_excel(fl, WS.bap_company_annual.value)
 							com_a.columns = self.annual_company_columns
 							l_company_annual.append(com_a)
@@ -79,11 +78,11 @@ class FileService:
 				bap_program = pd.concat(l_program)
 				bap_program_youth = pd.concat(l_program_youth)
 				bap_company = pd.concat(l_company)
-				if combine_for == Combine.FOR_ETL or combine_for == Combine.FOR_QA:
+				if self.quarter - 1 == 4: #combine_for == Combine.FOR_ETL or combine_for == Combine.FOR_QA:
 					bap_company_annual = pd.concat(l_company_annual)
 					return bap_program, bap_program_youth, bap_company, bap_company_annual
 				else:
-					return bap_program, bap_program_youth, bap_company
+					return bap_program, bap_program_youth, bap_company, None
 
 		elif data_source == DS.CBINSIGHT:
 			if ftype == FT.CSV:
@@ -155,15 +154,15 @@ class FileService:
 		pass
 
 	def bap_dataframes(self):
-		df = DB.pandas_read(sql.sql_columns.value.format('BAP'))
+		df = DB.pandas_read(sql.sql_bap_schema_tabel_cols.value)
 		if df is not None:
 			l_program = []
 			l_program_youth = []
 			l_company = []
 			l_company_annual = []
-			self.program_columns = list(df[df['TABLE_NAME'] == 'ProgramData']['COLUMN_NAME'][7:])
-			self.program_youth_columns = list(df[df['TABLE_NAME'] == 'ProgramDataYouth']['COLUMN_NAME'][7:])
-			self.quarterly_company_columns = list(df[df['TABLE_NAME'] == 'QuarterlyCompanyData']['COLUMN_NAME'][8:])
+			self.program_columns = list(df[df['TABLE_NAME'] == 'RICProgram']['COLUMN_NAME'][7:])
+			self.program_youth_columns = list(df[df['TABLE_NAME'] == 'RICProgramYouth']['COLUMN_NAME'][7:])
+			self.quarterly_company_columns = list(df[df['TABLE_NAME'] == 'VentureQuarterlyData']['COLUMN_NAME'][10:])
 			self.annual_company_columns = list(df[df['TABLE_NAME'] == 'AnnualCompanyData']['COLUMN_NAME'][8:])
 			return l_company, l_company_annual, l_program, l_program_youth
 		else:
@@ -234,34 +233,35 @@ class FileService:
 
 	@staticmethod
 	def data_system_source(cv, cvy, cd, cda, path, file_name, datasource):
-
-		cv.insert(0, 'SourceSystem', SS.RICPD_bap.value)
-		cv.insert(0, 'DataSource', datasource)
-		cv.insert(0, 'Path', path)
-		cv.insert(0, 'FileName', file_name)
-		cv.insert(0, 'FileID', str(uuid.uuid4()))
-		cv.insert(0, 'BatchID', '0')
-
-		cvy.insert(0, 'SourceSystem', SS.RICPDY_bap.value)
-		cvy.insert(0, 'DataSource', datasource)
-		cvy.insert(0, 'Path', path)
-		cvy.insert(0, 'FileName', file_name)
-		cvy.insert(0, 'FileID', str(uuid.uuid4()))
-		cvy.insert(0, 'BatchID', '0')
-
-		cd.insert(0, 'SourceSystem', SS.RICCD_bap.value)
-		cd.insert(0, 'DataSource', datasource)
-		cd.insert(0, 'Path', path)
-		cd.insert(0, 'FileName', file_name)
-		cd.insert(0, 'FileID', str(uuid.uuid4()))
-		cd.insert(0, 'BatchID', '0')
-		cd.insert(0, 'CompanyID', '0')
+		if cv is not None:
+			cv.insert(0, 'SourceSystem', SS.RICPD_bap.value)
+			cv.insert(0, 'DataSource', datasource)
+			cv.insert(0, 'Path', path)
+			cv.insert(0, 'FileName', file_name)
+			cv.insert(0, 'FileID', str(uuid.uuid4()))
+			cv.insert(0, 'BatchID', '0')
+		if cvy is not None:
+			cvy.insert(0, 'SourceSystem', SS.RICPDY_bap.value)
+			cvy.insert(0, 'DataSource', datasource)
+			cvy.insert(0, 'Path', path)
+			cvy.insert(0, 'FileName', file_name)
+			cvy.insert(0, 'FileID', str(uuid.uuid4()))
+			cvy.insert(0, 'BatchID', '0')
+		if cd is not None:
+			cd.insert(0, 'SourceSystem', SS.RICCD_bap.value)
+			cd.insert(0, 'DataSource', datasource)
+			cd.insert(0, 'Path', path)
+			cd.insert(0, 'FileName', file_name)
+			cd.insert(0, 'FileID', str(uuid.uuid4()))
+			cd.insert(0, 'BatchID', '0')
+			cd.insert(0, 'CompanyID', '0')
 
 		if datasource in [DST.HAL_TECH.value, DST.COMMUNI_TECH.value]:
-			cda.insert(0, 'SourceSystem', SS.RICACD_bap.value)
-			cda.insert(0, 'DataSource', datasource)
-			cda.insert(0, 'Path', path)
-			cda.insert(0, 'FileName', file_name)
-			cda.insert(0, 'FileID', str(uuid.uuid4()))
-			cda.insert(0, 'BatchID', '0')
-			cda.insert(0, 'CompanyID', '0')
+			if cda is not None:
+				cda.insert(0, 'SourceSystem', SS.RICACD_bap.value)
+				cda.insert(0, 'DataSource', datasource)
+				cda.insert(0, 'Path', path)
+				cda.insert(0, 'FileName', file_name)
+				cda.insert(0, 'FileID', str(uuid.uuid4()))
+				cda.insert(0, 'BatchID', '0')
+				cda.insert(0, 'CompanyID', '0')

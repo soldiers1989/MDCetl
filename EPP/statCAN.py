@@ -30,7 +30,12 @@ class Census(DataSource):
         super().__init__('', '', enum.MDCDataSource.EPP, enum.FilePath.path_statscan_census.value)
         self.stat_col = ['Geography', 'Industry - Nor ', 'Occupation - N', 'Age by 5-year',
                          'Total - Population', 'Total - Sex', 'Male', 'Female']
-        self.csv_files = ['EO2908 - Table1.csv', 'EO2908 - Table2.csv', 'EO2908 - Table3.csv', 'EO2908 - Table4.csv']
+        self.csv_files = [
+                            # 'EO2908 - Table1.csv',
+                            'EO2908 - Table2.csv',
+                            'EO2908 - Table3.csv',
+                            'EO2908 - Table4.csv'
+        ]
 
         self.ontario_cma = ('Kingston', 'Ottawa', 'Gatineau',  'Peterborough', 'Oshawa',
                             'Toronto', 'Hamilton', 'St. Catharines', 'Niagara',
